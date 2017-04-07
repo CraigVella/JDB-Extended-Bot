@@ -4,12 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.reztek.Guardian;
-import com.reztek.base.ITaskable;
+import com.reztek.base.Taskable;
 import com.reztek.utils.MySQLConnector;
 
 import net.dv8tion.jda.core.entities.MessageChannel;
 
-public class TrialsList implements ITaskable {
+public class TrialsList extends Taskable {
 	public void addPlayer(MessageChannel mc, Guardian guardian) {
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM trialsList WHERE membershipId = '" + guardian.getId() + "'");
 		try {
@@ -91,7 +91,7 @@ public class TrialsList implements ITaskable {
 	@Override
 	public void runTask() {
 		System.out.println("TrialsList Task Running...");
-		
+		refreshList(null, false);
 		System.out.println("TrialsList Task Complete...");
 	}
 }

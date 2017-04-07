@@ -3,10 +3,11 @@ package com.reztek;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.security.auth.login.LoginException;
 
-import com.reztek.base.ITaskable;
+import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
 import com.reztek.modules.Misc.MiscCommands;
 import com.reztek.modules.RumbleList.RumbleListCommands;
@@ -23,9 +24,9 @@ import net.dv8tion.jda.core.hooks.EventListener;
 public class SGAExtendedBot extends TimerTask implements EventListener {
 	private boolean p_ready = false;
 	private MessageHandler p_mh;
-	private ArrayList<ITaskable> p_taskList = new ArrayList<ITaskable>();
-	private Timer p_timer = new Timer();
-	private boolean p_continueTasks = true;
+	private ArrayList<Taskable> p_taskList = new ArrayList<Taskable>();
+	private Timer p_timer = new Timer("SGAExtendedBotTimer");
+	private AtomicBoolean p_tasksrunning = new AtomicBoolean(false);
 	
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
 		SGAExtendedBot bot = new SGAExtendedBot();
@@ -43,12 +44,12 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh.addCommandProcessor(new GuardianControlCommands(jda, this));
 		p_mh.addCommandProcessor(new TrialsListCommands(jda, this));
 		
-		newTimer(GlobalDefs.TIMER_TICK);
+		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		
 		jda.setAutoReconnect(true);
 	}
 	
-	public void addTask(ITaskable task) {
+	public void addTask(Taskable task) {
 		p_taskList.add(task);
 	}
 	
@@ -75,24 +76,6 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		}
 		
 	}
-	
-	public boolean isTasksRunning() {
-		return p_continueTasks;
-	}
-	
-	public void pauseTasks() {
-		if (p_continueTasks) {
-			p_continueTasks = false;
-			p_timer.cancel();
-		}
-	}
-	
-	public void resumeTasks() {
-		if (!p_continueTasks) {
-			newTimer(GlobalDefs.TIMER_TICK);
-			p_continueTasks = true;
-		}
-	}
 
 	@Override
 	public void run() {
@@ -100,18 +83,14 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		// some tasks may not get called every 1 minute depending on how
 		// long each task in front of it takes to run. This is purposely done
 		// to prevent too many web calls from going off at once
-		synchronized (p_taskList) {
-			for (ITaskable task : p_taskList) {
-				task.runTask();
+		if (!p_tasksrunning.get()) {
+			p_tasksrunning.set(true);
+			synchronized (p_taskList) {
+				for (Taskable task : p_taskList) {
+					task.__taskTick();
+				}
 			}
+			p_tasksrunning.set(false);
 		}
-		if (p_continueTasks)
-			newTimer(GlobalDefs.TIMER_TICK);
 	}
-	
-	protected void newTimer(long timeout) {
-		p_timer.cancel();
-		p_timer.schedule(this, timeout);
-	}
-	
 }

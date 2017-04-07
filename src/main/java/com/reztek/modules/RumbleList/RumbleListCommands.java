@@ -16,6 +16,7 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 	public RumbleListCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot);
 		// I have a task!
+		p_rumbleList.setTaskDelay(5);
 		getBot().addTask(p_rumbleList);
 	}
 

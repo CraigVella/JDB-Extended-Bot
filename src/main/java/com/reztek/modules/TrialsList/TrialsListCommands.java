@@ -16,6 +16,7 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 	public TrialsListCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot);
 		// I have a task!
+		p_trialsList.setTaskDelay(5);
 		getBot().addTask(p_trialsList);
 	}
 
