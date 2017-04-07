@@ -3,6 +3,7 @@ package com.reztek.modules.Misc;
 import java.util.Random;
 
 import com.reztek.Guardian;
+import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 
@@ -12,8 +13,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class MiscCommands extends Command implements ICommandProcessor {
 
-	public MiscCommands(JDA pJDA) {
-		super(pJDA);
+	public MiscCommands(JDA pJDA, SGAExtendedBot pBot) {
+		super(pJDA, pBot);
 	}
 
 	@Override

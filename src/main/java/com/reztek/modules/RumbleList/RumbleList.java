@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.reztek.Guardian;
+import com.reztek.base.ITaskable;
 import com.reztek.utils.MySQLConnector;
 
 import net.dv8tion.jda.core.entities.MessageChannel;
 
-public class RumbleList {
+public class RumbleList implements ITaskable {
 	public void addPlayer(MessageChannel mc, Guardian guardian) {
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM rumbleList WHERE membershipId = '" + guardian.getId() + "'");
 		try {
@@ -69,9 +70,11 @@ public class RumbleList {
 		}
 	}
 	
-	public void refreshList(MessageChannel mc) {
-		mc.sendMessage("*Updating List Please Wait...*").queue();
-		mc.sendTyping().queue();
+	public void refreshList(MessageChannel mc, boolean verbose) {
+		if (verbose) {
+			mc.sendMessage("*Updating Rumble List Please Wait...*").queue();
+			mc.sendTyping().queue();
+		}
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM rumbleList");
 		Guardian g;
 		try {
@@ -79,9 +82,16 @@ public class RumbleList {
 				g = Guardian.guardianFromMembershipId(rs.getString("membershipId"),rs.getString("playerName"), rs.getString("platform"));
 				MySQLConnector.getInstance().runUpdateQuery("UPDATE rumbleList SET elo = " + g.getRumbleELO() + ", rank = " + g.getRumbleRank() + " WHERE membershipId = '" + g.getId() + "'");
 			}
-			mc.sendMessage("*Updating Complete!*").queue();
+			if (verbose) mc.sendMessage("*Updating Complete!*").queue();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void runTask() {
+		System.out.println("RumbleList Task Running...");
+		
+		System.out.println("RumbleList Task Complete...");
 	}
 }

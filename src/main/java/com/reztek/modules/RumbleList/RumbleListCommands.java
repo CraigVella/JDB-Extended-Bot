@@ -1,6 +1,7 @@
 package com.reztek.modules.RumbleList;
 
 import com.reztek.Guardian;
+import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 
@@ -12,8 +13,10 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 	
 	protected RumbleList p_rumbleList = new RumbleList();
 
-	public RumbleListCommands(JDA pJDA) {
-		super(pJDA);
+	public RumbleListCommands(JDA pJDA, SGAExtendedBot pBot) {
+		super(pJDA, pBot);
+		// I have a task!
+		getBot().addTask(p_rumbleList);
 	}
 
 	@Override
@@ -31,18 +34,18 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 			case "rumblerefresh":
 				rumbleRefresh(mre.getChannel());
 				break;
-			case "rumbleAddToList-ps":
-			case "rumbleAddToList-xb":
-			case "rumbleAddToList":
+			case "rumbleaddtolist-ps":
+			case "rumbleaddtolist-xb":
+			case "rumbleaddtolist":
 				if (args == null) {
 					sendHelpString(mre, "!rumbleAddToList[or !rumbleAddToList-ps or !rumbleAddToList-xb] PlayerNameHere");
 				} else {
 					rumbleAddToList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 				break;
-			case "rumbleRemoveFromList-ps":
-			case "rumbleRemoveFromList-xb":
-			case "rumbleRemoveFromList":
+			case "rumbleremovefromlist-ps":
+			case "rumbleremovefromlist-xb":
+			case "rumbleremovefromlist":
 				if (args == null) {
 					sendHelpString(mre, "!rumbleRemoveFromList[or !rumbleRemoveFromList-ps or !rumbleRemoveFromList-xb] PlayerNameHere");
 				} else {
@@ -63,7 +66,7 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 	
 	protected void rumbleRefresh(MessageChannel mc) {
 		mc.sendTyping().queue();
-		p_rumbleList.refreshList(mc);
+		p_rumbleList.refreshList(mc, true);
 	}
 	
 	protected void rumbleRemoveFromList(MessageChannel mc, String playerName, String platform) {

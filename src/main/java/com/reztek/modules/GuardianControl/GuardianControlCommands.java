@@ -1,6 +1,7 @@
 package com.reztek.modules.GuardianControl;
 
 import com.reztek.Guardian;
+import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 
@@ -10,8 +11,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class GuardianControlCommands extends Command implements ICommandProcessor {
 
-	public GuardianControlCommands(JDA pJDA) {
-		super(pJDA);
+	public GuardianControlCommands(JDA pJDA, SGAExtendedBot pBot) {
+		super(pJDA, pBot);
 	}
 
 	@Override
