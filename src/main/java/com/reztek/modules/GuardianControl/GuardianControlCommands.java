@@ -1,5 +1,8 @@
 package com.reztek.modules.GuardianControl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.reztek.Guardian;
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
@@ -33,11 +36,49 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 					playerInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 				break;
+			case "fireteam-ps":
+			case "fireteam-xb":
+			case "fireteam":
+				if (args == null) {
+					sendHelpString(mre, "!fireteam[or !fireteam-ps or !fireteam-xb] PlayerNameHere");
+				} else {
+					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				}
+				break;
 			default: 
 				return false;
 		}
 		
 		return true;
+	}
+	
+	protected void fireteamInfo(MessageChannel mc, String playerName, String platform) {
+		mc.sendTyping().queue();
+		Guardian g = Guardian.guardianFromName(playerName, platform);
+		ArrayList<Guardian> gFireteam = new ArrayList<Guardian>();
+		if (g != null) {
+			ArrayList<HashMap<String,String>> members = g.getTrialsFireteamMembershipId();
+			for (HashMap<String, String> hashMap : members) {
+				gFireteam.add(Guardian.guardianFromMembershipId(hashMap.get("membershipId"), hashMap.get("name"), hashMap.get("platform")));
+			}
+			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam \n"
+					+ "```md\n" +
+					g.getName() + "\n" +
+					"[Rumble Elo]("+ g.getRumbleELO() +")<#"+ g.getRumbleRank() +">\n" +
+					"[Trials Elo]("+ g.getTrialsELO() +")<#"+ g.getTrialsRank() +">\n" +
+					"[Flawlesses]("+ g.getLighthouseCount() +")\n" +
+					"```").queue();
+			for (Guardian gFt : gFireteam) {
+						mc.sendMessage("```md\n" +
+								gFt.getName() + "\n" +
+						"[Rumble Elo]("+ gFt.getRumbleELO() +")<#"+ gFt.getRumbleRank() +">\n" +
+						"[Trials Elo]("+ gFt.getTrialsELO() +")<#"+ gFt.getTrialsRank() +">\n" +
+						"[Flawlesses]("+ gFt.getLighthouseCount() +")\n" +
+						"```").queue();
+			}
+		} else {
+			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
+		}
 	}
 	
 	protected void playerInfo(MessageChannel mc, String playerName, String platform) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ public class Guardian {
 	private static final String BUNGIE_SEARCH_URL = "/SearchDestinyPlayer/";
 	private static final String GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
 	private static final String GUARDIAN_API_ELO = "/elo/";
+	private static final String GUARDIAN_API_FIRETEAM = "/fireteam/14/";
 	private static final String DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
 	private static final String DTR_API_PLAYER = "/player/";
 	
@@ -120,6 +122,22 @@ public class Guardian {
 		return p_platform;
 	}
 	
+	public ArrayList<HashMap<String,String>> getTrialsFireteamMembershipId() {
+		ArrayList<HashMap<String,String>> fireteam =  new ArrayList<HashMap<String,String>>();
+		JSONArray ob = new JSONObject("{\"GGArray\":" + getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_FIRETEAM + getId(), null) + "}").getJSONArray("GGArray");
+		
+		for (int x = 0; x < ob.length(); ++x) {
+			JSONObject itObj = ob.getJSONObject(x);
+			if (itObj.getString("membershipId").equals(getId())) continue;
+			HashMap<String,String> hm = new HashMap<String,String>();
+			hm.put("membershipId", itObj.getString("membershipId"));
+			hm.put("name", itObj.getString("name"));
+			hm.put("platform",String.valueOf(itObj.getInt("membershipType")));
+			fireteam.add(hm);
+		}
+		return fireteam;
+	}
+	
 	private HashMap<String, String> getGuardianDTR(String membershipId) {
 		HashMap<String, String> dtrMap = new HashMap<String,String>();
 		
@@ -162,6 +180,7 @@ public class Guardian {
 		props.put("X-API-Key", BUNGIE_API_KEY);
 		
 		JSONObject ob = new JSONObject (getJSONString(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
+		
 		try {
 			ret.put("id",ob.getJSONArray("Response").getJSONObject(0).getString("membershipId"));
 			ret.put("name",ob.getJSONArray("Response").getJSONObject(0).getString("displayName"));
