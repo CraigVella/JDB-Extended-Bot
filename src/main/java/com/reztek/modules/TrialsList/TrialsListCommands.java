@@ -6,6 +6,7 @@ import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -32,19 +33,23 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 			case "trialsaddtolist-ps":
 			case "trialsaddtolist-xb":
 			case "trialsaddtolist":
-				if (args == null) {
-					sendHelpString(mre, "!trialsAddToList[or !trialsAddToList-ps or !trialsAddToList-xb] PlayerNameHere");
-				} else {
-					trialsAddToList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					if (args == null) {
+						sendHelpString(mre, "!trialsAddToList[or !trialsAddToList-ps or !trialsAddToList-xb] PlayerNameHere");
+					} else {
+						trialsAddToList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+					}
 				}
 				break;
 			case "trialsremovegromlist-ps":
 			case "trialsremovegromlist-xb":
 			case "trialsremovegromlist":
-				if (args == null) {
-					sendHelpString(mre, "!trialsRemoveFromList[or !trialsRemoveFromList-ps or !trialsRemoveFromList-xb] PlayerNameHere");
-				} else {
-					trialsRemoveFromList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					if (args == null) {
+						sendHelpString(mre, "!trialsRemoveFromList[or !trialsRemoveFromList-ps or !trialsRemoveFromList-xb] PlayerNameHere");
+					} else {
+						trialsRemoveFromList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+					}
 				}
 				break;
 			default:

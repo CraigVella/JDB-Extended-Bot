@@ -6,6 +6,7 @@ import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -38,19 +39,23 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 			case "rumbleaddtolist-ps":
 			case "rumbleaddtolist-xb":
 			case "rumbleaddtolist":
-				if (args == null) {
-					sendHelpString(mre, "!rumbleAddToList[or !rumbleAddToList-ps or !rumbleAddToList-xb] PlayerNameHere");
-				} else {
-					rumbleAddToList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					if (args == null) {
+						sendHelpString(mre, "!rumbleAddToList[or !rumbleAddToList-ps or !rumbleAddToList-xb] PlayerNameHere");
+					} else {
+						rumbleAddToList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+					}
 				}
 				break;
 			case "rumbleremovefromlist-ps":
 			case "rumbleremovefromlist-xb":
 			case "rumbleremovefromlist":
-				if (args == null) {
-					sendHelpString(mre, "!rumbleRemoveFromList[or !rumbleRemoveFromList-ps or !rumbleRemoveFromList-xb] PlayerNameHere");
-				} else {
-					rumbleRemoveFromList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					if (args == null) {
+						sendHelpString(mre, "!rumbleRemoveFromList[or !rumbleRemoveFromList-ps or !rumbleRemoveFromList-xb] PlayerNameHere");
+					} else {
+						rumbleRemoveFromList(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+					}
 				}
 				break;
 			default:

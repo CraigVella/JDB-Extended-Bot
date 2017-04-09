@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import com.reztek.Guardian;
 import com.reztek.base.Taskable;
+import com.reztek.utils.BotUtils;
 import com.reztek.utils.MySQLConnector;
 
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -47,21 +48,14 @@ public class RumbleList extends Taskable {
 		try {
 			int x = 1;
 			String platformName = "";
-			String padding = "";
-			String paddingRank = "";
 			String rumbleList = "**Current Rumble Leaders**\n```";
 			while (rs.next()) {
-				padding = "";
-				for (int y = 0; y < (20 - rs.getString("playerName").length()); ++y) {
-					padding += ' ';
-				}
-				paddingRank = "";
-				for (int y = 0; y < (6 - rs.getString("rank").length()); ++y) {
-					paddingRank += ' ';
-				}
 				if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
 				if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-				rumbleList += String.valueOf(x++) + ". " + rs.getString("playerName") + padding + " (Rank:"+ paddingRank + rs.getString("rank") + " |"+ platformName +"| Elo: " + rs.getString("elo") + ")\n";
+				rumbleList += String.valueOf(x) + "." + BotUtils.getPaddingForLen(String.valueOf(x++), 3) + 
+						rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) + 
+						" (Rank:"+ BotUtils.getPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
+						platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
 			}
 			rumbleList += "```";
 			mc.sendMessage(rumbleList).queue();

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import com.reztek.Guardian;
 import com.reztek.base.Taskable;
+import com.reztek.utils.BotUtils;
 import com.reztek.utils.MySQLConnector;
 
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -15,9 +16,9 @@ public class TrialsList extends Taskable {
 		try {
 			if (!rs.last()) {
 				// userdoesn't exist add them
-				MySQLConnector.getInstance().runUpdateQuery("INSERT INTO trialsList (membershipId,platform,playerName,rank,elo) VALUES ('"
+				MySQLConnector.getInstance().runUpdateQuery("INSERT INTO trialsList (membershipId,platform,playerName,rank,elo,flawlessCount) VALUES ('"
 						+ guardian.getId() + "','" + guardian.getPlatform() + "','" + guardian.getName() + "','" 
-						+ guardian.getTrialsRank() + "'," + guardian.getTrialsELO() + ")");
+						+ guardian.getTrialsRank() + "'," + guardian.getTrialsELO() + "," + guardian.getLighthouseCount() + ")");
 				mc.sendMessage("Succesfully added " + guardian.getName() + " to the Trials of Osiris List").queue();
 			} else {
 				// user already exists in DB
@@ -47,21 +48,15 @@ public class TrialsList extends Taskable {
 		try {
 			int x = 1;
 			String platformName = "";
-			String padding = "";
-			String paddingRank = "";
 			String trialsList = "**Current Trials of Osiris Leaders**\n```";
 			while (rs.next()) {
-				padding = "";
-				for (int y = 0; y < (20 - rs.getString("playerName").length()); ++y) {
-					padding += ' ';
-				}
-				paddingRank = "";
-				for (int y = 0; y < (6 - rs.getString("rank").length()); ++y) {
-					paddingRank += ' ';
-				}
 				if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
 				if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-				trialsList += String.valueOf(x++) + ". " + rs.getString("playerName") + padding + " (Rank:"+ paddingRank + rs.getString("rank") + " |"+ platformName +"| Elo: " + rs.getString("elo") + ")\n";
+				trialsList += String.valueOf(x) + "." + BotUtils.getPaddingForLen(String.valueOf(x++), 3) + 
+						rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) +
+						" (Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + " |"+ platformName +
+						"| Rank:" + BotUtils.getPaddingForLen(rs.getString("rank"),6) + rs.getString("rank") + " | FC:" + 
+						BotUtils.getPaddingForLen(rs.getString("flawlessCount"), 4) + rs.getString("flawlessCount") + ")\n";
 			}
 			trialsList += "```";
 			mc.sendMessage(trialsList).queue();
@@ -80,7 +75,7 @@ public class TrialsList extends Taskable {
 		try {
 			while (rs.next()) {
 				g = Guardian.guardianFromMembershipId(rs.getString("membershipId"),rs.getString("playerName"), rs.getString("platform"));
-				MySQLConnector.getInstance().runUpdateQuery("UPDATE trialsList SET elo = " + g.getTrialsELO() + ", rank = " + g.getTrialsRank() + " WHERE membershipId = '" + g.getId() + "'");
+				MySQLConnector.getInstance().runUpdateQuery("UPDATE trialsList SET elo = " + g.getTrialsELO() + ", rank = " + g.getTrialsRank() + ", flawlessCount = " + g.getLighthouseCount() + " WHERE membershipId = '" + g.getId() + "'");
 			}
 			if (verbose) mc.sendMessage("*Updating Complete!*").queue();
 		} catch (SQLException e) {

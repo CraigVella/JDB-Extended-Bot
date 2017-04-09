@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -41,6 +42,18 @@ public class Guardian {
 	private String p_lighthouseCount = null;
 	private String p_platform = null;
 	
+	private String p_thisWeekTrialsFlawless = null;
+	private String p_thisWeekTrialsMatches = null;
+	private String p_thisWeekTrialsLosses = null;
+	private String p_thisWeekTrialsKills = null;
+	private String p_thisWeekTrialsDeaths = null;
+	private float p_thisWeekTrialsKD = 0;
+	
+	private String p_thisYearTrialsMatches = null;
+	private String p_thisYearTrialsKills = null;
+	private String p_thisYearTrialsDeaths = null;
+	private float p_thisYearTrialsKD = 0;
+	
 	private Guardian() {
 		
 	}
@@ -69,6 +82,18 @@ public class Guardian {
 		
 		g.p_lighthouseCount = dtrMap.get("lighthouseCount");
 		
+		g.p_thisWeekTrialsDeaths = dtrMap.get("thisWeekTrialsDeaths");
+		g.p_thisWeekTrialsFlawless = dtrMap.get("thisWeekTrialsFlawless");
+		g.p_thisWeekTrialsKills = dtrMap.get("thisWeekTrialsKills");
+		g.p_thisWeekTrialsLosses = dtrMap.get("thisWeekTrialsLosses");
+		g.p_thisWeekTrialsMatches = dtrMap.get("thisWeekTrialsMatches");
+		g.p_thisWeekTrialsKD = (Float.valueOf(g.p_thisWeekTrialsKills) / Float.valueOf(g.p_thisWeekTrialsDeaths));
+		
+		g.p_thisYearTrialsKills = dtrMap.get("thisYearTrialsKills");
+		g.p_thisYearTrialsDeaths = dtrMap.get("thisYearTrialsDeaths");
+		g.p_thisYearTrialsKD = (Float.valueOf(g.p_thisYearTrialsKills) / Float.valueOf(g.p_thisYearTrialsDeaths));
+		g.p_thisYearTrialsMatches = dtrMap.get("thisYearTrialsMatches");
+		
 		return g;
 	}
 	
@@ -88,38 +113,6 @@ public class Guardian {
 			}
 		}
 		return platform;
-	}
-	
-	public String getId() {
-		return p_id;
-	}
-	
-	public String getName() {
-		return p_name;
-	}
-	
-	public String getRumbleELO() {
-		return p_rumbleELO;
-	}
-	
-	public String getTrialsELO() {
-		return p_trialsELO;
-	}
-	
-	public String getRumbleRank() {
-		return p_rumbleRank;
-	}
-	
-	public String getTrialsRank() {
-		return p_trialsRank;
-	}
-	
-	public String getLighthouseCount() {
-		return p_lighthouseCount;
-	}
-	
-	public String getPlatform() {
-		return p_platform;
 	}
 	
 	public ArrayList<HashMap<String,String>> getTrialsFireteamMembershipId() {
@@ -152,6 +145,18 @@ public class Guardian {
 		}
 		
 		dtrMap.put("lighthouseCount", String.valueOf(flawlessCount));
+		
+		JSONObject thisWeekOb = ob.getJSONArray("thisWeek").getJSONObject(0);
+		
+		dtrMap.put("thisWeekTrialsMatches", String.valueOf(thisWeekOb.getInt("matches")));
+		dtrMap.put("thisWeekTrialsFlawless", String.valueOf(thisWeekOb.getInt("flawless")));
+		dtrMap.put("thisWeekTrialsLosses", String.valueOf(thisWeekOb.getInt("losses")));
+		dtrMap.put("thisWeekTrialsKills", String.valueOf(thisWeekOb.getInt("kills")));
+		dtrMap.put("thisWeekTrialsDeaths", String.valueOf(thisWeekOb.getInt("deaths")));
+		
+		dtrMap.put("thisYearTrialsKills", String.valueOf(ob.getInt("kills")));
+		dtrMap.put("thisYearTrialsDeaths", String.valueOf(ob.getInt("deaths")));
+		dtrMap.put("thisYearTrialsMatches", String.valueOf(ob.getInt("match_count")));
 		
 		return dtrMap;
 	}
@@ -218,6 +223,84 @@ public class Guardian {
 		}
 		
 		return retObj;
+	}
+	
+	// --------- Getters
+	
+	public String getId() {
+		return p_id;
+	}
+	
+	public String getName() {
+		return p_name;
+	}
+	
+	public String getRumbleELO() {
+		return p_rumbleELO;
+	}
+	
+	public String getTrialsELO() {
+		return p_trialsELO;
+	}
+	
+	public String getRumbleRank() {
+		return p_rumbleRank;
+	}
+	
+	public String getTrialsRank() {
+		return p_trialsRank;
+	}
+	
+	public String getLighthouseCount() {
+		return p_lighthouseCount;
+	}
+	
+	public String getPlatform() {
+		return p_platform;
+	}
+	
+	public String getThisWeekTrialsFlawless() {
+		return p_thisWeekTrialsFlawless;
+	}
+	
+	public String getThisWeekTrialsDeaths() {
+		return p_thisWeekTrialsDeaths;
+	}
+	
+	public String getThisWeekTrialsKills() {
+		return p_thisWeekTrialsKills;
+	}
+	
+	public String getThisWeekTrialsMatches() {
+		return p_thisWeekTrialsMatches;
+	}
+	
+	public String getThisWeekTrialsLosses() {
+		return p_thisWeekTrialsLosses;
+	}
+	
+	public String getThisWeekTrialsKD () {
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2); 
+		return df.format(p_thisWeekTrialsKD);
+	}
+	
+	public String getThisYearTrialsKills() {
+		return p_thisYearTrialsKills;
+	}
+	
+	public String getThisYearTrialsDeaths() {
+		return p_thisYearTrialsDeaths;
+	}
+	
+	public String getThisYearTrialsKD () {
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		return df.format(p_thisYearTrialsKD);
+	}
+	
+	public String getThisYearTrialsMatches() {
+		return p_thisYearTrialsMatches;
 	}
 	
 }

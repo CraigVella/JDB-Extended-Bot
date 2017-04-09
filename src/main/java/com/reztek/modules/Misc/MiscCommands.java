@@ -68,7 +68,10 @@ public class MiscCommands extends Command implements ICommandProcessor {
 	protected void debugGuardian(MessageChannel mc, String playerName) {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName,Guardian.PLATFORM_ALL);
-		mc.sendMessage("DEBUG: " + g.getId()).queue();
+		mc.sendMessage("DEBUG: " + g.getId() +"\n" +
+					   "Name: " + g.getName() + "\n" + 
+				       "Platform: " + g.getPlatform());
+		
 	}
 
 }
