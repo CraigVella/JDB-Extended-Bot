@@ -34,7 +34,9 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 				rumbleList(mre.getChannel());
 				break;
 			case "rumblerefresh":
-				rumbleRefresh(mre.getChannel());
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					rumbleRefresh(mre.getChannel());
+				}
 				break;
 			case "rumbleaddtolist-ps":
 			case "rumbleaddtolist-xb":

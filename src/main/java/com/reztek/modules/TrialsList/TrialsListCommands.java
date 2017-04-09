@@ -28,7 +28,9 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 				trialsList(mre.getChannel());
 				break;
 			case "trialsrefresh":
-				trialsRefresh(mre.getChannel());
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					trialsRefresh(mre.getChannel());
+				}
 				break;
 			case "trialsaddtolist-ps":
 			case "trialsaddtolist-xb":
