@@ -70,7 +70,7 @@ public class MiscCommands extends Command implements ICommandProcessor {
 		Guardian g = Guardian.guardianFromName(playerName,Guardian.PLATFORM_ALL);
 		mc.sendMessage("DEBUG: " + g.getId() +"\n" +
 					   "Name: " + g.getName() + "\n" + 
-				       "Platform: " + g.getPlatform());
+				       "Platform: " + g.getPlatform()).queue();
 		
 	}
 

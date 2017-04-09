@@ -32,7 +32,19 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 			case "info-xb":
 			case "info":
 				if (args == null) {
-					sendHelpString(mre, "!info[or !info-ps or !info-xb] PlayerNameHere");
+					// Try and get the Platform from name
+					String nick = mre.getMember().getEffectiveName();
+					String[] nickSep = nick.split("]");
+					if (nickSep.length > 1) {
+						// a Tag proceeds their name try and get platform
+						String platform = Guardian.PLATFORM_ALL;
+						if (nickSep[0].substring(1).equalsIgnoreCase("PS4")) platform = Guardian.PLATFORM_PS;
+						if (nickSep[0].substring(1).equalsIgnoreCase("XB1")) platform = Guardian.PLATFORM_XB;
+						playerInfo(mre.getChannel(), nickSep[1], platform);
+					} else {
+						// No tag, process the name
+						playerInfo(mre.getChannel(), nick, Guardian.platformCodeFromCommand(command));
+					}
 				} else {
 					playerInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
