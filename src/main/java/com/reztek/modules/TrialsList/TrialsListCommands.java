@@ -25,7 +25,18 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
 			switch (command) {
 			case "trialslist":
-				trialsList(mre.getChannel());
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					trialsList(mre.getChannel(), "-1");
+				}
+				break;
+			case "trialslistgold":
+				trialsList(mre.getChannel(), "0");
+				break;
+			case "trialslistsilver":
+				trialsList(mre.getChannel(), "10");
+				break;
+			case "trialslistbronze":
+				trialsList(mre.getChannel(), "20");
 				break;
 			case "trialsrefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -61,9 +72,9 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 		return true;
 	}
 	
-	protected void trialsList(MessageChannel mc) {
+	protected void trialsList(MessageChannel mc, String indexStart) {
 		mc.sendTyping().queue();
-		p_trialsList.showList(mc);
+		p_trialsList.showList(mc, indexStart);
 	}
 	
 	protected void trialsRefresh(MessageChannel mc) {

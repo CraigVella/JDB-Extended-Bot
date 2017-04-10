@@ -43,8 +43,13 @@ public class RumbleList extends Taskable {
 		}
 	}
 	
-	public void showList(MessageChannel mc) {
-		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM rumbleList ORDER BY rank ASC");
+	public void showList(MessageChannel mc, String startIndex) {
+		String Query = "SELECT * FROM rumbleList ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
+		if (startIndex.equals("-1")) {
+			Query = "SELECT * FROM rumbleList ORDER BY rank ASC";
+			startIndex = "0";
+		} 
+		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult(Query);
 		try {
 			int x = 1;
 			String platformName = "";
@@ -52,7 +57,7 @@ public class RumbleList extends Taskable {
 			while (rs.next()) {
 				if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
 				if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-				rumbleList += String.valueOf(x) + "." + BotUtils.getPaddingForLen(String.valueOf(x++), 3) + 
+				rumbleList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
 						rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) + 
 						" (Rank:"+ BotUtils.getPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
 						platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";

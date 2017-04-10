@@ -31,7 +31,18 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 		
 		switch (command) {
 			case "rumblelist":
-				rumbleList(mre.getChannel());
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					rumbleList(mre.getChannel(), "-1");
+				}
+				break;
+			case "rumblelistgold":
+				rumbleList(mre.getChannel(), "0");
+				break;
+			case "rumblelistsilver":
+				rumbleList(mre.getChannel(), "10");
+				break;
+			case "rumblelistbronze":
+				rumbleList(mre.getChannel(), "20");
 				break;
 			case "rumblerefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -67,9 +78,9 @@ public class RumbleListCommands extends Command implements ICommandProcessor {
 		return true;
 	}
 	
-	protected void rumbleList(MessageChannel mc) {
+	protected void rumbleList(MessageChannel mc, String indexStart) {
 		mc.sendTyping().queue();
-		p_rumbleList.showList(mc);
+		p_rumbleList.showList(mc,indexStart);
 	}
 	
 	protected void rumbleRefresh(MessageChannel mc) {
