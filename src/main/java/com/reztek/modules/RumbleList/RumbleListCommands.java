@@ -1,9 +1,9 @@
 package com.reztek.modules.RumbleList;
 
-import com.reztek.Guardian;
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
+import com.reztek.modules.GuardianControl.Guardian;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;

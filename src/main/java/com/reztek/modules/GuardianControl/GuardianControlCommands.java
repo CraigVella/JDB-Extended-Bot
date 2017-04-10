@@ -3,10 +3,10 @@ package com.reztek.modules.GuardianControl;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.reztek.Guardian;
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
+import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.JDA;
@@ -28,6 +28,27 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 		}*/
 		
 		switch (command) {
+			case "trials-ps":
+			case "trials-xb":
+			case "trials":
+				if (args == null) {
+					// Try and get the Platform from name
+					String nick = mre.getMember().getEffectiveName();
+					String[] nickSep = nick.split("]");
+					if (nickSep.length > 1) {
+						// a Tag proceeds their name try and get platform
+						String platform = Guardian.PLATFORM_ALL;
+						if (nickSep[0].substring(1).equalsIgnoreCase("PS4")) platform = Guardian.PLATFORM_PS;
+						if (nickSep[0].substring(1).equalsIgnoreCase("XB1")) platform = Guardian.PLATFORM_XB;
+						trialsInfo(mre.getChannel(), nickSep[1], platform);
+					} else {
+						// No tag, process the name
+						trialsInfo(mre.getChannel(), nick, Guardian.platformCodeFromCommand(command));
+					}
+				} else {
+					trialsInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				}
+				break;
 			case "info-ps":
 			case "info-xb":
 			case "info":
@@ -101,10 +122,34 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			mc.sendMessage("Here's some info about **" + g.getName() + "**. \n```md\n" +
-					"[Rumble Elo]("+ g.getRumbleELO() +")<#"+ g.getRumbleRank() +">\n" +
-					"[Trials Elo]("+ g.getTrialsELO() +")<#"+ g.getTrialsRank() +">\n" +
+					"[Rumble Elo]("+ g.getRumbleELO() +")<RK: "+ g.getRumbleRank() +">\n" +
+					"[Trials Elo]("+ g.getTrialsELO() +")<RK: "+ g.getTrialsRank() +">\n" +
 					"[Flawlesses]("+ g.getLighthouseCount() +")\n" +
 					"```").queue();
+		} else {
+			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
+		}
+	}
+	
+	protected void trialsInfo(MessageChannel mc, String playerName, String platform) {
+		mc.sendTyping().queue();
+		Guardian g = Guardian.guardianFromName(playerName, platform);
+		if (g != null) {
+			String bestWeps = "-----------------Best Weapons-----------------\n";
+			int x = 0;
+			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
+				x++;
+				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 15) + " - <" + "Kills: " + 
+						BotUtils.getPaddingForLen(ws.getWeaponKills(), 4) + ws.getWeaponKills() + ">(HS: " + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
+			}
+			mc.sendMessage("**" + g.getName() + "**'s Trials of Osiris Detailed Weekly Stats \n"
+			+ "```md\n" +
+			"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
+			"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">\n" +
+			"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">\n" +
+			"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">\n" +
+			bestWeps +
+			"```").queue();
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}

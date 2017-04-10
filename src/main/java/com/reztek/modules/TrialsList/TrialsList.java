@@ -3,8 +3,8 @@ package com.reztek.modules.TrialsList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.reztek.Guardian;
 import com.reztek.base.Taskable;
+import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.utils.BotUtils;
 import com.reztek.utils.MySQLConnector;
 

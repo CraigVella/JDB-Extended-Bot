@@ -1,16 +1,24 @@
 package com.reztek.modules.TrialsList;
 
-import com.reztek.Guardian;
+import org.json.JSONObject;
+
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
+import com.reztek.modules.GuardianControl.Guardian;
+import com.reztek.utils.BotUtils;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class TrialsListCommands extends Command implements ICommandProcessor {
+	
+	private static final String DTR_MAP_URL = "https://api.destinytrialsreport.com/currentMap";
+	private static final String BUNGIE_BASE = "https://www.bungie.net";
 	
 	protected TrialsList p_trialsList = new TrialsList();
 
@@ -24,6 +32,9 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 	@Override
 	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
 			switch (command) {
+			case "trialsmap":
+				trialsMap(mre);
+				break;
 			case "trialslist":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
 					trialsList(mre.getChannel(), "-1");
@@ -70,6 +81,17 @@ public class TrialsListCommands extends Command implements ICommandProcessor {
 		}
 		
 		return true;
+	}
+	
+	protected void trialsMap(MessageReceivedEvent mre) {
+		mre.getChannel().sendTyping().queue();
+		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_MAP_URL, null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+		MessageBuilder mb = new MessageBuilder();
+		EmbedBuilder emBu = new EmbedBuilder();
+		emBu.setImage(BUNGIE_BASE + ob.getString("pgcrImage"));
+		mb.append(mre.getAuthor().getAsMention() + " the Trials of Osiris map for this week is **"+ob.getString("activityName") + "**");
+		mb.setEmbed(emBu.build());
+		mre.getChannel().sendMessage(mb.build()).queue();
 	}
 	
 	protected void trialsList(MessageChannel mc, String indexStart) {

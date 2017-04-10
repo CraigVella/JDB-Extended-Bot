@@ -1,24 +1,39 @@
-package com.reztek;
+package com.reztek.modules.GuardianControl;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.reztek.secret.GlobalDefs;
+import com.reztek.utils.BotUtils;
 
 public class Guardian {
+	
+	public class GuardianWeaponStats {
+		private String p_WepName = null;
+		private String p_WepKills = null;
+		private String p_WepHeadshots = null;
+		public String getWeaponName() {
+			return p_WepName;
+		}
+		public String getWeaponKills() {
+			return p_WepKills;
+		}
+		public String getWeaponHeadshots() {
+			return p_WepHeadshots;
+		}
+		public String getHeadshotPercentage() {
+			DecimalFormat df = new DecimalFormat();
+			df.setMaximumFractionDigits(2); 
+			float hsPerc = Float.valueOf(p_WepHeadshots) / Float.valueOf(p_WepKills);
+			hsPerc *= 100;
+			return df.format(hsPerc) + "%";
+		}
+	}
 	
 	public static final String PLATFORM_XB = "1";
 	public static final String PLATFORM_PS = "2";
@@ -53,6 +68,8 @@ public class Guardian {
 	private String p_thisYearTrialsKills = null;
 	private String p_thisYearTrialsDeaths = null;
 	private float p_thisYearTrialsKD = 0;
+	
+	private ArrayList<GuardianWeaponStats> p_thisWeekWepStats = new ArrayList<GuardianWeaponStats>();
 	
 	private Guardian() {
 		
@@ -94,6 +111,14 @@ public class Guardian {
 		g.p_thisYearTrialsKD = (Float.valueOf(g.p_thisYearTrialsKills) / Float.valueOf(g.p_thisYearTrialsDeaths));
 		g.p_thisYearTrialsMatches = dtrMap.get("thisYearTrialsMatches");
 		
+		for (int x = 0; x < Integer.valueOf(dtrMap.get("mapWepTotal")); ++x) {
+			GuardianWeaponStats gws = g.new GuardianWeaponStats();
+			gws.p_WepName = dtrMap.get("mapWepName-" + x);
+			gws.p_WepKills = dtrMap.get("mapWepKills-" + x);
+			gws.p_WepHeadshots = dtrMap.get("mapWepHeadshots-" + x);
+			g.p_thisWeekWepStats.add(gws);
+		}
+		
 		return g;
 	}
 	
@@ -117,7 +142,7 @@ public class Guardian {
 	
 	public ArrayList<HashMap<String,String>> getTrialsFireteamMembershipId() {
 		ArrayList<HashMap<String,String>> fireteam =  new ArrayList<HashMap<String,String>>();
-		JSONArray ob = new JSONObject("{\"GGArray\":" + getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_FIRETEAM + getId(), null) + "}").getJSONArray("GGArray");
+		JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_FIRETEAM + getId(), null) + "}").getJSONArray("GGArray");
 		
 		for (int x = 0; x < ob.length(); ++x) {
 			JSONObject itObj = ob.getJSONObject(x);
@@ -134,7 +159,7 @@ public class Guardian {
 	private HashMap<String, String> getGuardianDTR(String membershipId) {
 		HashMap<String, String> dtrMap = new HashMap<String,String>();
 		
-		JSONObject ob = new JSONObject("{\"DTRArray\":" + getJSONString(DTR_API_BASE_URL + DTR_API_PLAYER + membershipId,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_PLAYER + membershipId,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
 		JSONObject flYearArray = ob.getJSONObject("flawless").getJSONObject("years");
 		
 		String[] years = JSONObject.getNames(flYearArray);
@@ -158,12 +183,21 @@ public class Guardian {
 		dtrMap.put("thisYearTrialsDeaths", String.valueOf(ob.getInt("deaths")));
 		dtrMap.put("thisYearTrialsMatches", String.valueOf(ob.getInt("match_count")));
 		
+		JSONArray thisMapWeps = ob.getJSONArray("thisMapWeapons");
+		for (int x = 0; x < thisMapWeps.length(); ++x) {
+			JSONObject wep = thisMapWeps.getJSONObject(x);
+			dtrMap.put("mapWepName-" + String.valueOf(x), wep.getString("itemTypeName"));
+			dtrMap.put("mapWepKills-" + String.valueOf(x), String.valueOf(wep.getInt("sum_kills")));
+			dtrMap.put("mapWepHeadshots-" + String.valueOf(x), String.valueOf(wep.getInt("sum_headshots")));
+		}
+		dtrMap.put("mapWepTotal", String.valueOf(thisMapWeps.length()));
+		
 		return dtrMap;
 	}
 	
 	private HashMap<String, String> getGuardianGG(String membershipId) {
 		HashMap<String,String> ggMap = new HashMap<String,String>();
-		JSONArray ob = new JSONObject("{\"GGArray\":" + getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + membershipId, null) + "}").getJSONArray("GGArray");
+		JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + membershipId, null) + "}").getJSONArray("GGArray");
 		
 		for (int x = 0; x < ob.length(); ++x) {
 			JSONObject itObj = ob.getJSONObject(x);
@@ -184,7 +218,7 @@ public class Guardian {
 		HashMap<String,String> props = new HashMap<String,String>();
 		props.put("X-API-Key", BUNGIE_API_KEY);
 		
-		JSONObject ob = new JSONObject (getJSONString(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
+		JSONObject ob = new JSONObject (BotUtils.getJSONString(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
 		
 		try {
 			ret.put("id",ob.getJSONArray("Response").getJSONObject(0).getString("membershipId"));
@@ -195,34 +229,6 @@ public class Guardian {
 		}
 
 		return ret;
-	}
-	
-	private static String getJSONString(String sURL, HashMap<String, String> props) {
-		String retObj = null;
-		
-		try {
-			URL url = new URL(sURL);
-			HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-			urlConnection.addRequestProperty("User-Agent", "Mozilla/4.76"); 
-			urlConnection.setRequestMethod("GET");
-			urlConnection.setUseCaches(false);
-			if (props != null) {
-				Set<String> keys = props.keySet();
-				for (String key : keys) {
-					urlConnection.setRequestProperty(key, props.get(key));
-				}
-			}
-			
-			InputStream is = urlConnection.getInputStream();
-			String enc = urlConnection.getContentEncoding() == null ? "UTF-8" : urlConnection.getContentEncoding();
-			String jsonReq = IOUtils.toString(is,enc);
-			
-			retObj = jsonReq;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return retObj;
 	}
 	
 	// --------- Getters
@@ -280,6 +286,7 @@ public class Guardian {
 	}
 	
 	public String getThisWeekTrialsKD () {
+		if (Double.isNaN(p_thisWeekTrialsKD)) return "N/A";
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2); 
 		return df.format(p_thisWeekTrialsKD);
@@ -294,6 +301,7 @@ public class Guardian {
 	}
 	
 	public String getThisYearTrialsKD () {
+		if (Double.isNaN(p_thisYearTrialsKD)) return "N/A";
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
 		return df.format(p_thisYearTrialsKD);
@@ -303,4 +311,7 @@ public class Guardian {
 		return p_thisYearTrialsMatches;
 	}
 	
+	public ArrayList<GuardianWeaponStats> getThisWeekWeaponStats() {
+		return p_thisWeekWepStats;
+	}
 }
