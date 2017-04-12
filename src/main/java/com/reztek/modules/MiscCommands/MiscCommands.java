@@ -6,6 +6,7 @@ import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 import com.reztek.modules.GuardianControl.Guardian;
+import com.reztek.secret.GlobalDefs;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -26,6 +27,9 @@ public class MiscCommands extends Command implements ICommandProcessor {
 		}*/
 		
 		switch (command) {
+			case "version":
+				showVersion(mre.getChannel());
+			break;
 			case "chase":
 				chaseCmd(mre.getChannel());
 				break;
@@ -58,7 +62,7 @@ public class MiscCommands extends Command implements ICommandProcessor {
 	protected void decision(MessageReceivedEvent mre, String question) {
 		mre.getChannel().sendTyping().queue();
 		String[] decArray = {"I would say yes to that.", "Most definitely yes.", "Absolutely not.", "Sometime next year probably.", 
-				"I'd say maybe...", "Never seen a bigger NO to a question ever.","'Kosa stands a better chance than you."};
+				"I'd say maybe...", "Never seen a bigger NO to a question ever."};
 		
 		Random random = new Random();
 		
@@ -72,6 +76,11 @@ public class MiscCommands extends Command implements ICommandProcessor {
 					   "Name: " + g.getName() + "\n" + 
 				       "Platform: " + g.getPlatform()).queue();
 		
+	}
+	
+	protected void showVersion(MessageChannel mc) {
+		mc.sendTyping().queue();
+		mc.sendMessage("I am running version: " + GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "")).queue();
 	}
 
 }

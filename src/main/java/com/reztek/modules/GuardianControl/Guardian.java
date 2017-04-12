@@ -17,15 +17,9 @@ public class Guardian {
 		private String p_WepName = null;
 		private String p_WepKills = null;
 		private String p_WepHeadshots = null;
-		public String getWeaponName() {
-			return p_WepName;
-		}
-		public String getWeaponKills() {
-			return p_WepKills;
-		}
-		public String getWeaponHeadshots() {
-			return p_WepHeadshots;
-		}
+		public String getWeaponName() { return p_WepName; }
+		public String getWeaponKills(){return p_WepKills; }
+		public String getWeaponHeadshots() { return p_WepHeadshots; }
 		public String getHeadshotPercentage() {
 			DecimalFormat df = new DecimalFormat();
 			df.setMaximumFractionDigits(2); 
@@ -33,6 +27,15 @@ public class Guardian {
 			hsPerc *= 100;
 			return df.format(hsPerc) + "%";
 		}
+	}
+	
+	public static class PlatformCodeFromNicknameData {
+		protected String _nickName = null;
+		protected String _platform = Guardian.PLATFORM_ALL;
+		protected boolean _usesTag = false;
+		public String getNickname() { return _nickName; }
+		public String getPlatform() { return _platform; }
+		public boolean usesTag() { return _usesTag; }
 	}
 	
 	public static final String PLATFORM_XB = "1";
@@ -138,6 +141,30 @@ public class Guardian {
 			}
 		}
 		return platform;
+	}
+	
+	public static PlatformCodeFromNicknameData platformCodeFromNickname(String nickname) {
+		PlatformCodeFromNicknameData ret = new PlatformCodeFromNicknameData();
+		ret._nickName = nickname;
+		
+		String[] nickSep = nickname.split("]");
+		if (nickSep.length > 1) {
+			// a Tag proceeds their name try and get platform
+			ret._usesTag = true;
+			String[] nickCheckSlash = nickSep[0].split("\\/");
+			String tag = null;
+			if (nickCheckSlash.length > 1) {
+				// 2 tags in there name seperated by / - just use first one
+				tag = nickCheckSlash[0].substring(1);
+			} else {
+				tag = nickSep[0].substring(1);
+			}
+			if (tag.equalsIgnoreCase("PS4")) ret._platform = Guardian.PLATFORM_PS;
+			if (tag.equalsIgnoreCase("XB1")) ret._platform = Guardian.PLATFORM_XB;
+			ret._nickName = nickSep[1].trim();
+		}
+		
+		return ret;
 	}
 	
 	public ArrayList<HashMap<String,String>> getTrialsFireteamMembershipId() {

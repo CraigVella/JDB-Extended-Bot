@@ -31,7 +31,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
 		SGAExtendedBot bot = new SGAExtendedBot();
 		
-		JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_BETA ? GlobalDefs.BOT_TOKEN_BETA : GlobalDefs.BOT_TOKEN).addListener(bot).buildBlocking();
+		JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_BETA : GlobalDefs.BOT_TOKEN).addListener(bot).buildBlocking();
 		
 		bot.run(jda);
 	}
@@ -66,8 +66,8 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		
 		if (e instanceof ReadyEvent) {
 			p_ready = true;
-			if (GlobalDefs.BOT_BETA) {
-				System.out.println("SGA-Beta-Bot - running in Beta Mode!");
+			if (GlobalDefs.BOT_DEV) {
+				System.out.println("SGA-Beta-Bot - running in Development Mode!");
 			} else {
 				System.out.println("SGA-Extended-Bot ready!");
 			}
