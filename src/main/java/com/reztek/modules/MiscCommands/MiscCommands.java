@@ -1,4 +1,4 @@
-package com.reztek.modules.Misc;
+package com.reztek.modules.MiscCommands;
 
 import java.util.Random;
 

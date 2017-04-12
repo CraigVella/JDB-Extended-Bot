@@ -1,4 +1,4 @@
-package com.reztek.modules.RumbleList;
+package com.reztek.modules.RumbleCommands;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

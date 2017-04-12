@@ -9,9 +9,9 @@ import javax.security.auth.login.LoginException;
 
 import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
-import com.reztek.modules.Misc.MiscCommands;
-import com.reztek.modules.RumbleList.RumbleListCommands;
-import com.reztek.modules.TrialsList.TrialsListCommands;
+import com.reztek.modules.MiscCommands.MiscCommands;
+import com.reztek.modules.RumbleCommands.RumbleCommands;
+import com.reztek.modules.TrialsCommands.TrialsCommands;
 import com.reztek.secret.GlobalDefs;
 
 import net.dv8tion.jda.core.*;
@@ -40,9 +40,9 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh = new MessageHandler();
 		
 		p_mh.addCommandProcessor(new MiscCommands(jda, this));
-		p_mh.addCommandProcessor(new RumbleListCommands(jda, this));
+		p_mh.addCommandProcessor(new RumbleCommands(jda, this));
 		p_mh.addCommandProcessor(new GuardianControlCommands(jda, this));
-		p_mh.addCommandProcessor(new TrialsListCommands(jda, this));
+		p_mh.addCommandProcessor(new TrialsCommands(jda, this));
 		
 		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		

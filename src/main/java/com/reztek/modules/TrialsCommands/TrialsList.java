@@ -1,4 +1,4 @@
-package com.reztek.modules.TrialsList;
+package com.reztek.modules.TrialsCommands;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

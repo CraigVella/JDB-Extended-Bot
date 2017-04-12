@@ -1,4 +1,4 @@
-package com.reztek.modules.RumbleList;
+package com.reztek.modules.RumbleCommands;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
@@ -10,11 +10,11 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class RumbleListCommands extends Command implements ICommandProcessor {
+public class RumbleCommands extends Command implements ICommandProcessor {
 	
 	protected RumbleList p_rumbleList = new RumbleList();
 
-	public RumbleListCommands(JDA pJDA, SGAExtendedBot pBot) {
+	public RumbleCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot);
 		// I have a task!
 		p_rumbleList.setTaskDelay(5);
