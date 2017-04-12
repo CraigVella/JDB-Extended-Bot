@@ -1,6 +1,8 @@
 package com.reztek.modules.RumbleCommands;
 
+import java.awt.Color;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import com.reztek.base.Taskable;
@@ -8,7 +10,9 @@ import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.utils.BotUtils;
 import com.reztek.utils.MySQLConnector;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 
 public class RumbleList extends Taskable {
 	public void addPlayer(MessageChannel mc, Guardian guardian) {
@@ -43,7 +47,7 @@ public class RumbleList extends Taskable {
 		}
 	}
 	
-	public void showList(MessageChannel mc, String startIndex) {
+	public void showList(MessageChannel mc, String startIndex, Color color) {
 		String Query = "SELECT * FROM rumbleList ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
 		if (startIndex.equals("-1")) {
 			Query = "SELECT * FROM rumbleList ORDER BY rank ASC";
@@ -63,9 +67,37 @@ public class RumbleList extends Taskable {
 						platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
 			}
 			rumbleList += "```";
-			mc.sendMessage(rumbleList).queue();
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setDescription(rumbleList);
+			eb.setColor(color);
+			mc.sendMessage(eb.build()).queue();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void sendListCSV(PrivateChannel pc) {
+		String csvOut = "";
+		refreshList(pc, true);
+		pc.sendMessage("*Now generating CSV File and sending... Please wait...*").queue();
+		pc.sendTyping().queue();
+		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM rumbleList");
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			for (int x = 1; x <= rsmd.getColumnCount(); ++x) {
+				csvOut += rsmd.getColumnName(x) + (rsmd.getColumnCount() == x ? "" : ",");
+			}
+			csvOut += "\n";
+			while (rs.next()) {
+				for (int x = 1; x <= rsmd.getColumnCount(); ++x) {
+					csvOut += rs.getString(x) + (rsmd.getColumnCount() == x ? "" : ",");
+				}
+				csvOut += "\n";
+			}
+			pc.sendFile(csvOut.getBytes(), "RumbleListExport.csv", null).queue();;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			pc.sendMessage("**Error generating CSV File**").queue();
 		}
 	}
 	

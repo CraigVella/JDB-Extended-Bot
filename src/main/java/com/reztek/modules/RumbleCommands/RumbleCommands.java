@@ -1,5 +1,8 @@
 package com.reztek.modules.RumbleCommands;
 
+import java.awt.Color;
+import java.util.concurrent.ExecutionException;
+
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
@@ -7,7 +10,9 @@ import com.reztek.modules.GuardianControl.Guardian;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class RumbleCommands extends Command implements ICommandProcessor {
@@ -32,17 +37,22 @@ public class RumbleCommands extends Command implements ICommandProcessor {
 		switch (command) {
 			case "rumblelist":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-					rumbleList(mre.getChannel(), "-1");
+					rumbleList(mre.getChannel(), "-1", Color.WHITE);
 				}
 				break;
+			case "rumblelist-csv":
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					rumbleListCSV(mre);
+				} 
+				break;
 			case "rumblelistgold":
-				rumbleList(mre.getChannel(), "0");
+				rumbleList(mre.getChannel(), "0", new Color(212,175,55));
 				break;
 			case "rumblelistsilver":
-				rumbleList(mre.getChannel(), "10");
+				rumbleList(mre.getChannel(), "10", new Color(192,192,192));
 				break;
 			case "rumblelistbronze":
-				rumbleList(mre.getChannel(), "20");
+				rumbleList(mre.getChannel(), "20", new Color(205, 127, 50));
 				break;
 			case "rumblerefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -78,9 +88,19 @@ public class RumbleCommands extends Command implements ICommandProcessor {
 		return true;
 	}
 	
-	protected void rumbleList(MessageChannel mc, String indexStart) {
+	protected void rumbleListCSV(MessageReceivedEvent mre) {
+		mre.getChannel().sendTyping().queue();
+		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!");
+		try {
+			p_rumbleList.sendListCSV(mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get());
+		} catch (InterruptedException | ExecutionException e) {
+			mre.getChannel().sendMessage("Hmm... " + mre.getAuthor().getAsMention() + ", I tried to open a private chat with you but I was denied.").queue();
+		}
+	}
+	
+	protected void rumbleList(MessageChannel mc, String indexStart, Color color) {
 		mc.sendTyping().queue();
-		p_rumbleList.showList(mc,indexStart);
+		p_rumbleList.showList(mc,indexStart, color);
 	}
 	
 	protected void rumbleRefresh(MessageChannel mc) {

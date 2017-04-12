@@ -5,6 +5,7 @@ import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
 
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 

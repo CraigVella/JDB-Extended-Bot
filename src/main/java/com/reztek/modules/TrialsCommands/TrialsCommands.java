@@ -1,7 +1,9 @@
 package com.reztek.modules.TrialsCommands;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONObject;
 
@@ -16,7 +18,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class TrialsCommands extends Command implements ICommandProcessor {
@@ -58,19 +62,24 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 			case "trialsmap":
 				trialsMap(mre);
 				break;
+			case "trialslist-csv":
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					trialListCSV(mre);
+				} 
+				break;
 			case "trialslist":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-					trialsList(mre.getChannel(), "-1");
+					trialsList(mre.getChannel(), "-1", Color.WHITE);
 				}
 				break;
 			case "trialslistgold":
-				trialsList(mre.getChannel(), "0");
+				trialsList(mre.getChannel(), "0", new Color(212,175,55));
 				break;
 			case "trialslistsilver":
-				trialsList(mre.getChannel(), "10");
+				trialsList(mre.getChannel(), "10", new Color(192,192,192));
 				break;
 			case "trialslistbronze":
-				trialsList(mre.getChannel(), "20");
+				trialsList(mre.getChannel(), "20", new Color(205, 127, 50));
 				break;
 			case "trialsrefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -118,9 +127,19 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 		mre.getChannel().sendMessage(mb.build()).queue();
 	}
 	
-	protected void trialsList(MessageChannel mc, String indexStart) {
+	protected void trialListCSV(MessageReceivedEvent mre) {
+		mre.getChannel().sendTyping().queue();
+		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!");
+		try {
+			p_trialsList.sendListCSV(mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get());
+		} catch (InterruptedException | ExecutionException e) {
+			mre.getChannel().sendMessage("Hmm... " + mre.getAuthor().getAsMention() + ", I tried to open a private chat with you but I was denied.").queue();
+		}
+	}
+	
+	protected void trialsList(MessageChannel mc, String indexStart, Color color) {
 		mc.sendTyping().queue();
-		p_trialsList.showList(mc, indexStart);
+		p_trialsList.showList(mc, indexStart, color);
 	}
 	
 	protected void trialsRefresh(MessageChannel mc) {

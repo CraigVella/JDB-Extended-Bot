@@ -9,6 +9,7 @@ import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.secret.GlobalDefs;
 
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
