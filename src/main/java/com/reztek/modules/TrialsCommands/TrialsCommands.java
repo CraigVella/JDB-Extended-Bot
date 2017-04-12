@@ -146,7 +146,7 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 	
 	protected void trialListCSV(MessageReceivedEvent mre) {
 		mre.getChannel().sendTyping().queue();
-		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!");
+		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!").queue();
 		try {
 			p_trialsList.sendListCSV(mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get());
 		} catch (InterruptedException | ExecutionException e) {

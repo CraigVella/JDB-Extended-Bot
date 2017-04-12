@@ -88,7 +88,7 @@ public class RumbleCommands extends Command implements ICommandProcessor {
 	
 	protected void rumbleListCSV(MessageReceivedEvent mre) {
 		mre.getChannel().sendTyping().queue();
-		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!");
+		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!").queue();
 		try {
 			p_rumbleList.sendListCSV(mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get());
 		} catch (InterruptedException | ExecutionException e) {
