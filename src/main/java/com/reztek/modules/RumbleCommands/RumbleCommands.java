@@ -10,9 +10,7 @@ import com.reztek.modules.GuardianControl.Guardian;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class RumbleCommands extends Command implements ICommandProcessor {
@@ -131,5 +129,4 @@ public class RumbleCommands extends Command implements ICommandProcessor {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}
 	}
-
 }

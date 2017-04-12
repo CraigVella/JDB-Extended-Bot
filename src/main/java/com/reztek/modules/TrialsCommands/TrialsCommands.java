@@ -18,9 +18,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class TrialsCommands extends Command implements ICommandProcessor {
@@ -46,7 +44,16 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 				if (args == null) {
 					sendHelpString(mre, "!fireteam[or !fireteam-ps or !fireteam-xb] PlayerNameHere");
 				} else {
-					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), false);
+				}
+				break;
+			case "fireteam+-ps":
+			case "fireteam+-xb":
+			case "fireteam+":
+				if (args == null) {
+					sendHelpString(mre, "!fireteam+[or !fireteam+-ps or !fireteam+-xb] PlayerNameHere");
+				} else {
+					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), true);
 				}
 				break;
 			case "trials-ps":
@@ -54,9 +61,19 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 			case "trials":
 				if (args == null) {
 					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
-					trialsInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command));
+					trialsInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), false);
 				} else {
-					trialsInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+					trialsInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), false);
+				}
+				break;
+			case "trials+-ps":
+			case "trials+-xb":
+			case "trials+":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					trialsInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), true);
+				} else {
+					trialsInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), true);
 				}
 				break;
 			case "trialsmap":
@@ -171,23 +188,23 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 		}
 	}
 	
-	protected void trialsInfo(MessageChannel mc, String playerName, String platform) {
+	protected void trialsInfo(MessageChannel mc, String playerName, String platform, boolean verbose) {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
-			String bestWeps = "-----------------Best Weapons-----------------\n";
+			String bestWeps = "--Weekly Best Weapons  : Kills ( HS )--\n";
 			int x = 0;
 			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
 				x++;
-				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 15) + " - <" + "Kills: " + 
-						BotUtils.getPaddingForLen(ws.getWeaponKills(), 4) + ws.getWeaponKills() + ">(HS: " + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
+				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
+						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 			}
-			mc.sendMessage("**" + g.getName() + "**'s Trials of Osiris Detailed Weekly Stats \n"
+			mc.sendMessage("**" + g.getName() + "**'s Trials of Osiris " + (verbose ? "Detailed " : "") + "Weekly Stats \n"
 			+ "```md\n" +
-			"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
-			"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">\n" +
-			"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">\n" +
-			"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">\n" +
+			"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">" : "") + "\n" +
+			"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">" : "") + "\n" +
+			"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">" : "") + "\n" +
+			"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() + ">" : "") + "\n" +
 			bestWeps +
 			"```").queue();
 		} else {
@@ -195,7 +212,7 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 		}
 	}
 	
-	protected void fireteamInfo(MessageChannel mc, String playerName, String platform) {
+	protected void fireteamInfo(MessageChannel mc, String playerName, String platform, boolean verbose) {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		ArrayList<Guardian> gFireteam = new ArrayList<Guardian>();
@@ -204,22 +221,38 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 			for (HashMap<String, String> hashMap : members) {
 				gFireteam.add(Guardian.guardianFromMembershipId(hashMap.get("membershipId"), hashMap.get("name"), hashMap.get("platform")));
 			}
-			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam \n"
+			String bestWeps = "--Weekly Best Weapons  : Kills ( HS )--\n";
+			int x = 0;
+			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
+				x++;
+				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
+						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
+			}
+			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's " + (verbose ? "Detailed " : "") + "Weekly Stats \n"
 					+ "```md\n" +
 					g.getName() + "\n" +
-					"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
-					"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">\n" +
-					"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">\n" +
-					"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">\n" +
+					"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">" : "") + "\n" +
+					"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">" :"") +"\n" +
+					"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">" : "") + "\n" +
+					"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">" : "") + "\n" +
+					(verbose ? bestWeps : "") +
 					"```").queue();
 			for (Guardian gFt : gFireteam) {
-						mc.sendMessage("```md\n" +
-								gFt.getName() + "\n" +
-							"[Trials Elo]("+ BotUtils.getPaddingForLen(gFt.getTrialsELO(), 4) + gFt.getTrialsELO() +")<RK:"+ BotUtils.getPaddingForLen(gFt.getTrialsRank(), 6) + gFt.getTrialsRank() +">\n" +
-							"[Weekly K/D]("+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsKD(), 4)+ gFt.getThisWeekTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsMatches(), 5) + gFt.getThisWeekTrialsMatches() +">\n" +
-							"[Season K/D]("+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsKD(), 4)+ gFt.getThisYearTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsMatches(), 5) + gFt.getThisYearTrialsMatches() +">\n" +
-							"[Flawlesses]("+ BotUtils.getPaddingForLen(gFt.getLighthouseCount(), 4)+ gFt.getLighthouseCount() +")<WK: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsFlawless(), 5) + gFt.getThisWeekTrialsFlawless() +  ">\n" +
-						"```").queue();
+				String bestWepsFt = "--Weekly Best Weapons  : Kills ( HS )--\n";
+				int xFt = 0;
+				for (GuardianWeaponStats ws : gFt.getThisWeekWeaponStats()) {
+					xFt++;
+					bestWepsFt += String.valueOf(xFt) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
+							BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
+				}
+				mc.sendMessage("```md\n" +
+						gFt.getName() + "\n" +
+					"[Trials Elo]("+ BotUtils.getPaddingForLen(gFt.getTrialsELO(), 4) + gFt.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(gFt.getTrialsRank(), 6) + gFt.getTrialsRank() +">" :"") +"\n" +
+					"[Weekly K/D]("+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsKD(), 4)+ gFt.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsMatches(), 5) + gFt.getThisWeekTrialsMatches() +">" :"") +"\n" +
+					"[Season K/D]("+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsKD(), 4)+ gFt.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsMatches(), 5) + gFt.getThisYearTrialsMatches() +">" :"") +"\n" +
+					"[Flawlesses]("+ BotUtils.getPaddingForLen(gFt.getLighthouseCount(), 4)+ gFt.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsFlawless(), 5) + gFt.getThisWeekTrialsFlawless() +  ">" :"") +"\n" +
+					(verbose ? bestWepsFt : "") +
+					"```").queue();
 			}
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();

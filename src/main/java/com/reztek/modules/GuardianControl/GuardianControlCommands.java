@@ -3,9 +3,9 @@ package com.reztek.modules.GuardianControl;
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Command;
 import com.reztek.base.ICommandProcessor;
+import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -46,9 +46,9 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			mc.sendMessage("Here's some info about **" + g.getName() + "**. \n```md\n" +
-					"[Rumble Elo]("+ g.getRumbleELO() +")<RK: "+ g.getRumbleRank() +">\n" +
-					"[Trials Elo]("+ g.getTrialsELO() +")<RK: "+ g.getTrialsRank() +">\n" +
-					"[Flawlesses]("+ g.getLighthouseCount() +")\n" +
+					"[Rumble Elo](" + BotUtils.getPaddingForLen(g.getRumbleELO(), 4) + g.getRumbleELO() +")<RK:" + BotUtils.getPaddingForLen(g.getRumbleRank(), 6) + g.getRumbleRank() +">\n" +
+					"[Trials Elo](" + BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:" + BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
+					"[Flawlesses](" + BotUtils.getPaddingForLen(g.getLighthouseCount(), 4) + g.getLighthouseCount() +")\n" +
 					"```").queue();
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
