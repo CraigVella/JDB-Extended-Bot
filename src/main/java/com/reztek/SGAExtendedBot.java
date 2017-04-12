@@ -13,6 +13,7 @@ import com.reztek.modules.MiscCommands.MiscCommands;
 import com.reztek.modules.RumbleCommands.RumbleCommands;
 import com.reztek.modules.TrialsCommands.TrialsCommands;
 import com.reztek.secret.GlobalDefs;
+import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.events.Event;
@@ -66,11 +67,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		
 		if (e instanceof ReadyEvent) {
 			p_ready = true;
-			if (GlobalDefs.BOT_DEV) {
-				System.out.println("SGA-Beta-Bot - running in Development Mode!");
-			} else {
-				System.out.println("SGA-Extended-Bot ready!");
-			}
+			System.out.println("SGA-Extended-Bot - Version: " + BotUtils.getVersion());
 		}
 		
 		if (e instanceof MessageReceivedEvent) {

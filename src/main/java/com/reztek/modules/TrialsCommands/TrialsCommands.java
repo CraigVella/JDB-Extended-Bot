@@ -1,6 +1,5 @@
 package com.reztek.modules.TrialsCommands;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -155,7 +154,6 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 	
 	protected void trialsInfo(MessageChannel mc, String playerName, String platform) {
 		mc.sendTyping().queue();
-		EmbedBuilder emBu = new EmbedBuilder();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			String bestWeps = "-----------------Best Weapons-----------------\n";
@@ -165,16 +163,14 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 15) + " - <" + "Kills: " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 4) + ws.getWeaponKills() + ">(HS: " + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 			}
-			emBu.setDescription("**" + g.getName() + "**'s Trials of Osiris Detailed Weekly Stats \n"
+			mc.sendMessage("**" + g.getName() + "**'s Trials of Osiris Detailed Weekly Stats \n"
 			+ "```md\n" +
 			"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
 			"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">\n" +
 			"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">\n" +
 			"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">\n" +
 			bestWeps +
-			"```");
-			emBu.setColor(Color.RED);
-			mc.sendMessage(emBu.build()).queue();
+			"```").queue();
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}

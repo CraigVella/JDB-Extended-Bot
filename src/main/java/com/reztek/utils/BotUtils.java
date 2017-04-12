@@ -10,6 +10,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.io.IOUtils;
 
+import com.reztek.secret.GlobalDefs;
+
 public abstract class BotUtils {
 	public static String getPaddingForLen(String toPad, int desiredLen) {
 		String padding = "";
@@ -45,5 +47,9 @@ public abstract class BotUtils {
 		}
 		
 		return retObj;
+	}
+	
+	public static String getVersion() {
+		return GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "");
 	}
 }
