@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.util.concurrent.ExecutionException;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Command;
-import com.reztek.base.ICommandProcessor;
+import com.reztek.base.CommandModule;
 import com.reztek.modules.GuardianControl.Guardian;
 
 import net.dv8tion.jda.core.JDA;
@@ -13,12 +12,13 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class RumbleCommands extends Command implements ICommandProcessor {
+public class RumbleCommands extends CommandModule {
 	
 	protected RumbleList p_rumbleList = new RumbleList();
 
 	public RumbleCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot);
+		super(pJDA, pBot,"RUMBLECOMMANDS");
+		setModuleNameAndAuthor("Rumble", "ChaseHQ85");
 		// I have a task!
 		p_rumbleList.setTaskDelay(5);
 		getBot().addTask(p_rumbleList);

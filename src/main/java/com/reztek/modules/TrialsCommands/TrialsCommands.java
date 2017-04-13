@@ -8,8 +8,7 @@ import java.util.concurrent.ExecutionException;
 import org.json.JSONObject;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Command;
-import com.reztek.base.ICommandProcessor;
+import com.reztek.base.CommandModule;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 import com.reztek.utils.BotUtils;
@@ -21,7 +20,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class TrialsCommands extends Command implements ICommandProcessor {
+public class TrialsCommands extends CommandModule {
 	
 	private static final String DTR_MAP_URL = "https://api.destinytrialsreport.com/currentMap";
 	private static final String BUNGIE_BASE = "https://www.bungie.net";
@@ -29,8 +28,9 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 	protected TrialsList p_trialsList = new TrialsList();
 
 	public TrialsCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot);
+		super(pJDA, pBot,"TRIALSCOMMANDS");
 		// I have a task!
+		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(5);
 		getBot().addTask(p_trialsList);
 	}

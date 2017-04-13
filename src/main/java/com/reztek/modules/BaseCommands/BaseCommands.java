@@ -1,21 +1,22 @@
-package com.reztek.modules.MiscCommands;
+package com.reztek.modules.BaseCommands;
 
 import java.util.Random;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Command;
-import com.reztek.base.ICommandProcessor;
-import com.reztek.modules.GuardianControl.Guardian;
+import com.reztek.base.CommandModule;
+import com.reztek.base.ICommandModule;
 import com.reztek.secret.GlobalDefs;
+import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class MiscCommands extends Command implements ICommandProcessor {
+public class BaseCommands extends CommandModule {
 
-	public MiscCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot);
+	public BaseCommands(JDA pJDA, SGAExtendedBot pBot) {
+		super(pJDA, pBot,"BASECOMMANDS");
+		setModuleNameAndAuthor("Base Bot Commands", "ChaseHQ85");
 	}
 
 	@Override
@@ -40,18 +41,24 @@ public class MiscCommands extends Command implements ICommandProcessor {
 					decision(mre, args);
 				}
 				break;
-			case "debugguardian":
-				if (args == null) {
-					sendHelpString(mre, "!debugGuardian PlayerNameHere");
-				} else {
-					debugGuardian(mre.getChannel(), args);
-				}
+			case "showmodules":
+				showModules(mre.getChannel());
 				break;
 			default:
 				return false;
 		}
 		
 		return true;
+	}
+	
+	protected void showModules(MessageChannel mc) {
+		mc.sendTyping();
+		String modules = "**All Loaded Modules**\n```";
+		for (ICommandModule cm : getBot().getMessageHandler().getAllLoadedCommandModules()) {
+			modules += cm.getModuleName() + BotUtils.getPaddingForLen(cm.getModuleName(), 20) + " by " + cm.getAuthorName() + "\n";
+		}
+		modules += "```";
+		mc.sendMessage(modules).queue();
 	}
 	
 	protected void chaseCmd(MessageChannel mc) {
@@ -67,15 +74,6 @@ public class MiscCommands extends Command implements ICommandProcessor {
 		Random random = new Random();
 		
 		mre.getChannel().sendMessage(mre.getAuthor().getAsMention() + ", " + decArray[random.nextInt(decArray.length)]).queue();
-	}
-	
-	protected void debugGuardian(MessageChannel mc, String playerName) {
-		mc.sendTyping().queue();
-		Guardian g = Guardian.guardianFromName(playerName,Guardian.PLATFORM_ALL);
-		mc.sendMessage("DEBUG: " + g.getId() +"\n" +
-					   "Name: " + g.getName() + "\n" + 
-				       "Platform: " + g.getPlatform()).queue();
-		
 	}
 	
 	protected void showVersion(MessageChannel mc) {
