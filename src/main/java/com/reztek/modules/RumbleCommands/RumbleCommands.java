@@ -30,7 +30,7 @@ public class RumbleCommands extends CommandModule {
 		super(pJDA, pBot,"RUMBLECOMMANDS");
 		setModuleNameAndAuthor("Rumble", "ChaseHQ85");
 		// I have a task!
-		p_rumbleList.setTaskDelay(5);
+		p_rumbleList.setTaskDelay(40);
 		getBot().addTask(p_rumbleList);
 	}
 

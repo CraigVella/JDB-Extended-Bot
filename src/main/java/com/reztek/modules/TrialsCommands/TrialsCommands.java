@@ -39,7 +39,7 @@ public class TrialsCommands extends CommandModule {
 		super(pJDA, pBot,"TRIALSCOMMANDS");
 		// I have a task!
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
-		p_trialsList.setTaskDelay(5);
+		p_trialsList.setTaskDelay(30);
 		getBot().addTask(p_trialsList);
 	}
 
