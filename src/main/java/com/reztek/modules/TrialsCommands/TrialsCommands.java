@@ -1,17 +1,24 @@
 package com.reztek.modules.TrialsCommands;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONObject;
-
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Command;
-import com.reztek.base.ICommandProcessor;
+import com.reztek.base.CommandModule;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
+import com.reztek.secret.GlobalDefs;
 import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -21,7 +28,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class TrialsCommands extends Command implements ICommandProcessor {
+public class TrialsCommands extends CommandModule {
 	
 	private static final String DTR_MAP_URL = "https://api.destinytrialsreport.com/currentMap";
 	private static final String BUNGIE_BASE = "https://www.bungie.net";
@@ -29,8 +36,9 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 	protected TrialsList p_trialsList = new TrialsList();
 
 	public TrialsCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot);
+		super(pJDA, pBot,"TRIALSCOMMANDS");
 		// I have a task!
+		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(5);
 		getBot().addTask(p_trialsList);
 	}
@@ -78,6 +86,11 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 				break;
 			case "trialsmap":
 				trialsMap(mre);
+				break;
+			case "trialslist-importcsv":
+				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+					trialsImportCSV(mre);
+				}
 				break;
 			case "trialslist-csv":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -132,6 +145,42 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 		return true;
 	}
 	
+	protected void trialsImportCSV(MessageReceivedEvent mre) {
+		mre.getChannel().sendTyping().queue();
+		if (mre.getMessage().getAttachments().size() < 1) {
+			mre.getChannel().sendMessage("Hmm... did you forget to attach a file?").queue();
+		} else {
+			if (mre.getMessage().getAttachments().get(0).getFileName().split("\\.")[1].equalsIgnoreCase("csv")) {
+				// its a csv :)
+				String tmpName = String.valueOf(System.currentTimeMillis()) + "-" + mre.getAuthor().getName() + "-tmp.tmp";
+				File csvFile = new File((GlobalDefs.BOT_DEV ? GlobalDefs.DEV_TMP_LOCATION : GlobalDefs.TMP_LOCATION) + tmpName);
+				try {
+					csvFile.deleteOnExit();
+					mre.getMessage().getAttachments().get(0).download(csvFile);
+					CSVParser parser = CSVParser.parse(csvFile, StandardCharsets.UTF_8, CSVFormat.EXCEL.withHeader());
+					Set<String> headers = parser.getHeaderMap().keySet();
+					if (headers.contains("playername") && headers.contains("platform") && headers.contains("show")) {
+						List<CSVRecord> records = parser.getRecords();
+						mre.getChannel().sendMessage("Import of **" + records.size() + "** Record(s) starting...").queue();
+						for (CSVRecord record : records) {
+							if (record.get("show").equalsIgnoreCase("1")) {
+								p_trialsList.addPlayer(mre.getChannel(), Guardian.guardianFromName(record.get("playername"), record.get("platform")), false);
+							}
+						}
+						mre.getChannel().sendMessage("**Import complete**").queue();
+					} else {
+						mre.getChannel().sendMessage("The CSV Headers must be 'playername, platform, show' fix and re-upload").queue();
+					}
+				} catch (IOException e) {
+					mre.getChannel().sendMessage("**Error creating temporary file**");
+					e.printStackTrace();
+				}
+			} else {
+				mre.getChannel().sendMessage("Sorry, I only accept CSV's for import.").queue();
+			}
+		}
+	}
+	
 	protected void trialsMap(MessageReceivedEvent mre) {
 		mre.getChannel().sendTyping().queue();
 		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_MAP_URL, null) + "}").getJSONArray("DTRArray").getJSONObject(0);
@@ -181,7 +230,7 @@ public class TrialsCommands extends Command implements ICommandProcessor {
 			if (g.getRumbleRank() == "N/A" || g.getRumbleRank() == null) {
 				mc.sendMessage("Sorry " + playerName + " hasn't played enough Trials of Osiris this season to be added.").queue();
 			} else {
-				p_trialsList.addPlayer(mc,g);
+				p_trialsList.addPlayer(mc,g,true);
 			}
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();

@@ -1,17 +1,30 @@
 package com.reztek;
 
-import java.util.ArrayList;
-
-import com.reztek.base.ICommandProcessor;
+import java.util.Collection;
+import java.util.HashMap;
+import com.reztek.base.ICommandModule;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class MessageHandler {
+
+	HashMap<String,ICommandModule> p_commandModules = new HashMap<String,ICommandModule>();
 	
-	ArrayList<ICommandProcessor> p_commandProcessors = new ArrayList<ICommandProcessor>();
+	public void addCommandModule(ICommandModule cpm) {
+		if (p_commandModules.containsKey(cpm.getModuleID())) {
+			System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it's already added or duplicate unique ID!");
+		} else {
+			p_commandModules.put(cpm.getModuleID(), cpm);
+			System.out.println("Added Command Module: " + cpm.getModuleName() + " - " + cpm.getAuthorName());
+		}
+	}
 	
-	public void addCommandProcessor(ICommandProcessor cpm) { 
-		p_commandProcessors.add(cpm);
+	public ICommandModule getCommandModuleByID(String moduleID) {
+		return p_commandModules.get(moduleID);
+	}
+	
+	public Collection<ICommandModule> getAllLoadedCommandModules() {
+		return p_commandModules.values();
 	}
 	
 	public void processMessage(MessageReceivedEvent mre) {
@@ -26,7 +39,7 @@ public class MessageHandler {
 				args += cmdSplit[x] + " ";
 			}
 			
-			for (ICommandProcessor proc : p_commandProcessors) {
+			for (ICommandModule proc : p_commandModules.values()) {
 				if (proc.processCommand(cmdSplit[0], args.equals("") ? null : args.trim(), mre)) {
 					return;
 				}

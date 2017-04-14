@@ -1,18 +1,18 @@
 package com.reztek.modules.GuardianControl;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Command;
-import com.reztek.base.ICommandProcessor;
+import com.reztek.base.CommandModule;
 import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class GuardianControlCommands extends Command implements ICommandProcessor {
+public class GuardianControlCommands extends CommandModule {
 
 	public GuardianControlCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot);
+		super(pJDA, pBot,"GUARDIANCOMMANDS");
+		setModuleNameAndAuthor("Destiny Guardian", "ChaseHQ85");
 	}
 
 	@Override
@@ -24,6 +24,13 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 		}*/
 		
 		switch (command) {
+			case "debugguardian":
+				if (args == null) {
+					sendHelpString(mre, "!debugGuardian PlayerNameHere");
+				} else {
+					debugGuardian(mre.getChannel(), args);
+				}
+			break;
 			case "info-ps":
 			case "info-xb":
 			case "info":
@@ -53,5 +60,14 @@ public class GuardianControlCommands extends Command implements ICommandProcesso
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}
+	}
+	
+	protected void debugGuardian(MessageChannel mc, String playerName) {
+		mc.sendTyping().queue();
+		Guardian g = Guardian.guardianFromName(playerName,Guardian.PLATFORM_ALL);
+		mc.sendMessage("DEBUG: " + g.getId() +"\n" +
+					   "Name: " + g.getName() + "\n" + 
+				       "Platform: " + g.getPlatform()).queue();
+		
 	}
 }

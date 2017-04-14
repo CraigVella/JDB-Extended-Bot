@@ -99,6 +99,7 @@ public class Guardian {
 		g.p_trialsRank = ggMap.get("trialsRank");
 		
 		HashMap<String,String> dtrMap = g.getGuardianDTR(membershipId);
+		if (dtrMap == null) return g;
 		
 		g.p_lighthouseCount = dtrMap.get("lighthouseCount");
 		
@@ -187,7 +188,13 @@ public class Guardian {
 		HashMap<String, String> dtrMap = new HashMap<String,String>();
 		
 		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_PLAYER + membershipId,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
-		JSONObject flYearArray = ob.getJSONObject("flawless").getJSONObject("years");
+		JSONObject flYearArray = null;
+		try {
+			flYearArray = ob.getJSONObject("flawless").getJSONObject("years");
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 		
 		String[] years = JSONObject.getNames(flYearArray);
 		int flawlessCount  = 0;
@@ -245,13 +252,14 @@ public class Guardian {
 		HashMap<String,String> props = new HashMap<String,String>();
 		props.put("X-API-Key", BUNGIE_API_KEY);
 		
-		JSONObject ob = new JSONObject (BotUtils.getJSONString(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
-		
 		try {
+			JSONObject ob = new JSONObject (BotUtils.getJSONString(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
 			ret.put("id",ob.getJSONArray("Response").getJSONObject(0).getString("membershipId"));
 			ret.put("name",ob.getJSONArray("Response").getJSONObject(0).getString("displayName"));
 			ret.put("platform", String.valueOf(ob.getJSONArray("Response").getJSONObject(0).getInt("membershipType")));
 		} catch (JSONException e) {
+			ret = null;
+		} catch (NullPointerException e) {
 			ret = null;
 		}
 

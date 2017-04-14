@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.security.auth.login.LoginException;
 
 import com.reztek.base.Taskable;
+import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
-import com.reztek.modules.MiscCommands.MiscCommands;
 import com.reztek.modules.RumbleCommands.RumbleCommands;
 import com.reztek.modules.TrialsCommands.TrialsCommands;
 import com.reztek.secret.GlobalDefs;
@@ -40,10 +40,10 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 	public void run(JDA jda) throws InterruptedException {
 		p_mh = new MessageHandler();
 		
-		p_mh.addCommandProcessor(new MiscCommands(jda, this));
-		p_mh.addCommandProcessor(new RumbleCommands(jda, this));
-		p_mh.addCommandProcessor(new GuardianControlCommands(jda, this));
-		p_mh.addCommandProcessor(new TrialsCommands(jda, this));
+		p_mh.addCommandModule(new BaseCommands(jda, this));
+		p_mh.addCommandModule(new RumbleCommands(jda, this));
+		p_mh.addCommandModule(new GuardianControlCommands(jda, this));
+		p_mh.addCommandModule(new TrialsCommands(jda, this));
 		
 		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		
