@@ -11,24 +11,30 @@ import com.reztek.utils.BotUtils;
 import com.reztek.utils.MySQLConnector;
 
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.MessageBuilder.SplitPolicy;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
 public class RumbleList extends Taskable {
-	public void addPlayer(MessageChannel mc, Guardian guardian) {
-		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM rumbleList WHERE membershipId = '" + guardian.getId() + "'");
+	public void addPlayer(MessageChannel mc, Guardian guardian, boolean verbose) {
+		if (guardian == null) return;
 		try {
+			ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM rumbleList WHERE membershipId = '" + guardian.getId() + "'");
 			if (!rs.last()) {
 				// userdoesn't exist add them
 				MySQLConnector.getInstance().runUpdateQuery("INSERT INTO rumbleList (membershipId,platform,playerName,rank,elo) VALUES ('"
 						+ guardian.getId() + "','" + guardian.getPlatform() + "','" + guardian.getName() + "','" 
 						+ guardian.getRumbleRank() + "'," + guardian.getRumbleELO() + ")");
-				mc.sendMessage("Succesfully added " + guardian.getName() + " to the Rumble List").queue();
+				if (verbose) mc.sendMessage("Succesfully added " + guardian.getName() + " to the Rumble List").queue();
 			} else {
 				// user already exists in DB
-				mc.sendMessage(guardian.getName() + " already exists in the Rumble List").queue();
+				if (verbose) mc.sendMessage(guardian.getName() + " already exists in the Rumble List").queue();
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 	}
@@ -57,7 +63,7 @@ public class RumbleList extends Taskable {
 		try {
 			int x = 1;
 			String platformName = "";
-			String rumbleList = "**Current Rumble Leaders**\n```";
+			String rumbleList = "";
 			while (rs.next()) {
 				if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
 				if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
@@ -66,11 +72,16 @@ public class RumbleList extends Taskable {
 						" (Rank:"+ BotUtils.getPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
 						platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
 			}
-			rumbleList += "```";
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setDescription(rumbleList);
-			eb.setColor(color);
-			mc.sendMessage(eb.build()).queue();
+			MessageBuilder mb = new MessageBuilder();
+			mb.append(rumbleList);
+			int page = 0;
+			for (Message msg : mb.buildAll(SplitPolicy.NEWLINE)) {
+				EmbedBuilder em = new EmbedBuilder();
+				em.setDescription((page == 0 ? "**Current Rumble Leaders**" : "") + "```" + msg.getRawContent() + "```");
+				em.setColor(color);
+				mc.sendMessage(em.build()).queue();
+				page++;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
