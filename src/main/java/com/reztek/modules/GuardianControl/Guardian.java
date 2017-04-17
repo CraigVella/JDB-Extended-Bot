@@ -63,11 +63,22 @@ public class Guardian {
 	private String p_grimoireScore = null;
 	private String p_characterLastPlayedSubclassHash = null;
 	
-	private static final Map<String,String> SubclassHashDefinitions;
+	private static final Map<String,String> BungieHashDefinitions;
 	static {
-		Map<String,String> subclassMap = new HashMap<String,String>();
-		
-		SubclassHashDefinitions = Collections.unmodifiableMap(subclassMap);
+		Map<String,String> bHashMap = new HashMap<String,String>();
+		bHashMap.put("21395672", "Sunbreaker");
+		bHashMap.put("21395673", "Sunbreaker");
+		bHashMap.put("1256644900", "Stormcaller");
+		bHashMap.put("1256644901", "Stormcaller");
+		bHashMap.put("1716862031", "Gunslinger");
+		bHashMap.put("2007186000", "Defender");
+		bHashMap.put("2455559914", "Striker");
+		bHashMap.put("2962927168", "Bladedancer");
+		bHashMap.put("3658182170", "Sunsinger");
+		bHashMap.put("3828867689", "Voidwalker");
+		bHashMap.put("4143670656", "Nightstalker");
+		bHashMap.put("4143670657", "Nightstalker");
+		BungieHashDefinitions = Collections.unmodifiableMap(bHashMap);
 	}
 	
 	// -- Guardian GG
@@ -106,7 +117,7 @@ public class Guardian {
 		return guardianFromMembershipId(membershipId, name, platform, g);
 	}
 	
-	public static Guardian guardianFromMembershipId(String membershipId, String name, String platform, Guardian g) {		
+	protected static Guardian guardianFromMembershipId(String membershipId, String name, String platform, Guardian g) {		
 		g.p_id = membershipId;
 		g.p_name = name;
 		g.p_platform = platform;
@@ -259,19 +270,23 @@ public class Guardian {
 			p_name = ob.getJSONArray("Response").getJSONObject(0).getString("displayName");
 			p_platform = String.valueOf(ob.getJSONArray("Response").getJSONObject(0).getInt("membershipType"));
 		} catch (JSONException e) {
+			e.printStackTrace();
 			return false;
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			return false;
 		}
 		
 		try {
-			JSONObject ob = new JSONObject(BotUtils.getJSONString(BUNGIE_BASE_URL + platform + BUNGIE_ACCOUNT_URL + p_id, props));
+			JSONObject ob = new JSONObject(BotUtils.getJSONString(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/", props));
 			p_grimoireScore = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getInt("grimoireScore"));
 			p_characterIdLastPlayed = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getString("characterId");
-			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getInt("itemHash"));
+			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getBigInteger("itemHash"));
 		} catch (JSONException e) {
+			e.printStackTrace();
 			return false;
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			return false;
 		}
 		
@@ -373,5 +388,9 @@ public class Guardian {
 	
 	public String getCharacterLastPlayedSubclassHash() {
 		return p_characterLastPlayedSubclassHash;
+	}
+	
+	public String getCharacterLastPlayedSubclass() {
+		return BungieHashDefinitions.getOrDefault(p_characterLastPlayedSubclassHash, "Unknown");
 	}
 }
