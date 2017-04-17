@@ -3,7 +3,10 @@ package com.reztek.modules.GuardianControl;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,83 +48,82 @@ public class Guardian {
 	private static final String BUNGIE_API_KEY = GlobalDefs.BUNGIE_API_KEY;
 	private static final String BUNGIE_BASE_URL = "https://www.bungie.net/Platform/Destiny";
 	private static final String BUNGIE_SEARCH_URL = "/SearchDestinyPlayer/";
+	private static final String BUNGIE_ACCOUNT_URL = "/Account/";
 	private static final String GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
 	private static final String GUARDIAN_API_ELO = "/elo/";
 	private static final String GUARDIAN_API_FIRETEAM = "/fireteam/14/";
 	private static final String DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
 	private static final String DTR_API_PLAYER = "/player/";
 	
+	// -- BUNGIE
 	private String p_id = null;
 	private String p_name = null;
+	private String p_platform = null;
+	private String p_characterIdLastPlayed = null;
+	private String p_grimoireScore = null;
+	private String p_characterLastPlayedSubclassHash = null;
+	
+	private static final Map<String,String> BungieHashDefinitions;
+	static {
+		Map<String,String> bHashMap = new HashMap<String,String>();
+		bHashMap.put("21395672", "Sunbreaker");
+		bHashMap.put("21395673", "Sunbreaker");
+		bHashMap.put("1256644900", "Stormcaller");
+		bHashMap.put("1256644901", "Stormcaller");
+		bHashMap.put("1716862031", "Gunslinger");
+		bHashMap.put("2007186000", "Defender");
+		bHashMap.put("2455559914", "Striker");
+		bHashMap.put("2962927168", "Bladedancer");
+		bHashMap.put("3658182170", "Sunsinger");
+		bHashMap.put("3828867689", "Voidwalker");
+		bHashMap.put("4143670656", "Nightstalker");
+		bHashMap.put("4143670657", "Nightstalker");
+		BungieHashDefinitions = Collections.unmodifiableMap(bHashMap);
+	}
+	
+	// -- Guardian GG
 	private String p_rumbleELO = null;
 	private String p_rumbleRank = null;
 	private String p_trialsELO = null;
 	private String p_trialsRank = null;
 	private String p_lighthouseCount = null;
-	private String p_platform = null;
 	
+	// -- Destiny Trials Report
 	private String p_thisWeekTrialsFlawless = null;
 	private String p_thisWeekTrialsMatches = null;
 	private String p_thisWeekTrialsLosses = null;
 	private String p_thisWeekTrialsKills = null;
 	private String p_thisWeekTrialsDeaths = null;
-	private float p_thisWeekTrialsKD = 0;
-	
+	private float  p_thisWeekTrialsKD = 0;
 	private String p_thisYearTrialsMatches = null;
 	private String p_thisYearTrialsKills = null;
 	private String p_thisYearTrialsDeaths = null;
-	private float p_thisYearTrialsKD = 0;
+	private float  p_thisYearTrialsKD = 0;
 	
-	private ArrayList<GuardianWeaponStats> p_thisWeekWepStats = new ArrayList<GuardianWeaponStats>();
+	private ArrayList<GuardianWeaponStats> p_thisMapWepStats = new ArrayList<GuardianWeaponStats>();
 	
 	private Guardian() {
 		
 	}
 	
-	public static Guardian guardianFromName(String guardianName, String platform) {		
-		HashMap<String,String> bungMap = Guardian.findGuardianIdOnBungie(guardianName,platform);
-		if (bungMap == null) return null;
-		return Guardian.guardianFromMembershipId(bungMap.get("id"), bungMap.get("name"), bungMap.get("platform"));
+	public static Guardian guardianFromName(String guardianName, String platform) {
+		Guardian g = new Guardian();
+		if (!g.findGuardianIdOnBungie(guardianName,platform)) return null;
+		return Guardian.guardianFromMembershipId(g.getId(), g.getName(), g.getPlatform(), g);
 	}
 	
 	public static Guardian guardianFromMembershipId(String membershipId, String name, String platform) {
 		Guardian g = new Guardian();
-		
+		return guardianFromMembershipId(membershipId, name, platform, g);
+	}
+	
+	protected static Guardian guardianFromMembershipId(String membershipId, String name, String platform, Guardian g) {		
 		g.p_id = membershipId;
 		g.p_name = name;
 		g.p_platform = platform;
 		
-		HashMap<String,String> ggMap = g.getGuardianGG(membershipId);
-		
-		g.p_rumbleELO = ggMap.get("rumbleElo");
-		g.p_trialsELO = ggMap.get("trialsElo");
-		g.p_rumbleRank = ggMap.get("rumbleRank");
-		g.p_trialsRank = ggMap.get("trialsRank");
-		
-		HashMap<String,String> dtrMap = g.getGuardianDTR(membershipId);
-		if (dtrMap == null) return g;
-		
-		g.p_lighthouseCount = dtrMap.get("lighthouseCount");
-		
-		g.p_thisWeekTrialsDeaths = dtrMap.get("thisWeekTrialsDeaths");
-		g.p_thisWeekTrialsFlawless = dtrMap.get("thisWeekTrialsFlawless");
-		g.p_thisWeekTrialsKills = dtrMap.get("thisWeekTrialsKills");
-		g.p_thisWeekTrialsLosses = dtrMap.get("thisWeekTrialsLosses");
-		g.p_thisWeekTrialsMatches = dtrMap.get("thisWeekTrialsMatches");
-		g.p_thisWeekTrialsKD = (Float.valueOf(g.p_thisWeekTrialsKills) / Float.valueOf(g.p_thisWeekTrialsDeaths));
-		
-		g.p_thisYearTrialsKills = dtrMap.get("thisYearTrialsKills");
-		g.p_thisYearTrialsDeaths = dtrMap.get("thisYearTrialsDeaths");
-		g.p_thisYearTrialsKD = (Float.valueOf(g.p_thisYearTrialsKills) / Float.valueOf(g.p_thisYearTrialsDeaths));
-		g.p_thisYearTrialsMatches = dtrMap.get("thisYearTrialsMatches");
-		
-		for (int x = 0; x < Integer.valueOf(dtrMap.get("mapWepTotal")); ++x) {
-			GuardianWeaponStats gws = g.new GuardianWeaponStats();
-			gws.p_WepName = dtrMap.get("mapWepName-" + x);
-			gws.p_WepKills = dtrMap.get("mapWepKills-" + x);
-			gws.p_WepHeadshots = dtrMap.get("mapWepHeadshots-" + x);
-			g.p_thisWeekWepStats.add(gws);
-		}
+		g.getGuardianGG();
+		g.getGuardianDTR();
 		
 		return g;
 	}
@@ -184,16 +186,18 @@ public class Guardian {
 		return fireteam;
 	}
 	
-	private HashMap<String, String> getGuardianDTR(String membershipId) {
-		HashMap<String, String> dtrMap = new HashMap<String,String>();
-		
-		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_PLAYER + membershipId,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+	private boolean getGuardianDTR() {
+		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_PLAYER + p_id,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
 		JSONObject flYearArray = null;
+		
 		try {
 			flYearArray = ob.getJSONObject("flawless").getJSONObject("years");
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return null;
+			return false;
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			return false;
 		}
 		
 		String[] years = JSONObject.getNames(flYearArray);
@@ -203,67 +207,91 @@ public class Guardian {
 			flawlessCount += flYearArray.optJSONObject(year).getInt("count");
 		}
 		
-		dtrMap.put("lighthouseCount", String.valueOf(flawlessCount));
+		p_lighthouseCount = String.valueOf(flawlessCount);
 		
 		JSONObject thisWeekOb = ob.getJSONArray("thisWeek").getJSONObject(0);
 		
-		dtrMap.put("thisWeekTrialsMatches", String.valueOf(thisWeekOb.getInt("matches")));
-		dtrMap.put("thisWeekTrialsFlawless", String.valueOf(thisWeekOb.getInt("flawless")));
-		dtrMap.put("thisWeekTrialsLosses", String.valueOf(thisWeekOb.getInt("losses")));
-		dtrMap.put("thisWeekTrialsKills", String.valueOf(thisWeekOb.getInt("kills")));
-		dtrMap.put("thisWeekTrialsDeaths", String.valueOf(thisWeekOb.getInt("deaths")));
+		p_thisWeekTrialsMatches =  String.valueOf(thisWeekOb.getInt("matches"));
+		p_thisWeekTrialsFlawless =  String.valueOf(thisWeekOb.getInt("flawless"));
+		p_thisWeekTrialsLosses = String.valueOf(thisWeekOb.getInt("losses"));
+		p_thisWeekTrialsKills = String.valueOf(thisWeekOb.getInt("kills"));
+		p_thisWeekTrialsDeaths = String.valueOf(thisWeekOb.getInt("deaths"));
+		p_thisWeekTrialsKD = (Float.valueOf(p_thisWeekTrialsKills) / Float.valueOf(p_thisWeekTrialsDeaths));
 		
-		dtrMap.put("thisYearTrialsKills", String.valueOf(ob.getInt("kills")));
-		dtrMap.put("thisYearTrialsDeaths", String.valueOf(ob.getInt("deaths")));
-		dtrMap.put("thisYearTrialsMatches", String.valueOf(ob.getInt("match_count")));
+		p_thisYearTrialsKills = String.valueOf(ob.getInt("kills"));
+		p_thisYearTrialsDeaths =  String.valueOf(ob.getInt("deaths"));
+		p_thisYearTrialsMatches = String.valueOf(ob.getInt("match_count"));
+		p_thisYearTrialsKD = (Float.valueOf(p_thisYearTrialsKills) / Float.valueOf(p_thisYearTrialsDeaths));
 		
 		JSONArray thisMapWeps = ob.getJSONArray("thisMapWeapons");
 		for (int x = 0; x < thisMapWeps.length(); ++x) {
 			JSONObject wep = thisMapWeps.getJSONObject(x);
-			dtrMap.put("mapWepName-" + String.valueOf(x), wep.getString("itemTypeName"));
-			dtrMap.put("mapWepKills-" + String.valueOf(x), String.valueOf(wep.getInt("sum_kills")));
-			dtrMap.put("mapWepHeadshots-" + String.valueOf(x), String.valueOf(wep.getInt("sum_headshots")));
+			GuardianWeaponStats gws = new GuardianWeaponStats();
+			gws.p_WepName = wep.getString("itemTypeName");
+			gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
+			gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
+			p_thisMapWepStats.add(gws);
 		}
-		dtrMap.put("mapWepTotal", String.valueOf(thisMapWeps.length()));
 		
-		return dtrMap;
+		return true;
 	}
 	
-	private HashMap<String, String> getGuardianGG(String membershipId) {
-		HashMap<String,String> ggMap = new HashMap<String,String>();
-		JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + membershipId, null) + "}").getJSONArray("GGArray");
-		
-		for (int x = 0; x < ob.length(); ++x) {
-			JSONObject itObj = ob.getJSONObject(x);
-			if (itObj.getInt("mode") == 13) { // rumble
-				ggMap.put("rumbleElo", String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN)));
-				ggMap.put("rumbleRank", itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
-			} else if (itObj.getInt("mode") == 14) { // trials
-				ggMap.put("trialsElo", String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN)));
-				ggMap.put("trialsRank", itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
+	private boolean getGuardianGG() {
+		try {
+			JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + p_id, null) + "}").getJSONArray("GGArray");
+			for (int x = 0; x < ob.length(); ++x) {
+				JSONObject itObj = ob.getJSONObject(x);
+				if (itObj.getInt("mode") == 13) { // rumble
+					p_rumbleELO = String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN));
+					p_rumbleRank = (itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
+				} else if (itObj.getInt("mode") == 14) { // trials
+					p_trialsELO = String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN));
+					p_trialsRank = (itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
+				}
 			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			return false;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
 		}
 		
-		return ggMap;
+		return true;
 	}
 	
-	private static HashMap<String,String> findGuardianIdOnBungie(String guardianName, String platform) {
-		HashMap<String,String> ret = new HashMap<String,String>();
+	private boolean findGuardianIdOnBungie(String guardianName, String platform) {
 		HashMap<String,String> props = new HashMap<String,String>();
 		props.put("X-API-Key", BUNGIE_API_KEY);
 		
 		try {
 			JSONObject ob = new JSONObject (BotUtils.getJSONString(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
-			ret.put("id",ob.getJSONArray("Response").getJSONObject(0).getString("membershipId"));
-			ret.put("name",ob.getJSONArray("Response").getJSONObject(0).getString("displayName"));
-			ret.put("platform", String.valueOf(ob.getJSONArray("Response").getJSONObject(0).getInt("membershipType")));
+			p_id = ob.getJSONArray("Response").getJSONObject(0).getString("membershipId");
+			p_name = ob.getJSONArray("Response").getJSONObject(0).getString("displayName");
+			p_platform = String.valueOf(ob.getJSONArray("Response").getJSONObject(0).getInt("membershipType"));
 		} catch (JSONException e) {
-			ret = null;
+			e.printStackTrace();
+			return false;
 		} catch (NullPointerException e) {
-			ret = null;
+			e.printStackTrace();
+			return false;
 		}
+		
+		try {
+			JSONObject ob = new JSONObject(BotUtils.getJSONString(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/", props));
+			p_grimoireScore = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getInt("grimoireScore"));
+			p_characterIdLastPlayed = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getString("characterId");
+			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getBigInteger("itemHash"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 
-		return ret;
+		return true;
 	}
 	
 	// --------- Getters
@@ -278,6 +306,14 @@ public class Guardian {
 	
 	public String getRumbleELO() {
 		return p_rumbleELO;
+	}
+	
+	public String getGrimoireScore() {
+		return p_grimoireScore;
+	}
+	
+	public String getLastPlayedCharacterId() {
+		return p_characterIdLastPlayed;
 	}
 	
 	public String getTrialsELO() {
@@ -346,7 +382,15 @@ public class Guardian {
 		return p_thisYearTrialsMatches;
 	}
 	
-	public ArrayList<GuardianWeaponStats> getThisWeekWeaponStats() {
-		return p_thisWeekWepStats;
+	public ArrayList<GuardianWeaponStats> getThisWeekMapWeaponStats() {
+		return p_thisMapWepStats;
+	}
+	
+	public String getCharacterLastPlayedSubclassHash() {
+		return p_characterLastPlayedSubclassHash;
+	}
+	
+	public String getCharacterLastPlayedSubclass() {
+		return BungieHashDefinitions.getOrDefault(p_characterLastPlayedSubclassHash, "Unknown");
 	}
 }

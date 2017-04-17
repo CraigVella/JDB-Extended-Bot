@@ -39,7 +39,7 @@ public class TrialsCommands extends CommandModule {
 		super(pJDA, pBot,"TRIALSCOMMANDS");
 		// I have a task!
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
-		p_trialsList.setTaskDelay(5);
+		p_trialsList.setTaskDelay(100);
 		getBot().addTask(p_trialsList);
 	}
 
@@ -241,9 +241,9 @@ public class TrialsCommands extends CommandModule {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
-			String bestWeps = "--Weekly Best Weapons  : Kills ( HS )--\n";
+			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
 			int x = 0;
-			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
+			for (GuardianWeaponStats ws : g.getThisWeekMapWeaponStats()) {
 				x++;
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
@@ -268,18 +268,18 @@ public class TrialsCommands extends CommandModule {
 		if (g != null) {
 			ArrayList<HashMap<String,String>> members = g.getTrialsFireteamMembershipId();
 			for (HashMap<String, String> hashMap : members) {
-				gFireteam.add(Guardian.guardianFromMembershipId(hashMap.get("membershipId"), hashMap.get("name"), hashMap.get("platform")));
+				gFireteam.add(Guardian.guardianFromName(hashMap.get("name"), hashMap.get("platform")));
 			}
-			String bestWeps = "--Weekly Best Weapons  : Kills ( HS )--\n";
+			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
 			int x = 0;
-			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
+			for (GuardianWeaponStats ws : g.getThisWeekMapWeaponStats()) {
 				x++;
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 			}
 			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's " + (verbose ? "Detailed " : "") + "Weekly Stats \n"
 					+ "```md\n" +
-					g.getName() + "\n" +
+					g.getName() + BotUtils.getPaddingForLen(g.getName(), 18) + " (" + g.getCharacterLastPlayedSubclass()  + ")\n" +
 					"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">" : "") + "\n" +
 					"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">" :"") +"\n" +
 					"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">" : "") + "\n" +
@@ -287,15 +287,15 @@ public class TrialsCommands extends CommandModule {
 					(verbose ? bestWeps : "") +
 					"```").queue();
 			for (Guardian gFt : gFireteam) {
-				String bestWepsFt = "--Weekly Best Weapons  : Kills ( HS )--\n";
+				String bestWepsFt = "--This Map Best Weapons: Kills ( HS )--\n";
 				int xFt = 0;
-				for (GuardianWeaponStats ws : gFt.getThisWeekWeaponStats()) {
+				for (GuardianWeaponStats ws : gFt.getThisWeekMapWeaponStats()) {
 					xFt++;
 					bestWepsFt += String.valueOf(xFt) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 							BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 				}
 				mc.sendMessage("```md\n" +
-						gFt.getName() + "\n" +
+						gFt.getName() + BotUtils.getPaddingForLen(gFt.getName(), 18) + " (" + gFt.getCharacterLastPlayedSubclass()  + ")\n" +
 					"[Trials Elo]("+ BotUtils.getPaddingForLen(gFt.getTrialsELO(), 4) + gFt.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(gFt.getTrialsRank(), 6) + gFt.getTrialsRank() +">" :"") +"\n" +
 					"[Weekly K/D]("+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsKD(), 4)+ gFt.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsMatches(), 5) + gFt.getThisWeekTrialsMatches() +">" :"") +"\n" +
 					"[Season K/D]("+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsKD(), 4)+ gFt.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsMatches(), 5) + gFt.getThisYearTrialsMatches() +">" :"") +"\n" +
