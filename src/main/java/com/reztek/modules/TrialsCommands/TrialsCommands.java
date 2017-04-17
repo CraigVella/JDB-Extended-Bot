@@ -243,7 +243,7 @@ public class TrialsCommands extends CommandModule {
 		if (g != null) {
 			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
 			int x = 0;
-			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
+			for (GuardianWeaponStats ws : g.getThisWeekMapWeaponStats()) {
 				x++;
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
@@ -272,7 +272,7 @@ public class TrialsCommands extends CommandModule {
 			}
 			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
 			int x = 0;
-			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
+			for (GuardianWeaponStats ws : g.getThisWeekMapWeaponStats()) {
 				x++;
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
@@ -289,7 +289,7 @@ public class TrialsCommands extends CommandModule {
 			for (Guardian gFt : gFireteam) {
 				String bestWepsFt = "--This Map Best Weapons: Kills ( HS )--\n";
 				int xFt = 0;
-				for (GuardianWeaponStats ws : gFt.getThisWeekWeaponStats()) {
+				for (GuardianWeaponStats ws : gFt.getThisWeekMapWeaponStats()) {
 					xFt++;
 					bestWepsFt += String.valueOf(xFt) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 							BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
