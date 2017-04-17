@@ -3,7 +3,10 @@ package com.reztek.modules.GuardianControl;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,32 +48,46 @@ public class Guardian {
 	private static final String BUNGIE_API_KEY = GlobalDefs.BUNGIE_API_KEY;
 	private static final String BUNGIE_BASE_URL = "https://www.bungie.net/Platform/Destiny";
 	private static final String BUNGIE_SEARCH_URL = "/SearchDestinyPlayer/";
+	private static final String BUNGIE_ACCOUNT_URL = "/Account/";
 	private static final String GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
 	private static final String GUARDIAN_API_ELO = "/elo/";
 	private static final String GUARDIAN_API_FIRETEAM = "/fireteam/14/";
 	private static final String DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
 	private static final String DTR_API_PLAYER = "/player/";
 	
+	// -- BUNGIE
 	private String p_id = null;
 	private String p_name = null;
+	private String p_platform = null;
+	private String p_characterIdLastPlayed = null;
+	private String p_grimoireScore = null;
+	private String p_characterLastPlayedSubclassHash = null;
+	
+	private static final Map<String,String> SubclassHashDefinitions;
+	static {
+		Map<String,String> subclassMap = new HashMap<String,String>();
+		
+		SubclassHashDefinitions = Collections.unmodifiableMap(subclassMap);
+	}
+	
+	// -- Guardian GG
 	private String p_rumbleELO = null;
 	private String p_rumbleRank = null;
 	private String p_trialsELO = null;
 	private String p_trialsRank = null;
 	private String p_lighthouseCount = null;
-	private String p_platform = null;
 	
+	// -- Destiny Trials Report
 	private String p_thisWeekTrialsFlawless = null;
 	private String p_thisWeekTrialsMatches = null;
 	private String p_thisWeekTrialsLosses = null;
 	private String p_thisWeekTrialsKills = null;
 	private String p_thisWeekTrialsDeaths = null;
-	private float p_thisWeekTrialsKD = 0;
-	
+	private float  p_thisWeekTrialsKD = 0;
 	private String p_thisYearTrialsMatches = null;
 	private String p_thisYearTrialsKills = null;
 	private String p_thisYearTrialsDeaths = null;
-	private float p_thisYearTrialsKD = 0;
+	private float  p_thisYearTrialsKD = 0;
 	
 	private ArrayList<GuardianWeaponStats> p_thisMapWepStats = new ArrayList<GuardianWeaponStats>();
 	
@@ -246,6 +263,18 @@ public class Guardian {
 		} catch (NullPointerException e) {
 			return false;
 		}
+		
+		try {
+			JSONObject ob = new JSONObject(BotUtils.getJSONString(BUNGIE_BASE_URL + platform + BUNGIE_ACCOUNT_URL + p_id, props));
+			p_grimoireScore = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getInt("grimoireScore"));
+			p_characterIdLastPlayed = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getString("characterId");
+			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getInt("itemHash"));
+		} catch (JSONException e) {
+			return false;
+		} catch (NullPointerException e) {
+			return false;
+		}
+		
 
 		return true;
 	}
@@ -262,6 +291,14 @@ public class Guardian {
 	
 	public String getRumbleELO() {
 		return p_rumbleELO;
+	}
+	
+	public String getGrimoireScore() {
+		return p_grimoireScore;
+	}
+	
+	public String getLastPlayedCharacterId() {
+		return p_characterIdLastPlayed;
 	}
 	
 	public String getTrialsELO() {
@@ -332,5 +369,9 @@ public class Guardian {
 	
 	public ArrayList<GuardianWeaponStats> getThisWeekMapWeaponStats() {
 		return p_thisMapWepStats;
+	}
+	
+	public String getCharacterLastPlayedSubclassHash() {
+		return p_characterLastPlayedSubclassHash;
 	}
 }
