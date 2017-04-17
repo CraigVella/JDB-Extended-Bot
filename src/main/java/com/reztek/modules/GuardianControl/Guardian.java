@@ -93,10 +93,12 @@ public class Guardian {
 		
 		HashMap<String,String> ggMap = g.getGuardianGG(membershipId);
 		
-		g.p_rumbleELO = ggMap.get("rumbleElo");
-		g.p_trialsELO = ggMap.get("trialsElo");
-		g.p_rumbleRank = ggMap.get("rumbleRank");
-		g.p_trialsRank = ggMap.get("trialsRank");
+		if (ggMap != null) {
+			g.p_rumbleELO = ggMap.get("rumbleElo");
+			g.p_trialsELO = ggMap.get("trialsElo");
+			g.p_rumbleRank = ggMap.get("rumbleRank");
+			g.p_trialsRank = ggMap.get("trialsRank");
+		}
 		
 		HashMap<String,String> dtrMap = g.getGuardianDTR(membershipId);
 		if (dtrMap == null) return g;
@@ -186,12 +188,16 @@ public class Guardian {
 	
 	private HashMap<String, String> getGuardianDTR(String membershipId) {
 		HashMap<String, String> dtrMap = new HashMap<String,String>();
-		
+	
 		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_PLAYER + membershipId,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
 		JSONObject flYearArray = null;
+		
 		try {
 			flYearArray = ob.getJSONObject("flawless").getJSONObject("years");
 		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -231,17 +237,24 @@ public class Guardian {
 	
 	private HashMap<String, String> getGuardianGG(String membershipId) {
 		HashMap<String,String> ggMap = new HashMap<String,String>();
-		JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + membershipId, null) + "}").getJSONArray("GGArray");
-		
-		for (int x = 0; x < ob.length(); ++x) {
-			JSONObject itObj = ob.getJSONObject(x);
-			if (itObj.getInt("mode") == 13) { // rumble
-				ggMap.put("rumbleElo", String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN)));
-				ggMap.put("rumbleRank", itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
-			} else if (itObj.getInt("mode") == 14) { // trials
-				ggMap.put("trialsElo", String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN)));
-				ggMap.put("trialsRank", itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
+		try {
+			JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + membershipId, null) + "}").getJSONArray("GGArray");
+			for (int x = 0; x < ob.length(); ++x) {
+				JSONObject itObj = ob.getJSONObject(x);
+				if (itObj.getInt("mode") == 13) { // rumble
+					ggMap.put("rumbleElo", String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+					ggMap.put("rumbleRank", itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
+				} else if (itObj.getInt("mode") == 14) { // trials
+					ggMap.put("trialsElo", String.valueOf(itObj.getBigDecimal("elo").setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+					ggMap.put("trialsRank", itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
+				}
 			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			return null;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
 		}
 		
 		return ggMap;

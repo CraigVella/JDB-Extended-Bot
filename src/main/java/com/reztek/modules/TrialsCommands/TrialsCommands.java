@@ -241,7 +241,7 @@ public class TrialsCommands extends CommandModule {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
-			String bestWeps = "--Weekly Best Weapons  : Kills ( HS )--\n";
+			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
 			int x = 0;
 			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
 				x++;
@@ -270,7 +270,7 @@ public class TrialsCommands extends CommandModule {
 			for (HashMap<String, String> hashMap : members) {
 				gFireteam.add(Guardian.guardianFromMembershipId(hashMap.get("membershipId"), hashMap.get("name"), hashMap.get("platform")));
 			}
-			String bestWeps = "--Weekly Best Weapons  : Kills ( HS )--\n";
+			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
 			int x = 0;
 			for (GuardianWeaponStats ws : g.getThisWeekWeaponStats()) {
 				x++;
@@ -287,7 +287,7 @@ public class TrialsCommands extends CommandModule {
 					(verbose ? bestWeps : "") +
 					"```").queue();
 			for (Guardian gFt : gFireteam) {
-				String bestWepsFt = "--Weekly Best Weapons  : Kills ( HS )--\n";
+				String bestWepsFt = "--This Map Best Weapons: Kills ( HS )--\n";
 				int xFt = 0;
 				for (GuardianWeaponStats ws : gFt.getThisWeekWeaponStats()) {
 					xFt++;

@@ -15,6 +15,7 @@ import com.reztek.secret.GlobalDefs;
 public abstract class BotUtils {
 	public static String getPaddingForLen(String toPad, int desiredLen) {
 		String padding = "";
+		if (toPad == null) return padding;
 		for (int y = 0; y < (desiredLen - toPad.length()); ++y) {
 			padding += ' ';
 		}
