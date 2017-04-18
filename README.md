@@ -30,8 +30,9 @@ All commands begin with an '!'
     24. trialslist                                      - MOD ONLY - Displays in channel full ToO lists
     25. trialslist-csv                                  - MOD ONLY - PM's a CSV export of full ToO ranking list
     26. trialslistrefresh                               - MOD ONLY - Refresh all the stats in the current ToO ranking list
-	27. trialslist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
-	28. showmodules                                     - Displays currently loaded command modules
+	 27. trialslist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
+	 28. showmodules                                     - Displays currently loaded command modules
+    29. runpromotions                                   - MOD ONLY - Forces promotions to run on SGA
 
     [] = optional
     <> = Required

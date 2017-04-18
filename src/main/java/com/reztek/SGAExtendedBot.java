@@ -11,6 +11,7 @@ import com.reztek.base.Taskable;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
 import com.reztek.modules.RumbleCommands.RumbleCommands;
+import com.reztek.modules.SGAAutoPromoter.SGAAutoPromoterCommands;
 import com.reztek.modules.TrialsCommands.TrialsCommands;
 import com.reztek.secret.GlobalDefs;
 import com.reztek.utils.BotUtils;
@@ -44,6 +45,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh.addCommandModule(new RumbleCommands(jda, this));
 		p_mh.addCommandModule(new GuardianControlCommands(jda, this));
 		p_mh.addCommandModule(new TrialsCommands(jda, this));
+		p_mh.addCommandModule(new SGAAutoPromoterCommands(jda, this));
 		
 		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		

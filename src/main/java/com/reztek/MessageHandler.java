@@ -19,6 +19,10 @@ public class MessageHandler {
 		}
 	}
 	
+	public void removeCommandModule(String commandModuleID) {
+		p_commandModules.remove(commandModuleID);
+	}
+	
 	public ICommandModule getCommandModuleByID(String moduleID) {
 		return p_commandModules.get(moduleID);
 	}
