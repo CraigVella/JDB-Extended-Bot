@@ -1,13 +1,10 @@
 package com.reztek.modules.SGAAutoPromoter;
 
-import java.awt.Color;
-
 import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Member;
 
@@ -38,8 +35,11 @@ public class SGAAutoPromoterTask extends Taskable {
 					if (SGARankDefines.ShouldUpgradeToRank(m, rank)) {
 						getSGAAutoPromoterCommands().getSGAGuild().getController().addRolesToMember(m, getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId())).queue();
 						EmbedBuilder eb = new EmbedBuilder();
-						eb.setDescription(MessageBuilder.MentionType.EVERYONE + " ** ATTENTION ** -- " + m.getEffectiveName() + " THROUGH HARD WORK HAS PROGRESSED TO RANK *" + rank.getRankTitle() + "* -- ** ATTENTION **");
-						eb.setColor(Color.GREEN);
+						eb.setDescription("```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
+								        + g.getName() + " HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
+										+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
+						eb.setColor(getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId()).getColor());
+						eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
 						getSGAAutoPromoterCommands().getSGACourtyardChannel().sendMessage(eb.build()).queue();
 					}
 				}

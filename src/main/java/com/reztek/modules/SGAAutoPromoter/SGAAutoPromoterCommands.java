@@ -2,7 +2,9 @@ package com.reztek.modules.SGAAutoPromoter;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
+import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -55,6 +57,16 @@ public class SGAAutoPromoterCommands extends CommandModule {
 				p_aptask.runPromotions();
 				mre.getChannel().sendMessage("*Finished promotions..*").queue();
 			}
+			break;
+		case "testmsg":
+			EmbedBuilder eb = new EmbedBuilder();
+			SGARank rank = SGARankDefines.GetRankForID(args);
+			eb.setDescription("```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
+					+ "GuardianName HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
+							+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
+			eb.setColor(getSGAGuild().getRoleById(rank.getRankId()).getColor());
+			eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
+			mre.getChannel().sendMessage(eb.build()).queue();
 			break;
 		default:
 			return false;
