@@ -227,7 +227,7 @@ public class TrialsCommands extends CommandModule {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
-			if (g.getRumbleRank() == "N/A" || g.getRumbleRank() == null) {
+			if (g.getTrialsRank() == "N/A" || g.getTrialsRank() == null) {
 				mc.sendMessage("Sorry " + playerName + " hasn't played enough Trials of Osiris this season to be added.").queue();
 			} else {
 				p_trialsList.addPlayer(mc,g,true);
