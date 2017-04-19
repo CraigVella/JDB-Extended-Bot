@@ -32,7 +32,7 @@ public class MessageHandler {
 	}
 	
 	public void processMessage(MessageReceivedEvent mre) {
-		if (mre.getMessage().getRawContent().charAt(0) == '!' && !mre.getAuthor().isBot()) {
+		if (mre.getMessage().getRawContent().length() > 0 && mre.getMessage().getRawContent().charAt(0) == '!' && !mre.getAuthor().isBot()) {
 			
 			String command = mre.getMessage().getRawContent().substring(1);
 			String[] cmdSplit = command.toLowerCase().split(" ");
