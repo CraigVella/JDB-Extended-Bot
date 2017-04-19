@@ -23,7 +23,9 @@ public class SGAAutoPromoterTask extends Taskable {
 	
 	@Override
 	public void runTask() {
+		System.out.println("Starting Promotion Check...");
 		runPromotions();
+		System.out.println("Promotion Check Complete!");
 	}
 	
 	public void runPromotions() {

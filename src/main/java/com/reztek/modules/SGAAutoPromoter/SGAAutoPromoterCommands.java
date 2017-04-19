@@ -35,7 +35,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 				p_disabled = true;
 			} else {
 				p_aptask = new SGAAutoPromoterTask(this);
-				p_aptask.setTaskDelay(20);
+				p_aptask.setTaskDelay(30);
 				getBot().addTask(p_aptask);
 			}
 		}
@@ -59,14 +59,16 @@ public class SGAAutoPromoterCommands extends CommandModule {
 			}
 			break;
 		case "testmsg":
-			EmbedBuilder eb = new EmbedBuilder();
-			SGARank rank = SGARankDefines.GetRankForID(args);
-			eb.setDescription("```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
-					+ "GuardianName HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
-							+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
-			eb.setColor(getSGAGuild().getRoleById(rank.getRankId()).getColor());
-			eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
-			mre.getChannel().sendMessage(eb.build()).queue();
+			if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+				EmbedBuilder eb = new EmbedBuilder();
+				SGARank rank = SGARankDefines.GetRankForID(args);
+				eb.setDescription("```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
+						+ "GuardianName HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
+								+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
+				eb.setColor(getSGAGuild().getRoleById(rank.getRankId()).getColor());
+				eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
+				mre.getChannel().sendMessage(eb.build()).queue();
+			}
 			break;
 		default:
 			return false;
