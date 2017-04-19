@@ -54,7 +54,7 @@ public abstract class CommandModule implements ICommandModule {
 		p_author = authorName;
 	}
 	
-	protected JDA getJDA() {
+	public JDA getJDA() {
 		return p_jda;
 	}
 	
