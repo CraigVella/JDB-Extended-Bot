@@ -37,7 +37,7 @@ public class SGAAutoPromoterTask extends Taskable {
 					if (SGARankDefines.ShouldUpgradeToRank(m, rank)) {
 						getSGAAutoPromoterCommands().getSGAGuild().getController().addRolesToMember(m, getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId())).queue();
 						EmbedBuilder eb = new EmbedBuilder();
-						eb.setDescription("```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
+						eb.setDescription(m.getAsMention() + "\n```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
 								        + g.getName() + " HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
 										+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
 						eb.setColor(getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId()).getColor());

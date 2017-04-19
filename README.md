@@ -1,6 +1,6 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 1.5**
+**Current Bot Commands as of Version 1.6**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
@@ -16,7 +16,7 @@ All commands begin with an '!'
     10. rumblelist                                      - MOD ONLY - Displays in channel full rumble list
     11. rumblelist-csv                                  - MOD ONLY - PM's a CSV export of full rumble list
     12. rumblelistrefresh                               - MOD ONLY - Refresh's all the stats in the current rumble list
-	13. rumblelist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
+	 13. rumblelist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
     14. trialsmap                                       - Displays current trials map with picture
     15. fireteam[-ps][-xb]             <PlayerName>     - Displays information about current players ToO Fireteam
     16. fireteam+[-ps][-xb]            <PlayerName>     - Displays Detailed information about current players ToO Fireteam
