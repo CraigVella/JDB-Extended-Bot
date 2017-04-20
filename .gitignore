@@ -45,8 +45,7 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-src/main/java/com/reztek/secret/GlobalDefs.java
 /.gradle/
 /build/
-*.class
-bin/com/reztek/secret/GlobalDefs.class
+
+src/main/java/com/reztek/secret/GlobalDefs.java
