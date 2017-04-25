@@ -4,8 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
+import com.reztek.utils.BotUtils;
+import com.reztek.utils.BotUtils.Tuple;
+
 public abstract class BungieHashDefines {
-	private static final Map<String,String> BungieHashDefinitions;
+	private static final Map<String,String> SubclassHashDefinitions;
 	static {
 		Map<String,String> bHashMap = new HashMap<String,String>();
 		bHashMap.put("21395672", "Sunbreaker");
@@ -20,9 +25,21 @@ public abstract class BungieHashDefines {
 		bHashMap.put("3828867689", "Voidwalker");
 		bHashMap.put("4143670656", "Nightstalker");
 		bHashMap.put("4143670657", "Nightstalker");
-		BungieHashDefinitions = Collections.unmodifiableMap(bHashMap);
+		SubclassHashDefinitions = Collections.unmodifiableMap(bHashMap);
 	}
-	public static String GetStringForHash(String Hash) {
-		return BungieHashDefinitions.getOrDefault(Hash, "Unknown");
+	
+	public static String GetSubclassForHash(String Hash) {
+		return SubclassHashDefinitions.getOrDefault(Hash, "Unknown");
+	}
+	
+	private static JSONObject WeaponHashDefinitions = null;
+	public static Tuple<String> GetWeaponForHash(String Hash) {
+		Tuple<String> ni = new Tuple<String>();
+		if (WeaponHashDefinitions == null) {
+			WeaponHashDefinitions = new BotUtils.JsonConverter("DestinyWeaponDefinition.json", BungieHashDefines.class).getJsonObject();
+		}
+		ni.setFirst(WeaponHashDefinitions.getJSONObject(Hash).getString("name"));
+		ni.setSecond(WeaponHashDefinitions.getJSONObject(Hash).getString("icon"));
+		return ni;
 	}
 }

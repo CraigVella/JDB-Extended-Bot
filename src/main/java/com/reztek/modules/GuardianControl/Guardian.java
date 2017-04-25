@@ -376,6 +376,6 @@ public class Guardian {
 	}
 	
 	public String getCharacterLastPlayedSubclass() {
-		return BungieHashDefines.GetStringForHash(p_characterLastPlayedSubclassHash);
+		return BungieHashDefines.GetSubclassForHash(p_characterLastPlayedSubclassHash);
 	}
 }
