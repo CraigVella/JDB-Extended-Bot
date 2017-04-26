@@ -1,6 +1,7 @@
 package com.reztek.modules.GuardianControl;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
@@ -103,21 +104,22 @@ public class GuardianControlCommands extends CommandModule {
 	protected void loadOutInfo(MessageChannel mc, String playerName, String platform, int showLoadoutType) {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
+		String loadoutTitle = "Loadout";
+		if (showLoadoutType == LOADOUT_HEAVY_ONLY) loadoutTitle = "Heavy Weapon";
+		if (showLoadoutType == LOADOUT_SPECIAL_ONLY) loadoutTitle = "Special Weapon";
+		if (showLoadoutType == LOADOUT_PRIMARY_ONLY) loadoutTitle = "Primary Weapon";
 		if (g != null) {
-			mc.sendMessage("**" + g.getName() + "**'s Loadout").queue();
-			for (int x = 0; x < 3; ++x) {
-				GuardianWeaponStats gw = null;
-				switch (x) {
-				case 0:
-					gw = g.getCurrentPrimaryWep();
-					break;
-				case 1:
-					gw = g.getCurrentSpecialWep();
-					break;
-				case 2:
-					gw = g.getCurrentHeavyWep();
-					break;
-				}
+			mc.sendMessage("**" + g.getName() + "**'s " + loadoutTitle).queue();
+			ArrayList<GuardianWeaponStats> wsa = new ArrayList<GuardianWeaponStats>();
+			if (showLoadoutType == LOADOUT_ALL) {
+				wsa.add(g.getCurrentPrimaryWep());
+				wsa.add(g.getCurrentSpecialWep());
+				wsa.add(g.getCurrentHeavyWep());
+			}
+			if (showLoadoutType == LOADOUT_PRIMARY_ONLY) { wsa.add(g.getCurrentPrimaryWep()); }
+			if (showLoadoutType == LOADOUT_SPECIAL_ONLY) { wsa.add(g.getCurrentSpecialWep()); }
+			if (showLoadoutType == LOADOUT_HEAVY_ONLY) { wsa.add(g.getCurrentHeavyWep()); }
+			for (GuardianWeaponStats gw : wsa) {
 				if (gw != null) {
 					EmbedBuilder eb = new EmbedBuilder();
 					eb.setTitle(gw.getWeaponName(), null);
