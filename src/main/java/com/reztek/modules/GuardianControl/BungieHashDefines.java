@@ -1,45 +1,54 @@
 package com.reztek.modules.GuardianControl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.json.JSONObject;
 
 import com.reztek.utils.BotUtils;
-import com.reztek.utils.BotUtils.Tuple;
 
 public abstract class BungieHashDefines {
-	private static final Map<String,String> SubclassHashDefinitions;
-	static {
-		Map<String,String> bHashMap = new HashMap<String,String>();
-		bHashMap.put("21395672", "Sunbreaker");
-		bHashMap.put("21395673", "Sunbreaker");
-		bHashMap.put("1256644900", "Stormcaller");
-		bHashMap.put("1256644901", "Stormcaller");
-		bHashMap.put("1716862031", "Gunslinger");
-		bHashMap.put("2007186000", "Defender");
-		bHashMap.put("2455559914", "Striker");
-		bHashMap.put("2962927168", "Bladedancer");
-		bHashMap.put("3658182170", "Sunsinger");
-		bHashMap.put("3828867689", "Voidwalker");
-		bHashMap.put("4143670656", "Nightstalker");
-		bHashMap.put("4143670657", "Nightstalker");
-		SubclassHashDefinitions = Collections.unmodifiableMap(bHashMap);
-	}
-	
+	private static JSONObject SubclassHashDefinitions = null;
 	public static String GetSubclassForHash(String Hash) {
-		return SubclassHashDefinitions.getOrDefault(Hash, "Unknown");
+		if (SubclassHashDefinitions == null) {
+			SubclassHashDefinitions = new BotUtils.JsonConverter("DestinySubclassDefinition.json", BungieHashDefines.class).getJsonObject();
+		}
+		return SubclassHashDefinitions.getJSONObject(Hash).getString("name");
 	}
 	
 	private static JSONObject WeaponHashDefinitions = null;
-	public static Tuple<String> GetWeaponForHash(String Hash) {
-		Tuple<String> ni = new Tuple<String>();
+	private static class WeaponHashReturn {
+		protected String _name;
+		protected String _icon;
+		public String getName() {
+			return _name;
+		}
+		public String getIcon() {
+			return _icon;
+		}
+	}
+	public static WeaponHashReturn GetWeaponForHash(String Hash) {
+		WeaponHashReturn hr = new WeaponHashReturn();
 		if (WeaponHashDefinitions == null) {
 			WeaponHashDefinitions = new BotUtils.JsonConverter("DestinyWeaponDefinition.json", BungieHashDefines.class).getJsonObject();
 		}
-		ni.setFirst(WeaponHashDefinitions.getJSONObject(Hash).getString("name"));
-		ni.setSecond(WeaponHashDefinitions.getJSONObject(Hash).getString("icon"));
-		return ni;
+		hr._name = WeaponHashDefinitions.getJSONObject(Hash).getString("name");
+		hr._icon = WeaponHashDefinitions.getJSONObject(Hash).getString("icon");
+		return hr;
+	}
+	
+	private static JSONObject StepsHashDefinitions = null;
+	private static class StepsHashReturn extends WeaponHashReturn {
+		protected String _description;
+		public String getDescription() {
+			return _description;
+		}
+	}
+	public static StepsHashReturn GetStepForHash(String Hash) {
+		StepsHashReturn sr = new StepsHashReturn();
+		if (StepsHashDefinitions == null) {
+			StepsHashDefinitions = new BotUtils.JsonConverter("DestinyStepsDefinition.json", BungieHashDefines.class).getJsonObject();
+		}
+		sr._name = StepsHashDefinitions.getJSONObject(Hash).getString("n");
+		sr._icon = StepsHashDefinitions.getJSONObject(Hash).getString("i");
+		sr._description = StepsHashDefinitions.getJSONObject(Hash).getString("d");
+		return sr;
 	}
 }
