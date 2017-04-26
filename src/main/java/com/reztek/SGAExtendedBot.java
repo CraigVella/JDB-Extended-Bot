@@ -90,7 +90,11 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 			p_tasksrunning.set(true);
 			synchronized (p_taskList) {
 				for (Taskable task : p_taskList) {
-					task.__taskTick();
+					try {
+						task.__taskTick();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			p_tasksrunning.set(false);

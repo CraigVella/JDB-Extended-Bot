@@ -1,7 +1,9 @@
 package com.reztek.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
@@ -9,6 +11,8 @@ import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.reztek.secret.GlobalDefs;
 
@@ -52,5 +56,68 @@ public abstract class BotUtils {
 	
 	public static String getVersion() {
 		return GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "");
+	}
+	
+	public static class Tuple<T> {
+		public Tuple(T first, T second) {
+			_first = first;
+			_second = second;
+		}
+		public Tuple() {
+			
+		}
+		private T _first;
+		private T _second;
+		public void setFirst(T first) {
+			_first = first;
+		}
+		public void setSecond(T second) {
+			_second = second;
+		}
+		public T getFirst() {
+			return _first;
+		}
+		public T getSecond() {
+			return _second;
+		}
+	}
+	
+	public static class JsonConverter {
+		Class<?> _requestclass;
+		String jsonFileName;
+
+		public JsonConverter(String jsonFileName, Class<?> requestObject){
+		    this.jsonFileName = jsonFileName;
+		    _requestclass = requestObject;
+		}
+
+		public JSONObject getJsonObject(){
+		    //Create input stream
+		    InputStream inputStreamObject = getRequestclass().getResourceAsStream(jsonFileName);
+	
+		   try {
+		       BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStreamObject, "UTF-8"));
+		       StringBuilder responseStrBuilder = new StringBuilder();
+	
+		       String inputStr;
+		       while ((inputStr = streamReader.readLine()) != null)
+		           responseStrBuilder.append(inputStr);
+	
+		       JSONObject jsonObject = new JSONObject(responseStrBuilder.toString());
+		       return jsonObject;
+	
+		   } catch (IOException e) {
+		       e.printStackTrace();
+		   } catch (JSONException e) {
+		       e.printStackTrace();
+		   }
+	
+		    //if something went wrong, return null
+		    return null;
+		}
+	
+		private Class<?> getRequestclass(){
+		    return _requestclass;
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.reztek.modules.GuardianControl;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -9,24 +10,85 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.reztek.modules.GuardianControl.BungieHashDefines.StepsHashReturn;
 import com.reztek.secret.GlobalDefs;
 import com.reztek.utils.BotUtils;
 
 public class Guardian {
 	
+	public static final String PLATFORM_XB = "1";
+	public static final String PLATFORM_PS = "2";
+	public static final String PLATFORM_ALL = "All";
+	
+	private static final String BUNGIE_API_KEY = GlobalDefs.BUNGIE_API_KEY;
+	private static final String BUNGIE_BASE_URL = "https://www.bungie.net/Platform/Destiny";
+	private static final String BUNGIE_SEARCH_URL = "/SearchDestinyPlayer/";
+	private static final String BUNGIE_ACCOUNT_URL = "/Account/";
+	private static final String BUNGIE_BASE_IMAGES = "https://www.bungie.net";
+	private static final String GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
+	private static final String GUARDIAN_API_ELO = "/elo/";
+	private static final String GUARDIAN_API_FIRETEAM = "/fireteam/14/";
+	private static final String DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
+	private static final String DTR_API_PLAYER = "/player/";
+	private static final String DTR_API_THISWEEKWEPS = "/lastWeapons/";
+	private static final String DTR_API_WEPSTATS = "/weaponStats/";
+	
+	private static final int WEAPON_PRIMARY = 1;
+	private static final int WEAPON_SPECIAL = 2;
+	private static final int WEAPON_HEAVY = 3;
+	
 	public class GuardianWeaponStats {
 		private String p_WepName = null;
 		private String p_WepKills = null;
 		private String p_WepHeadshots = null;
+		private String p_WepIcon = null;
+		private DamageTypeReturn p_dtr = null;
+		private ArrayList<GuardianWeaponPerk> p_PerkList = new ArrayList<GuardianWeaponPerk>();
 		public String getWeaponName() { return p_WepName; }
 		public String getWeaponKills(){return p_WepKills; }
 		public String getWeaponHeadshots() { return p_WepHeadshots; }
+		public String getWepIcon() { return p_WepIcon; }
+		public final ArrayList <GuardianWeaponPerk> getWepPerks() { return p_PerkList; }
 		public String getHeadshotPercentage() {
 			DecimalFormat df = new DecimalFormat();
 			df.setMaximumFractionDigits(2); 
 			float hsPerc = Float.valueOf(p_WepHeadshots) / Float.valueOf(p_WepKills);
 			hsPerc *= 100;
 			return df.format(hsPerc) + "%";
+		}
+		public DamageTypeReturn getDamageType() {
+			return p_dtr;
+		}
+	}
+	
+	public class DamageTypeReturn {
+		private String _dtId;
+		private String _dtName;
+		private Color _dtColor;
+		private String _dtIcon;
+		public String getId() { return _dtId; }
+		public String getName() { return _dtName; }
+		public Color getColor() { return _dtColor; }
+		public String getDamageIcon() { return _dtIcon; }
+		private DamageTypeReturn (String id, String name, Color color, String icon) {
+			_dtId = id;
+			_dtName = name;
+			_dtColor = color;
+			_dtIcon = icon;
+		}
+	}
+	
+	public class GuardianWeaponPerk {
+		private String p_PerkName = null;
+		private String p_PerkDesc = null;
+		private String p_PerkIcon = null;
+		public String getPerkName() { return p_PerkName; }
+		public String getPerkDesc() { return p_PerkDesc; }
+		public String getPerkIcon() { return p_PerkIcon; }
+		public GuardianWeaponPerk(String perkName, String perkDesc, String perkIcon) {
+			p_PerkName = perkName;
+			p_PerkDesc = perkDesc;
+			p_PerkIcon = perkIcon;
 		}
 	}
 	
@@ -39,20 +101,6 @@ public class Guardian {
 		public boolean usesTag() { return _usesTag; }
 	}
 	
-	public static final String PLATFORM_XB = "1";
-	public static final String PLATFORM_PS = "2";
-	public static final String PLATFORM_ALL = "All";
-	
-	private static final String BUNGIE_API_KEY = GlobalDefs.BUNGIE_API_KEY;
-	private static final String BUNGIE_BASE_URL = "https://www.bungie.net/Platform/Destiny";
-	private static final String BUNGIE_SEARCH_URL = "/SearchDestinyPlayer/";
-	private static final String BUNGIE_ACCOUNT_URL = "/Account/";
-	private static final String GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
-	private static final String GUARDIAN_API_ELO = "/elo/";
-	private static final String GUARDIAN_API_FIRETEAM = "/fireteam/14/";
-	private static final String DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
-	private static final String DTR_API_PLAYER = "/player/";
-	
 	// -- BUNGIE
 	private String p_id = null;
 	private String p_name = null;
@@ -60,6 +108,10 @@ public class Guardian {
 	private String p_characterIdLastPlayed = null;
 	private String p_grimoireScore = null;
 	private String p_characterLastPlayedSubclassHash = null;
+	private String p_currentEmblemPath = null;
+	private GuardianWeaponStats p_currentPrimaryWep = new GuardianWeaponStats();
+	private GuardianWeaponStats p_currentSpecialWep = new GuardianWeaponStats();
+	private GuardianWeaponStats p_currentHeavyWep = new GuardianWeaponStats();
 	
 	// -- Guardian GG
 	private String p_rumbleELO = null;
@@ -79,8 +131,8 @@ public class Guardian {
 	private String p_thisYearTrialsKills = null;
 	private String p_thisYearTrialsDeaths = null;
 	private float  p_thisYearTrialsKD = 0;
-	
 	private ArrayList<GuardianWeaponStats> p_thisMapWepStats = new ArrayList<GuardianWeaponStats>();
+	private ArrayList<GuardianWeaponStats> p_thisWeekMapWepStats = new ArrayList<GuardianWeaponStats>();
 	
 	private Guardian() {
 		
@@ -218,6 +270,16 @@ public class Guardian {
 			p_thisMapWepStats.add(gws);
 		}
 		
+		JSONArray thisWeekMapWeps = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_THISWEEKWEPS + p_characterIdLastPlayed,null) + "}").getJSONArray("DTRArray");
+		for (int x = 0; x < thisWeekMapWeps.length(); ++x) {
+			JSONObject wep = thisWeekMapWeps.getJSONObject(x);
+			GuardianWeaponStats gws = new GuardianWeaponStats();
+			gws.p_WepName = wep.getString("itemTypeName");
+			gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
+			gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
+			p_thisWeekMapWepStats.add(gws);
+		}
+		
 		return true;
 	}
 	
@@ -267,6 +329,7 @@ public class Guardian {
 			p_grimoireScore = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getInt("grimoireScore"));
 			p_characterIdLastPlayed = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getString("characterId");
 			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getBigInteger("itemHash"));
+			p_currentEmblemPath = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getString("emblemPath");
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return false;
@@ -275,8 +338,70 @@ public class Guardian {
 			return false;
 		}
 		
+		p_currentPrimaryWep = currentWeapon(WEAPON_PRIMARY);
+		p_currentSpecialWep = currentWeapon(WEAPON_SPECIAL);
+		p_currentHeavyWep   = currentWeapon(WEAPON_HEAVY);
 
 		return true;
+	}
+	
+	private GuardianWeaponStats currentWeapon(int weapon) {
+		GuardianWeaponStats gw = new GuardianWeaponStats();
+		
+		HashMap<String,String> props = new HashMap<String,String>();
+		props.put("X-API-Key", BUNGIE_API_KEY);
+		
+		try {
+			JSONObject ob = new JSONObject(BotUtils.getJSONString(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/Character/" + p_characterIdLastPlayed + "/Inventory/", props));
+			
+			//primary info
+			String pItemHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getBigInteger("itemHash"));
+			String pTalentGridHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getBigInteger("talentGridHash"));
+			JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
+			String pDT = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getInt("damageType"));
+			switch (pDT) {
+			case "2":
+				gw.p_dtr = new DamageTypeReturn(pDT, BungieHashDefines.GetStepForHash("2688431654").getName(), Color.CYAN, BUNGIE_BASE_IMAGES + BungieHashDefines.GetStepForHash("2688431654").getIcon());
+				break;
+			case "3":
+				gw.p_dtr = new DamageTypeReturn(pDT, BungieHashDefines.GetStepForHash("1975859941").getName(), new Color(0xFF, 0x90, 0x00), BUNGIE_BASE_IMAGES + BungieHashDefines.GetStepForHash("1975859941").getIcon());
+				break;
+			case "4":
+				gw.p_dtr = new DamageTypeReturn(pDT, BungieHashDefines.GetStepForHash("472357138").getName(), new Color(0x90, 0x00, 0xFF), BUNGIE_BASE_IMAGES + BungieHashDefines.GetStepForHash("472357138").getIcon());
+				break;
+			case "1":
+			default:
+				gw.p_dtr = new DamageTypeReturn(pDT, BungieHashDefines.GetStepForHash("643689081").getName(), Color.GRAY, BUNGIE_BASE_IMAGES + BungieHashDefines.GetStepForHash("643689081").getIcon());
+			}
+			gw.p_WepName = BungieHashDefines.GetWeaponForHash(pItemHash).getName();
+			gw.p_WepIcon = BUNGIE_BASE_IMAGES + BungieHashDefines.GetWeaponForHash(pItemHash).getIcon();
+			
+			for (int x = 0; x < pNodes.length(); ++x) {
+				if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
+					StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+					// Add Ignores here
+					if (shr.getHash().equals("1270552711")) continue;
+					if (shr.getHash().equals("643689081")) continue;
+					if (shr.getHash().equals("472357138")) continue;
+					if (shr.getHash().equals("1975859941")) continue;
+					if (shr.getHash().equals("2688431654")) continue;
+					gw.p_PerkList.add(new GuardianWeaponPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+				}
+			}
+			
+			// get Stats for weapon
+			try {
+				JSONObject ws = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_WEPSTATS + p_id + "/" + pItemHash,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+				gw.p_WepKills = ws.getString("kills");
+				gw.p_WepHeadshots = ws.getString("headshots");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return gw;
 	}
 	
 	// --------- Getters
@@ -367,7 +492,11 @@ public class Guardian {
 		return p_thisYearTrialsMatches;
 	}
 	
-	public ArrayList<GuardianWeaponStats> getThisWeekMapWeaponStats() {
+	public final ArrayList<GuardianWeaponStats> getThisWeekMapWeaponStats() {
+		return p_thisWeekMapWepStats;
+	}
+	
+	public final ArrayList<GuardianWeaponStats> getThisMapWeaponStats() {
 		return p_thisMapWepStats;
 	}
 	
@@ -376,6 +505,26 @@ public class Guardian {
 	}
 	
 	public String getCharacterLastPlayedSubclass() {
-		return BungieHashDefines.GetStringForHash(p_characterLastPlayedSubclassHash);
+		return BungieHashDefines.GetSubclassForHash(p_characterLastPlayedSubclassHash).getName();
+	}
+	
+	public String getCharacterLaspPlayedSubclassIcon() {
+		return BUNGIE_BASE_IMAGES + BungieHashDefines.GetSubclassForHash(p_characterLastPlayedSubclassHash).getIcon();
+	}
+	
+	public String getCharacterLastPlayedEmblem() {
+		return BUNGIE_BASE_IMAGES + p_currentEmblemPath;
+	}
+	
+	public final GuardianWeaponStats getCurrentPrimaryWep() {
+		return p_currentPrimaryWep;
+	}
+	
+	public final GuardianWeaponStats getCurrentSpecialWep() {
+		return p_currentSpecialWep;
+	}
+	
+	public final GuardianWeaponStats getCurrentHeavyWep() {
+		return p_currentHeavyWep;
 	}
 }
