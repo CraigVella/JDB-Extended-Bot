@@ -1,14 +1,24 @@
 package com.reztek.modules.GuardianControl;
 
+import java.awt.Color;
+
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
+import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
+import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 import com.reztek.utils.BotUtils;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class GuardianControlCommands extends CommandModule {
+	
+	public static final int LOADOUT_ALL = 0;
+	public static final int LOADOUT_PRIMARY_ONLY = 1;
+	public static final int LOADOUT_SPECIAL_ONLY = 2;
+	public static final int LOADOUT_HEAVY_ONLY = 3;
 
 	public GuardianControlCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"GUARDIANCOMMANDS");
@@ -31,6 +41,48 @@ public class GuardianControlCommands extends CommandModule {
 					debugGuardian(mre.getChannel(), args);
 				}
 			break;
+			case "primary":
+			case "primary-ps":
+			case "primary-p-xb":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					loadOutInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), LOADOUT_PRIMARY_ONLY);
+				} else {
+					loadOutInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), LOADOUT_PRIMARY_ONLY);
+				}
+				break;
+
+			case "secondary":
+			case "secondary-ps":
+			case "secondary-xb":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					loadOutInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), LOADOUT_SPECIAL_ONLY);
+				} else {
+					loadOutInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), LOADOUT_SPECIAL_ONLY);
+				}
+				break;
+
+			case "heavy":
+			case "heavy-ps":
+			case "heavy-xb":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					loadOutInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), LOADOUT_HEAVY_ONLY);
+				} else {
+					loadOutInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), LOADOUT_HEAVY_ONLY);
+				}
+				break;
+			case "loadout":
+			case "loadout-ps":
+			case "loadout-xb":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					loadOutInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), LOADOUT_ALL);
+				} else {
+					loadOutInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), LOADOUT_ALL);
+				}
+				break;
 			case "info-ps":
 			case "info-xb":
 			case "info":
@@ -48,15 +100,59 @@ public class GuardianControlCommands extends CommandModule {
 		return true;
 	}
 	
+	protected void loadOutInfo(MessageChannel mc, String playerName, String platform, int showLoadoutType) {
+		mc.sendTyping().queue();
+		Guardian g = Guardian.guardianFromName(playerName, platform);
+		if (g != null) {
+			mc.sendMessage("**" + g.getName() + "**'s Loadout").queue();
+			for (int x = 0; x < 3; ++x) {
+				GuardianWeaponStats gw = null;
+				switch (x) {
+				case 0:
+					gw = g.getCurrentPrimaryWep();
+					break;
+				case 1:
+					gw = g.getCurrentSpecialWep();
+					break;
+				case 2:
+					gw = g.getCurrentHeavyWep();
+					break;
+				}
+				if (gw != null) {
+					EmbedBuilder eb = new EmbedBuilder();
+					eb.setTitle(gw.getWeaponName(), null);
+					eb.setColor(gw.getDamageType().getColor());
+					eb.setFooter(gw.getDamageType().getName(), gw.getDamageType().getDamageIcon());
+					eb.setThumbnail(gw.getWepIcon());
+					if (gw.getWeaponKills() != null) {
+						eb.addField("Kills", gw.getWeaponKills(), true);
+						eb.addField("Headshot %", gw.getHeadshotPercentage(), true);
+					}
+					for (GuardianWeaponPerk gp : gw.getWepPerks()) {
+						eb.addField(gp.getPerkName(), gp.getPerkDesc(), false);
+					}
+					mc.sendMessage(eb.build()).queue();
+				}
+			}
+		} else {
+			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
+		}
+	}
+	
 	protected void playerInfo(MessageChannel mc, String playerName, String platform) {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
-			mc.sendMessage("Here's some info about **" + g.getName() + "**. \n```md\n" +
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setTitle("Here's some info about **" + g.getName() + "**.", null);
+			eb.setThumbnail(g.getCharacterLastPlayedEmblem());
+			eb.setColor(Color.GREEN);
+			eb.setDescription("```md\n" +
 					"[Rumble Elo](" + BotUtils.getPaddingForLen(g.getRumbleELO(), 4) + g.getRumbleELO() +")<RK:" + BotUtils.getPaddingForLen(g.getRumbleRank(), 6) + g.getRumbleRank() +">\n" +
 					"[Trials Elo](" + BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:" + BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
 					"[Flawlesses](" + BotUtils.getPaddingForLen(g.getLighthouseCount(), 4) + g.getLighthouseCount() +")\n" +
-					"```").queue();
+					"```");
+			mc.sendMessage(eb.build()).queue();
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}

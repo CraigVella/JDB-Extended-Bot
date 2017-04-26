@@ -241,21 +241,25 @@ public class TrialsCommands extends CommandModule {
 		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
-			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
+			String bestWeps = "--  This Week Weapons  : Kills ( HS )--\n";
 			int x = 0;
 			for (GuardianWeaponStats ws : g.getThisWeekMapWeaponStats()) {
 				x++;
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 			}
-			mc.sendMessage("**" + g.getName() + "**'s Trials of Osiris " + (verbose ? "Detailed " : "") + "Weekly Stats \n"
-			+ "```md\n" +
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setColor(Color.YELLOW);
+			eb.setTitle("**" + g.getName() + "**'s Trials of Osiris " + (verbose ? "Detailed " : "") + "Weekly Stats", null);
+			eb.setThumbnail(g.getCharacterLastPlayedEmblem());
+			eb.setDescription("```md\n" +
 			"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">" : "") + "\n" +
 			"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">" : "") + "\n" +
 			"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">" : "") + "\n" +
 			"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() + ">" : "") + "\n" +
 			bestWeps +
-			"```").queue();
+			"```");
+			mc.sendMessage(eb.build()).queue();
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}
@@ -270,38 +274,48 @@ public class TrialsCommands extends CommandModule {
 			for (HashMap<String, String> hashMap : members) {
 				gFireteam.add(Guardian.guardianFromName(hashMap.get("name"), hashMap.get("platform")));
 			}
-			String bestWeps = "--This Map Best Weapons: Kills ( HS )--\n";
+			String bestWeps = "--  This Week Weapons  : Kills ( HS )--\n";
 			int x = 0;
 			for (GuardianWeaponStats ws : g.getThisWeekMapWeaponStats()) {
 				x++;
 				bestWeps += String.valueOf(x) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 						BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 			}
-			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's " + (verbose ? "Detailed " : "") + "Weekly Stats \n"
-					+ "```md\n" +
-					g.getName() + BotUtils.getPaddingForLen(g.getName(), 18) + " (" + g.getCharacterLastPlayedSubclass()  + ")\n" +
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setColor(Color.YELLOW);
+			eb.setTitle(g.getName(), null);
+			eb.setFooter(g.getCharacterLastPlayedSubclass(), g.getCharacterLaspPlayedSubclassIcon());
+			eb.setThumbnail(g.getCharacterLastPlayedEmblem());
+			eb.setDescription("```md\n" +
 					"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">" : "") + "\n" +
 					"[Weekly K/D]("+ BotUtils.getPaddingForLen(g.getThisWeekTrialsKD(), 4)+ g.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsMatches(), 5) + g.getThisWeekTrialsMatches() +">" :"") +"\n" +
 					"[Season K/D]("+ BotUtils.getPaddingForLen(g.getThisYearTrialsKD(), 4)+ g.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(g.getThisYearTrialsMatches(), 5) + g.getThisYearTrialsMatches() +">" : "") + "\n" +
 					"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">" : "") + "\n" +
 					(verbose ? bestWeps : "") +
-					"```").queue();
+					"```");
+			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's " + (verbose ? "Detailed " : "") + "Weekly Stats").queue();
+			mc.sendMessage(eb.build()).queue();
 			for (Guardian gFt : gFireteam) {
-				String bestWepsFt = "--This Map Best Weapons: Kills ( HS )--\n";
+				String bestWepsFt = "--  This Week Weapons  : Kills ( HS )--\n";
 				int xFt = 0;
 				for (GuardianWeaponStats ws : gFt.getThisWeekMapWeaponStats()) {
 					xFt++;
 					bestWepsFt += String.valueOf(xFt) + ". " + ws.getWeaponName() + BotUtils.getPaddingForLen(ws.getWeaponName(), 18) + "  : " + 
 							BotUtils.getPaddingForLen(ws.getWeaponKills(), 5) + ws.getWeaponKills() + " (" + BotUtils.getPaddingForLen(ws.getHeadshotPercentage(),6)  + ws.getHeadshotPercentage() + ")\n";
 				}
-				mc.sendMessage("```md\n" +
-						gFt.getName() + BotUtils.getPaddingForLen(gFt.getName(), 18) + " (" + gFt.getCharacterLastPlayedSubclass()  + ")\n" +
+				eb = new EmbedBuilder();
+				eb.setColor(Color.YELLOW);
+				eb.setFooter(gFt.getCharacterLastPlayedSubclass(), gFt.getCharacterLaspPlayedSubclassIcon());
+				eb.setThumbnail(gFt.getCharacterLastPlayedEmblem());
+				eb.setTitle(gFt.getName(), null);
+				eb.setDescription("```md\n" +
 					"[Trials Elo]("+ BotUtils.getPaddingForLen(gFt.getTrialsELO(), 4) + gFt.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(gFt.getTrialsRank(), 6) + gFt.getTrialsRank() +">" :"") +"\n" +
 					"[Weekly K/D]("+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsKD(), 4)+ gFt.getThisWeekTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsMatches(), 5) + gFt.getThisWeekTrialsMatches() +">" :"") +"\n" +
 					"[Season K/D]("+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsKD(), 4)+ gFt.getThisYearTrialsKD() +")" + (verbose ? "<GP: "+ BotUtils.getPaddingForLen(gFt.getThisYearTrialsMatches(), 5) + gFt.getThisYearTrialsMatches() +">" :"") +"\n" +
 					"[Flawlesses]("+ BotUtils.getPaddingForLen(gFt.getLighthouseCount(), 4)+ gFt.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(gFt.getThisWeekTrialsFlawless(), 5) + gFt.getThisWeekTrialsFlawless() +  ">" :"") +"\n" +
 					(verbose ? bestWepsFt : "") +
-					"```").queue();
+					"```");
+				mc.sendMessage(eb.build()).queue();
 			}
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
