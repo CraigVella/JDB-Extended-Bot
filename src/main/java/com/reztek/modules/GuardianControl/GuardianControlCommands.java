@@ -53,9 +53,9 @@ public class GuardianControlCommands extends CommandModule {
 				}
 				break;
 
-			case "secondary":
-			case "secondary-ps":
-			case "secondary-xb":
+			case "special":
+			case "special-ps":
+			case "special-xb":
 				if (args == null) {
 					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
 					loadOutInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), LOADOUT_SPECIAL_ONLY);
