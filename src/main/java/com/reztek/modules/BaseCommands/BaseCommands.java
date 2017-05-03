@@ -5,6 +5,7 @@ import java.util.Random;
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
 import com.reztek.base.ICommandModule;
+import com.reztek.base.Taskable;
 import com.reztek.secret.GlobalDefs;
 import com.reztek.utils.BotUtils;
 
@@ -44,11 +45,28 @@ public class BaseCommands extends CommandModule {
 			case "showmodules":
 				showModules(mre.getChannel());
 				break;
+			case "showtasks":
+				showTasks(mre.getChannel());
+				break;
 			default:
 				return false;
 		}
 		
 		return true;
+	}
+	
+	protected void showTasks(MessageChannel mc) {
+		mc.sendTyping();
+		String tasks = "**All Queued Tasks**\n```";
+		for (Taskable task : getBot().getTasks()) {
+			tasks += task.getTaskName() + BotUtils.getPaddingForLen(task.getTaskName(), 20) + " - runs every " + 
+					BotUtils.getPaddingForLen(String.valueOf(task.getTaskDelay()), 3) + (task.getTaskDelay() == 0 ? "1" : String.valueOf(task.getTaskDelay())) +
+					" min(s), will run in " + BotUtils.getPaddingForLen(((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) , 3) +
+					((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) + 
+					" min(s)\n";
+		}
+		tasks += "```";
+		mc.sendMessage(tasks).queue();
 	}
 	
 	protected void showModules(MessageChannel mc) {

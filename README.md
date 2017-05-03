@@ -6,7 +6,7 @@ All commands begin with an '!'
         Command                        Argument(s)      - Description
     1.  version                                         - Shows version of current Bot
     2.  decision                       <Question>       - Helps you with a decision :)
-    3.  debugguardian                  <PlayerName>     - Outputs guradian debug information
+    3.  debugguardian                  <PlayerName>     - Outputs Guardian debug information
     4.  info[-ps][-xb]                 [PlayerName]     - General information about player
     5.  rumblelistgold                                  - Displays top 10 of rumble list
     6.  rumblelistsilver                                - Displays rank 11-20 of rumble list
@@ -37,6 +37,7 @@ All commands begin with an '!'
     31. special[-ps][-xb]              [PlayerName]     - Displays Players Secondary Weapon 
     32. heavy[-ps][-xb]                [PlayerName]     - Displays Players Heavy Weapon 
     33. loadout[-ps][-xb]              [PlayerName]     - Displays Players Weapon Loadout
+    34. showtasks                                       - Displays current tasks, run time, and when they will next run
 
     [] = optional
     <> = Required

@@ -1,6 +1,8 @@
 package com.reztek;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,6 +54,10 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		jda.setAutoReconnect(true);
 	}
 	
+	public Collection<Taskable> getTasks() {
+		return Collections.unmodifiableCollection(p_taskList);
+	}
+	
 	public void addTask(Taskable task) {
 		p_taskList.add(task);
 	}
@@ -89,7 +95,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		if (!p_tasksrunning.get()) {
 			p_tasksrunning.set(true);
 			synchronized (p_taskList) {
-				for (Taskable task : p_taskList) {
+				for (Taskable task : getTasks()) {
 					try {
 						task.__taskTick();
 					} catch (Exception e) {

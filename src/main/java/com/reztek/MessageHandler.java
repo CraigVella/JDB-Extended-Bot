@@ -1,6 +1,7 @@
 package com.reztek;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import com.reztek.base.ICommandModule;
 
@@ -23,12 +24,12 @@ public class MessageHandler {
 		p_commandModules.remove(commandModuleID);
 	}
 	
-	public ICommandModule getCommandModuleByID(String moduleID) {
+	public final ICommandModule getCommandModuleByID(String moduleID) {
 		return p_commandModules.get(moduleID);
 	}
 	
 	public Collection<ICommandModule> getAllLoadedCommandModules() {
-		return p_commandModules.values();
+		return Collections.unmodifiableCollection(p_commandModules.values());
 	}
 	
 	public void processMessage(MessageReceivedEvent mre) {
@@ -43,7 +44,7 @@ public class MessageHandler {
 				args += cmdSplit[x] + " ";
 			}
 			
-			for (ICommandModule proc : p_commandModules.values()) {
+			for (ICommandModule proc : getAllLoadedCommandModules()) {
 				if (proc.processCommand(cmdSplit[0], args.equals("") ? null : args.trim(), mre)) {
 					return;
 				}

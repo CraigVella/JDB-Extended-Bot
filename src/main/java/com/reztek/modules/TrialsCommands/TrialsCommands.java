@@ -38,6 +38,7 @@ public class TrialsCommands extends CommandModule {
 	public TrialsCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"TRIALSCOMMANDS");
 		// I have a task!
+		p_trialsList.setTaskName("TrialsList Refresh");
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(100);
 		getBot().addTask(p_trialsList);

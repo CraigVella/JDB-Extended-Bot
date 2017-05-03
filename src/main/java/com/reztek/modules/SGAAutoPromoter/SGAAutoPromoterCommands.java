@@ -38,6 +38,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 			} else {
 				p_aptask = new SGAAutoPromoterTask(this);
 				p_aptask.setTaskDelay(30);
+				p_aptask.setTaskName("SGA Auto Promoter");
 				getBot().addTask(p_aptask);
 			}
 		}
