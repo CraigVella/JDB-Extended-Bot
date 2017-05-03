@@ -28,6 +28,7 @@ public class Guardian {
 	private static final String GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
 	private static final String GUARDIAN_API_ELO = "/elo/";
 	private static final String GUARDIAN_API_FIRETEAM = "/fireteam/14/";
+	private static final String GUARDIAN_API_PLAYERS = "/v2/players/";
 	private static final String DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
 	private static final String DTR_API_PLAYER = "/player/";
 	private static final String DTR_API_THISWEEKWEPS = "/lastWeapons/";
@@ -109,6 +110,7 @@ public class Guardian {
 	private String p_grimoireScore = null;
 	private String p_characterLastPlayedSubclassHash = null;
 	private String p_currentEmblemPath = null;
+	private String p_currentBackgroundPath = null;
 	private GuardianWeaponStats p_currentPrimaryWep = new GuardianWeaponStats();
 	private GuardianWeaponStats p_currentSpecialWep = new GuardianWeaponStats();
 	private GuardianWeaponStats p_currentHeavyWep = new GuardianWeaponStats();
@@ -116,6 +118,7 @@ public class Guardian {
 	// -- Guardian GG
 	private String p_rumbleELO = null;
 	private String p_rumbleRank = null;
+	private float  p_rumbleKD = 0;
 	private String p_trialsELO = null;
 	private String p_trialsRank = null;
 	private String p_lighthouseCount = null;
@@ -260,24 +263,32 @@ public class Guardian {
 		p_thisYearTrialsMatches = String.valueOf(ob.getInt("match_count"));
 		p_thisYearTrialsKD = (Float.valueOf(p_thisYearTrialsKills) / Float.valueOf(p_thisYearTrialsDeaths));
 		
-		JSONArray thisMapWeps = ob.getJSONArray("thisMapWeapons");
-		for (int x = 0; x < thisMapWeps.length(); ++x) {
-			JSONObject wep = thisMapWeps.getJSONObject(x);
-			GuardianWeaponStats gws = new GuardianWeaponStats();
-			gws.p_WepName = wep.getString("itemTypeName");
-			gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
-			gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
-			p_thisMapWepStats.add(gws);
+		try {
+			JSONArray thisMapWeps = ob.getJSONArray("thisMapWeapons");
+			for (int x = 0; x < thisMapWeps.length(); ++x) {
+				JSONObject wep = thisMapWeps.getJSONObject(x);
+				GuardianWeaponStats gws = new GuardianWeaponStats();
+				gws.p_WepName = wep.getString("itemTypeName");
+				gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
+				gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
+				p_thisMapWepStats.add(gws);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		JSONArray thisWeekMapWeps = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_THISWEEKWEPS + p_characterIdLastPlayed,null) + "}").getJSONArray("DTRArray");
-		for (int x = 0; x < thisWeekMapWeps.length(); ++x) {
-			JSONObject wep = thisWeekMapWeps.getJSONObject(x);
-			GuardianWeaponStats gws = new GuardianWeaponStats();
-			gws.p_WepName = wep.getString("itemTypeName");
-			gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
-			gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
-			p_thisWeekMapWepStats.add(gws);
+		try {
+			JSONArray thisWeekMapWeps = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_API_BASE_URL + DTR_API_THISWEEKWEPS + p_characterIdLastPlayed,null) + "}").getJSONArray("DTRArray");
+			for (int x = 0; x < thisWeekMapWeps.length(); ++x) {
+				JSONObject wep = thisWeekMapWeps.getJSONObject(x);
+				GuardianWeaponStats gws = new GuardianWeaponStats();
+				gws.p_WepName = wep.getString("itemTypeName");
+				gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
+				gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
+				p_thisWeekMapWepStats.add(gws);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return true;
@@ -296,6 +307,10 @@ public class Guardian {
 					p_trialsRank = (itObj.getInt("rank") > 0 ? String.valueOf(itObj.getInt("rank")) : "N/A");
 				}
 			}
+			
+			JSONObject plOb = new JSONObject(BotUtils.getJSONString(GUARDIAN_API_BASE_URL + GUARDIAN_API_PLAYERS + p_id, null)).getJSONObject("data").getJSONObject("modes");
+			p_rumbleKD = (float) ((plOb.getJSONObject("13").getInt("kills"))) / (plOb.getJSONObject("13").getInt("deaths"));
+			
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			return false;
@@ -330,6 +345,7 @@ public class Guardian {
 			p_characterIdLastPlayed = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getString("characterId");
 			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getBigInteger("itemHash"));
 			p_currentEmblemPath = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getString("emblemPath");
+			p_currentBackgroundPath = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getString("backgroundPath");
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return false;
@@ -473,6 +489,13 @@ public class Guardian {
 		return df.format(p_thisWeekTrialsKD);
 	}
 	
+	public String getRumbleKD() {
+		if (Double.isNaN(p_rumbleKD)) return "N/A";
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		return df.format(p_rumbleKD);
+	}
+	
 	public String getThisYearTrialsKills() {
 		return p_thisYearTrialsKills;
 	}
@@ -508,12 +531,16 @@ public class Guardian {
 		return BungieHashDefines.GetSubclassForHash(p_characterLastPlayedSubclassHash).getName();
 	}
 	
-	public String getCharacterLaspPlayedSubclassIcon() {
+	public String getCharacterLastPlayedSubclassIcon() {
 		return BUNGIE_BASE_IMAGES + BungieHashDefines.GetSubclassForHash(p_characterLastPlayedSubclassHash).getIcon();
 	}
 	
 	public String getCharacterLastPlayedEmblem() {
 		return BUNGIE_BASE_IMAGES + p_currentEmblemPath;
+	}
+	
+	public String getCharacterLastPlayedBackgroundPath() {
+		return BUNGIE_BASE_IMAGES + p_currentBackgroundPath;
 	}
 	
 	public final GuardianWeaponStats getCurrentPrimaryWep() {

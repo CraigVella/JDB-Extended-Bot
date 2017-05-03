@@ -284,7 +284,7 @@ public class TrialsCommands extends CommandModule {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setColor(Color.YELLOW);
 			eb.setTitle(g.getName(), null);
-			eb.setFooter(g.getCharacterLastPlayedSubclass(), g.getCharacterLaspPlayedSubclassIcon());
+			eb.setFooter(g.getCharacterLastPlayedSubclass(), g.getCharacterLastPlayedSubclassIcon());
 			eb.setThumbnail(g.getCharacterLastPlayedEmblem());
 			eb.setDescription("```md\n" +
 					"[Trials Elo]("+ BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")" + (verbose ? "<RK:"+ BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">" : "") + "\n" +
@@ -305,7 +305,7 @@ public class TrialsCommands extends CommandModule {
 				}
 				eb = new EmbedBuilder();
 				eb.setColor(Color.YELLOW);
-				eb.setFooter(gFt.getCharacterLastPlayedSubclass(), gFt.getCharacterLaspPlayedSubclassIcon());
+				eb.setFooter(gFt.getCharacterLastPlayedSubclass(), gFt.getCharacterLastPlayedSubclassIcon());
 				eb.setThumbnail(gFt.getCharacterLastPlayedEmblem());
 				eb.setTitle(gFt.getName(), null);
 				eb.setDescription("```md\n" +
