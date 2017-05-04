@@ -23,8 +23,8 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	private MessageChannel p_sgaCourtyard = null;
 	private boolean p_disabled = false;
 
-	public SGAAutoPromoterCommands(JDA pJDA, SGAExtendedBot pbot) {
-		super(pJDA, pbot, "SGAAUTOPROMOTER");
+	public SGAAutoPromoterCommands(JDA pJDA, SGAExtendedBot pBot) {
+		super(pJDA, pBot, "SGAAUTOPROMOTER");
 		setModuleNameAndAuthor("SGA Auto Promoter", "ChaseHQ85");
 		p_sgaGuild = pJDA.getGuildById(SGA_GUILD_ID);
 		if (p_sgaGuild == null) {
@@ -36,7 +36,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 				System.out.println("Error Getting Courtyard Channel - Disabling Plugin");
 				p_disabled = true;
 			} else {
-				p_aptask = new SGAAutoPromoterTask(this);
+				p_aptask = new SGAAutoPromoterTask(this, pBot);
 				p_aptask.setTaskDelay(30);
 				p_aptask.setTaskName("SGA Auto Promoter");
 				getBot().addTask(p_aptask);

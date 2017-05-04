@@ -2,6 +2,7 @@ package com.reztek.modules.SGAAutoPromoter;
 
 import java.net.URLEncoder;
 
+import com.reztek.SGAExtendedBot;
 import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
@@ -14,8 +15,8 @@ public class SGAAutoPromoterTask extends Taskable {
 
 	private SGAAutoPromoterCommands p_sgaAutoPromoter = null;
 	
-	public SGAAutoPromoterTask(SGAAutoPromoterCommands sgaAutoPromoter) {
-		super();
+	public SGAAutoPromoterTask(SGAAutoPromoterCommands sgaAutoPromoter, SGAExtendedBot bot) {
+		super(bot);
 		p_sgaAutoPromoter = sgaAutoPromoter;
 	}
 	

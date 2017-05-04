@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import com.reztek.SGAExtendedBot;
 import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.utils.BotUtils;
@@ -18,6 +19,10 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
 public class TrialsList extends Taskable {
+	public TrialsList(SGAExtendedBot bot) {
+		super(bot);
+	}
+
 	public void addPlayer(MessageChannel mc, Guardian guardian, boolean verbose) {
 		if (guardian == null) return;
 		try {

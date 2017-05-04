@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.security.auth.login.LoginException;
 
+import com.reztek.Badges.BadgeCacheTask;
 import com.reztek.base.Taskable;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
@@ -48,6 +49,8 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh.addCommandModule(new GuardianControlCommands(jda, this));
 		p_mh.addCommandModule(new TrialsCommands(jda, this));
 		p_mh.addCommandModule(new SGAAutoPromoterCommands(jda, this));
+		
+		addTask(new BadgeCacheTask(this));
 		
 		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		
