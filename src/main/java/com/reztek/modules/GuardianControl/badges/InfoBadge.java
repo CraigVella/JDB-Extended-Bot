@@ -1,4 +1,4 @@
-package com.reztek.modules.GuardianControl.badges;
+package com.reztek.modules.GuardianControl.Badges;
 
 import java.awt.Color;
 import java.io.IOException;

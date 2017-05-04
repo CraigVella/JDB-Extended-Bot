@@ -1,6 +1,7 @@
 package com.reztek.modules.RumbleCommands;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
+import com.reztek.modules.RumbleCommands.Badges.RumbleBadge;
 import com.reztek.utils.BotUtils;
 import com.reztek.utils.MySQLConnector;
 
@@ -19,6 +21,11 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
 public class RumbleList extends Taskable {
+	public static final String RUMBLE_ALL = "-1";
+	public static final String RUMBLE_GOLD = "0";
+	public static final String RUMBLE_SILVER = "10";
+	public static final String RUMBLE_BRONZE = "20";
+	
 	public RumbleList(SGAExtendedBot bot) {
 		super(bot);
 	}
@@ -60,32 +67,51 @@ public class RumbleList extends Taskable {
 	
 	public void showList(MessageChannel mc, String startIndex, Color color) {
 		String Query = "SELECT * FROM rumbleList ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
-		if (startIndex.equals("-1")) {
+		if (startIndex.equals(RUMBLE_ALL)) {
 			Query = "SELECT * FROM rumbleList ORDER BY rank ASC";
 			startIndex = "0";
 		} 
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult(Query);
 		try {
-			int x = 1;
-			String platformName = "";
-			String rumbleList = "";
-			while (rs.next()) {
-				if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
-				if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-				rumbleList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
-						rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) + 
-						" (Rank:"+ BotUtils.getPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
-						platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
-			}
-			MessageBuilder mb = new MessageBuilder();
-			mb.append(rumbleList);
-			int page = 0;
-			for (Message msg : mb.buildAll(SplitPolicy.NEWLINE)) {
-				EmbedBuilder em = new EmbedBuilder();
-				em.setDescription((page == 0 ? "**Current Rumble Leaders**" : "") + "```" + msg.getRawContent() + "```");
-				em.setColor(color);
-				mc.sendMessage(em.build()).queue();
-				page++;
+			if (startIndex.equals(RUMBLE_ALL)) {
+				int x = 1;
+				String platformName = "";
+				String rumbleList = "";
+				while (rs.next()) {
+					if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
+					if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
+					rumbleList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
+							rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) + 
+							" (Rank:"+ BotUtils.getPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
+							platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
+				}
+				MessageBuilder mb = new MessageBuilder();
+				mb.append(rumbleList);
+				int page = 0;
+				for (Message msg : mb.buildAll(SplitPolicy.NEWLINE)) {
+					EmbedBuilder em = new EmbedBuilder();
+					em.setDescription((page == 0 ? "**Current Rumble Leaders**" : "") + "```" + msg.getRawContent() + "```");
+					em.setColor(color);
+					mc.sendMessage(em.build()).queue();
+					page++;
+				}
+			} else {
+				try {
+					RumbleBadge rb = RumbleBadge.BadgeFromType(startIndex);
+					while (rs.next()) {
+						String platformName = "";
+						if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
+						if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
+						rb.addPlayer(rs.getString("playerName"), rs.getString("rank"), rs.getString("elo"), platformName);
+					}
+					EmbedBuilder em = new EmbedBuilder();
+					em.setColor(color);
+					em.setImage(rb.finalizeBadge());
+					mc.sendMessage(em.build()).queue();
+					rb.cleanup();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

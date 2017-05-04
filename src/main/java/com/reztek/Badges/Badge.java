@@ -51,6 +51,10 @@ public class Badge {
 	}
 	
 	public void setFontNameSizeColorType(String fontName, int fontSize, Color color, int type) {
+		p_fontName = fontName;
+		p_fontSize = fontSize;
+		p_fontColor = color;
+		p_fontType = type;
 		p_gx.setFont(BadgeFont.FontFromName(fontName).deriveFont(type, fontSize));
 		p_gx.setColor(color);
 	}

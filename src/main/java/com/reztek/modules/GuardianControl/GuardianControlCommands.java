@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
+import com.reztek.modules.GuardianControl.Badges.InfoBadge;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
-import com.reztek.modules.GuardianControl.badges.InfoBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;

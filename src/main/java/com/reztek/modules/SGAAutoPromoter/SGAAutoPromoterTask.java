@@ -1,5 +1,6 @@
 package com.reztek.modules.SGAAutoPromoter;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import com.reztek.SGAExtendedBot;
@@ -41,7 +42,11 @@ public class SGAAutoPromoterTask extends Taskable {
 						getSGAAutoPromoterCommands().getSGAGuild().getController().addRolesToMember(m, getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId())).queue();
 						EmbedBuilder eb = new EmbedBuilder();
 						eb.setDescription(m.getAsMention());
-						eb.setImage("http://reztek.net/SGA/SGAFunctions.php?u=" + URLEncoder.encode(g.getName()) + "&r=" + URLEncoder.encode(rank.getRankTitle()));
+						try {
+							eb.setImage("http://reztek.net/SGA/SGAFunctions.php?u=" + URLEncoder.encode(g.getName(), "UTF-8") + "&r=" + URLEncoder.encode(rank.getRankTitle(), "UTF-8"));
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
 						eb.setColor(getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId()).getColor());
 						eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
 						getSGAAutoPromoterCommands().getSGACourtyardChannel().sendMessage(eb.build()).queue();
