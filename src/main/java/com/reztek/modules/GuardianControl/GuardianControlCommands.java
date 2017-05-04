@@ -1,13 +1,13 @@
 package com.reztek.modules.GuardianControl;
 
-import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
-import com.reztek.utils.BotUtils;
+import com.reztek.modules.GuardianControl.badges.InfoBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -53,9 +53,9 @@ public class GuardianControlCommands extends CommandModule {
 				}
 				break;
 
-			case "secondary":
-			case "secondary-ps":
-			case "secondary-xb":
+			case "special":
+			case "special-ps":
+			case "special-xb":
 				if (args == null) {
 					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
 					loadOutInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), LOADOUT_SPECIAL_ONLY);
@@ -146,15 +146,14 @@ public class GuardianControlCommands extends CommandModule {
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			EmbedBuilder eb = new EmbedBuilder();
-			eb.setTitle("Here's some info about **" + g.getName() + "**.", null);
-			eb.setThumbnail(g.getCharacterLastPlayedEmblem());
-			eb.setColor(Color.GREEN);
-			eb.setDescription("```md\n" +
-					"[Rumble Elo](" + BotUtils.getPaddingForLen(g.getRumbleELO(), 4) + g.getRumbleELO() +")<RK:" + BotUtils.getPaddingForLen(g.getRumbleRank(), 6) + g.getRumbleRank() +">\n" +
-					"[Trials Elo](" + BotUtils.getPaddingForLen(g.getTrialsELO(), 4) + g.getTrialsELO() +")<RK:" + BotUtils.getPaddingForLen(g.getTrialsRank(), 6) + g.getTrialsRank() +">\n" +
-					"[Flawlesses](" + BotUtils.getPaddingForLen(g.getLighthouseCount(), 4) + g.getLighthouseCount() +")\n" +
-					"```");
-			mc.sendMessage(eb.build()).queue();
+			try {
+				InfoBadge b = new InfoBadge(g);
+				eb.setImage(b.finalizeBadge());
+				b.cleanup();
+				mc.sendMessage(eb.build()).queue();
+			} catch (IOException e) {
+				mc.sendMessage("Something went wrong... [GuardianControlCommands.playerInfo()] Tellsomeone?").queue();
+			}
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}

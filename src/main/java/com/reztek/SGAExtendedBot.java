@@ -1,12 +1,15 @@
 package com.reztek;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.security.auth.login.LoginException;
 
+import com.reztek.Badges.BadgeCacheTask;
 import com.reztek.base.Taskable;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
@@ -47,9 +50,15 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh.addCommandModule(new TrialsCommands(jda, this));
 		p_mh.addCommandModule(new SGAAutoPromoterCommands(jda, this));
 		
+		addTask(new BadgeCacheTask(this));
+		
 		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		
 		jda.setAutoReconnect(true);
+	}
+	
+	public Collection<Taskable> getTasks() {
+		return Collections.unmodifiableCollection(p_taskList);
 	}
 	
 	public void addTask(Taskable task) {
@@ -89,7 +98,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		if (!p_tasksrunning.get()) {
 			p_tasksrunning.set(true);
 			synchronized (p_taskList) {
-				for (Taskable task : p_taskList) {
+				for (Taskable task : getTasks()) {
 					try {
 						task.__taskTick();
 					} catch (Exception e) {

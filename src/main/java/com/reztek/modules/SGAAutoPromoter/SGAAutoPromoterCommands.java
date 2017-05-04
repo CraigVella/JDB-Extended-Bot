@@ -1,5 +1,7 @@
 package com.reztek.modules.SGAAutoPromoter;
 
+import java.net.URLEncoder;
+
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
@@ -21,8 +23,8 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	private MessageChannel p_sgaCourtyard = null;
 	private boolean p_disabled = false;
 
-	public SGAAutoPromoterCommands(JDA pJDA, SGAExtendedBot pbot) {
-		super(pJDA, pbot, "SGAAUTOPROMOTER");
+	public SGAAutoPromoterCommands(JDA pJDA, SGAExtendedBot pBot) {
+		super(pJDA, pBot, "SGAAUTOPROMOTER");
 		setModuleNameAndAuthor("SGA Auto Promoter", "ChaseHQ85");
 		p_sgaGuild = pJDA.getGuildById(SGA_GUILD_ID);
 		if (p_sgaGuild == null) {
@@ -34,8 +36,9 @@ public class SGAAutoPromoterCommands extends CommandModule {
 				System.out.println("Error Getting Courtyard Channel - Disabling Plugin");
 				p_disabled = true;
 			} else {
-				p_aptask = new SGAAutoPromoterTask(this);
+				p_aptask = new SGAAutoPromoterTask(this, pBot);
 				p_aptask.setTaskDelay(30);
+				p_aptask.setTaskName("SGA Auto Promoter");
 				getBot().addTask(p_aptask);
 			}
 		}
@@ -62,9 +65,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 			if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
 				EmbedBuilder eb = new EmbedBuilder();
 				SGARank rank = SGARankDefines.GetRankForID(args);
-				eb.setDescription("```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
-						+ "GuardianName HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
-								+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
+				eb.setImage("http://reztek.net/SGA/SGAFunctions.php?u=" + URLEncoder.encode(mre.getAuthor().getName()) + "&r=" + URLEncoder.encode(rank.getRankTitle()));
 				eb.setColor(getSGAGuild().getRoleById(rank.getRankId()).getColor());
 				eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
 				mre.getChannel().sendMessage(eb.build()).queue();

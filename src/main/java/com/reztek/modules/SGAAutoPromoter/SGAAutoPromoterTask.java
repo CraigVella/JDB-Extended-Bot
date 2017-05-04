@@ -1,5 +1,8 @@
 package com.reztek.modules.SGAAutoPromoter;
 
+import java.net.URLEncoder;
+
+import com.reztek.SGAExtendedBot;
 import com.reztek.base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
@@ -12,8 +15,8 @@ public class SGAAutoPromoterTask extends Taskable {
 
 	private SGAAutoPromoterCommands p_sgaAutoPromoter = null;
 	
-	public SGAAutoPromoterTask(SGAAutoPromoterCommands sgaAutoPromoter) {
-		super();
+	public SGAAutoPromoterTask(SGAAutoPromoterCommands sgaAutoPromoter, SGAExtendedBot bot) {
+		super(bot);
 		p_sgaAutoPromoter = sgaAutoPromoter;
 	}
 	
@@ -37,9 +40,8 @@ public class SGAAutoPromoterTask extends Taskable {
 					if (SGARankDefines.ShouldUpgradeToRank(m, rank)) {
 						getSGAAutoPromoterCommands().getSGAGuild().getController().addRolesToMember(m, getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId())).queue();
 						EmbedBuilder eb = new EmbedBuilder();
-						eb.setDescription(m.getAsMention() + "\n```markdown\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]\n\n"
-								        + g.getName() + " HAS PROGRESSED TO RANK (" + rank.getRankTitle() + ")"
-										+ "\n\n[ATTENTION][ATTENTION][ATTENTION][ATTENTION][ATTENTION]```");
+						eb.setDescription(m.getAsMention());
+						eb.setImage("http://reztek.net/SGA/SGAFunctions.php?u=" + URLEncoder.encode(g.getName()) + "&r=" + URLEncoder.encode(rank.getRankTitle()));
 						eb.setColor(getSGAAutoPromoterCommands().getSGAGuild().getRoleById(rank.getRankId()).getColor());
 						eb.setFooter("Congratulations Guardian", "https://s-media-cache-ak0.pinimg.com/736x/15/fc/63/15fc63d39f85b5c73b286a58781645ae.jpg");
 						getSGAAutoPromoterCommands().getSGACourtyardChannel().sendMessage(eb.build()).queue();

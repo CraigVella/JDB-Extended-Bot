@@ -1,12 +1,12 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 1.6**
+**Current Bot Commands as of Version 1.7**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
     1.  version                                         - Shows version of current Bot
     2.  decision                       <Question>       - Helps you with a decision :)
-    3.  debugguardian                  <PlayerName>     - Outputs guradian debug information
+    3.  debugguardian                  <PlayerName>     - Outputs Guardian debug information
     4.  info[-ps][-xb]                 [PlayerName]     - General information about player
     5.  rumblelistgold                                  - Displays top 10 of rumble list
     6.  rumblelistsilver                                - Displays rank 11-20 of rumble list
@@ -16,7 +16,7 @@ All commands begin with an '!'
     10. rumblelist                                      - MOD ONLY - Displays in channel full rumble list
     11. rumblelist-csv                                  - MOD ONLY - PM's a CSV export of full rumble list
     12. rumblelistrefresh                               - MOD ONLY - Refresh's all the stats in the current rumble list
-	 13. rumblelist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
+    13. rumblelist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
     14. trialsmap                                       - Displays current trials map with picture
     15. fireteam[-ps][-xb]             <PlayerName>     - Displays information about current players ToO Fireteam
     16. fireteam+[-ps][-xb]            <PlayerName>     - Displays Detailed information about current players ToO Fireteam
@@ -34,9 +34,10 @@ All commands begin with an '!'
     28. showmodules                                     - Displays currently loaded command modules
     29. runpromotions                                   - MOD ONLY - Forces promotions to run on SGA
     30. primary[-ps][-xb]              [PlayerName]     - Displays Players Primary Weapon 
-    31. secondary[-ps][-xb]            [PlayerName]     - Displays Players Secondary Weapon 
+    31. special[-ps][-xb]              [PlayerName]     - Displays Players Secondary Weapon 
     32. heavy[-ps][-xb]                [PlayerName]     - Displays Players Heavy Weapon 
     33. loadout[-ps][-xb]              [PlayerName]     - Displays Players Weapon Loadout
+    34. showtasks                                       - Displays current tasks, run time, and when they will next run
 
     [] = optional
     <> = Required

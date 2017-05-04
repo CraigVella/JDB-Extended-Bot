@@ -24,12 +24,14 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class RumbleCommands extends CommandModule {
 	
-	protected RumbleList p_rumbleList = new RumbleList();
+	protected RumbleList p_rumbleList = null;
 
 	public RumbleCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"RUMBLECOMMANDS");
 		setModuleNameAndAuthor("Rumble", "ChaseHQ85");
 		// I have a task!
+		p_rumbleList = new RumbleList(pBot);
+		p_rumbleList.setTaskName("RumbleList Refresh");
 		p_rumbleList.setTaskDelay(90);
 		getBot().addTask(p_rumbleList);
 	}
