@@ -33,11 +33,12 @@ public class TrialsCommands extends CommandModule {
 	private static final String DTR_MAP_URL = "https://api.destinytrialsreport.com/currentMap";
 	private static final String BUNGIE_BASE = "https://www.bungie.net";
 	
-	protected TrialsList p_trialsList = new TrialsList();
+	protected TrialsList p_trialsList = null;
 
 	public TrialsCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"TRIALSCOMMANDS");
 		// I have a task!
+		p_trialsList = new TrialsList(pBot);
 		p_trialsList.setTaskName("TrialsList Refresh");
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(100);

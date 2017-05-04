@@ -1,23 +1,13 @@
 package com.reztek.modules.GuardianControl;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
-
-import javax.imageio.ImageIO;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
-import com.reztek.secret.GlobalDefs;
+import com.reztek.modules.GuardianControl.badges.InfoBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -157,52 +147,9 @@ public class GuardianControlCommands extends CommandModule {
 		if (g != null) {
 			EmbedBuilder eb = new EmbedBuilder();
 			try {
-				File f = new File(GlobalDefs.LOCAL_IMGFOLDER + String.valueOf(new Date().getTime()) + g.getId() + ".png");
-				f.createNewFile();
-				
-				BufferedImage gEmblem = ImageIO.read(new URL(g.getCharacterLastPlayedEmblem()));
-				BufferedImage gBackground = ImageIO.read(new URL(g.getCharacterLastPlayedBackgroundPath()));
-				BufferedImage im = ImageIO.read(getClass().getResourceAsStream("GC_INFO.png"));
-				Graphics2D gr = im.createGraphics();
-				
-				gr.drawImage(gBackground, 3, 2, gBackground.getWidth(), gBackground.getHeight(), null);
-				gr.drawImage(gEmblem, 3,2, gEmblem.getWidth(), gEmblem.getHeight(),null);
-				
-				gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-				gr.setFont(new Font("Arial Bold", Font.PLAIN, 24));
-				gr.setColor(Color.BLACK);
-				gr.drawString(g.getName(), 112, 47);
-				gr.setColor(Color.WHITE);
-				gr.drawString(g.getName(), 110, 45);
-				
-				
-				gr.setFont(new Font("Arial Bold", Font.PLAIN, 14));
-				gr.drawString(g.getCharacterLastPlayedSubclass(), 110, 65);
-				
-				gr.setFont(new Font("Arial Bold", Font.PLAIN, 20));
-				gr.setColor(Color.GRAY);
-				gr.drawString(g.getTrialsELO(), 206 - gr.getFontMetrics().stringWidth(g.getTrialsELO()), 197);
-				gr.drawString(g.getRumbleELO(), 206 - gr.getFontMetrics().stringWidth(g.getRumbleELO()), 254);
-				gr.drawString(g.getTrialsRank(), 336 - gr.getFontMetrics().stringWidth(g.getTrialsRank()), 197);
-				gr.drawString(g.getRumbleRank(), 336 - gr.getFontMetrics().stringWidth(g.getRumbleRank()), 254);
-				gr.drawString(g.getThisYearTrialsKD(), 431 - gr.getFontMetrics().stringWidth(g.getThisYearTrialsKD()), 197);
-				gr.drawString(g.getRumbleKD(), 431 - gr.getFontMetrics().stringWidth(g.getRumbleKD()), 254);
-				gr.drawString(g.getLighthouseCount()+"X", 166, 312);
-				
-				gr.setColor(Color.BLACK);
-				gr.drawString(g.getTrialsELO(), 205 - gr.getFontMetrics().stringWidth(g.getTrialsELO()), 196);
-				gr.drawString(g.getRumbleELO(), 205 - gr.getFontMetrics().stringWidth(g.getRumbleELO()), 253);
-				gr.drawString(g.getTrialsRank(), 335 - gr.getFontMetrics().stringWidth(g.getTrialsRank()), 196);
-				gr.drawString(g.getRumbleRank(), 335 - gr.getFontMetrics().stringWidth(g.getRumbleRank()), 253);
-				gr.drawString(g.getThisYearTrialsKD(), 430 - gr.getFontMetrics().stringWidth(g.getThisYearTrialsKD()), 196);
-				gr.drawString(g.getRumbleKD(), 430 - gr.getFontMetrics().stringWidth(g.getRumbleKD()), 253);
-				gr.setColor(new Color(17,114,4));
-				gr.drawString(g.getLighthouseCount()+"X", 165, 311);
-				
-				ImageIO.write(im, "png", f);
-				gr.dispose();
-				eb.setImage(GlobalDefs.WWW_HOST + GlobalDefs.WWW_IMGFOLDER + f.getName());
+				InfoBadge b = new InfoBadge(g);
+				eb.setImage(b.finalizeBadge());
+				b.cleanup();
 				mc.sendMessage(eb.build()).queue();
 			} catch (IOException e) {
 				mc.sendMessage("Something went wrong... [GuardianControlCommands.playerInfo()] Tellsomeone?").queue();

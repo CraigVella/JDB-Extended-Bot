@@ -1,9 +1,16 @@
 package com.reztek.base;
 
+import com.reztek.SGAExtendedBot;
+
 public abstract class Taskable {
 	protected int __delay = 0;
 	private int ___delayCount = 0;
 	private String p_TaskName = null;
+	private SGAExtendedBot p_bot = null;
+	
+	public Taskable(SGAExtendedBot bot) {
+		p_bot = bot;
+	}
 	
 	public abstract void runTask();
 	
@@ -33,5 +40,9 @@ public abstract class Taskable {
 	
 	public int getTaskDelay() {
 		return __delay;
+	}
+	
+	public SGAExtendedBot getBot() {
+		return p_bot;
 	}
 }
