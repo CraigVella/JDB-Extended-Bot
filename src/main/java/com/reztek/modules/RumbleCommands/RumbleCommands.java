@@ -52,7 +52,7 @@ public class RumbleCommands extends CommandModule {
 			break;
 			case "rumblelist":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-					rumbleList(mre.getChannel(), "-1", Color.WHITE);
+					rumbleList(mre.getChannel(), RumbleList.RUMBLE_ALL, Color.WHITE);
 				}
 				break;
 			case "rumblelist-csv":
@@ -61,13 +61,16 @@ public class RumbleCommands extends CommandModule {
 				} 
 				break;
 			case "rumblelistgold":
-				rumbleList(mre.getChannel(), "0", new Color(212,175,55));
+				rumbleList(mre.getChannel(), RumbleList.RUMBLE_GOLD, new Color(212,175,55));
 				break;
 			case "rumblelistsilver":
-				rumbleList(mre.getChannel(), "10", new Color(192,192,192));
+				rumbleList(mre.getChannel(), RumbleList.RUMBLE_SILVER, new Color(192,192,192));
 				break;
 			case "rumblelistbronze":
-				rumbleList(mre.getChannel(), "20", new Color(205, 127, 50));
+				rumbleList(mre.getChannel(), RumbleList.RUMBLE_BRONZE, new Color(205, 127, 50));
+				break;
+			case "rumblelistwood":
+				rumbleList(mre.getChannel(), RumbleList.RUMBLE_WOOD, new Color(160, 82, 45));
 				break;
 			case "rumblerefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {

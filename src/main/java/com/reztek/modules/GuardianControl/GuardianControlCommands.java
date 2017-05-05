@@ -5,9 +5,10 @@ import java.util.ArrayList;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
+import com.reztek.modules.GuardianControl.Badges.InfoBadge;
+import com.reztek.secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
-import com.reztek.modules.GuardianControl.badges.InfoBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -150,6 +151,10 @@ public class GuardianControlCommands extends CommandModule {
 				InfoBadge b = new InfoBadge(g);
 				eb.setImage(b.finalizeBadge());
 				b.cleanup();
+				String platformS = null, platformD = null;
+				if (g.getPlatform().equals("1")) { platformS = "XB"; platformD = "XBox"; }
+				if (g.getPlatform().equals("2")) { platformS = "PS"; platformD = "Playstation"; }
+				eb.setFooter(platformD + " Guardian", GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + platformS + "_ICON.png");
 				mc.sendMessage(eb.build()).queue();
 			} catch (IOException e) {
 				mc.sendMessage("Something went wrong... [GuardianControlCommands.playerInfo()] Tellsomeone?").queue();

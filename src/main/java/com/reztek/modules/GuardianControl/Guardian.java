@@ -116,23 +116,23 @@ public class Guardian {
 	private GuardianWeaponStats p_currentHeavyWep = new GuardianWeaponStats();
 	
 	// -- Guardian GG
-	private String p_rumbleELO = null;
-	private String p_rumbleRank = null;
+	private String p_rumbleELO = "N/A";
+	private String p_rumbleRank = "N/A";
 	private float  p_rumbleKD = 0;
-	private String p_trialsELO = null;
-	private String p_trialsRank = null;
-	private String p_lighthouseCount = null;
+	private String p_trialsELO = "N/A";
+	private String p_trialsRank = "N/A";
+	private String p_lighthouseCount = "0";
 	
 	// -- Destiny Trials Report
-	private String p_thisWeekTrialsFlawless = null;
-	private String p_thisWeekTrialsMatches = null;
-	private String p_thisWeekTrialsLosses = null;
-	private String p_thisWeekTrialsKills = null;
-	private String p_thisWeekTrialsDeaths = null;
+	private String p_thisWeekTrialsFlawless = "0";
+	private String p_thisWeekTrialsMatches = "0";
+	private String p_thisWeekTrialsLosses = "0";
+	private String p_thisWeekTrialsKills = "0";
+	private String p_thisWeekTrialsDeaths = "0";
 	private float  p_thisWeekTrialsKD = 0;
-	private String p_thisYearTrialsMatches = null;
-	private String p_thisYearTrialsKills = null;
-	private String p_thisYearTrialsDeaths = null;
+	private String p_thisYearTrialsMatches = "0";
+	private String p_thisYearTrialsKills = "0";
+	private String p_thisYearTrialsDeaths = "0";
 	private float  p_thisYearTrialsKD = 0;
 	private ArrayList<GuardianWeaponStats> p_thisMapWepStats = new ArrayList<GuardianWeaponStats>();
 	private ArrayList<GuardianWeaponStats> p_thisWeekMapWepStats = new ArrayList<GuardianWeaponStats>();

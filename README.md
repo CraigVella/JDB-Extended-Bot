@@ -1,6 +1,6 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 1.7**
+**Current Bot Commands as of Version 1.8**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
@@ -38,6 +38,7 @@ All commands begin with an '!'
     32. heavy[-ps][-xb]                [PlayerName]     - Displays Players Heavy Weapon 
     33. loadout[-ps][-xb]              [PlayerName]     - Displays Players Weapon Loadout
     34. showtasks                                       - Displays current tasks, run time, and when they will next run
+    35. rumblelistwood                                  - Displays rank 31-40 of rumble list
 
     [] = optional
     <> = Required

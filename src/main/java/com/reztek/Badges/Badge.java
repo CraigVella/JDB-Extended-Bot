@@ -36,6 +36,10 @@ public class Badge {
 		setFontNameSizeColorType(p_fontName, p_fontSize, p_fontColor, p_fontType);
 	}
 	
+	public void drawImage(BufferedImage bi, int x, int y) throws IOException {
+		drawImage(bi, x, y, bi.getWidth(), bi.getHeight());
+	}
+	
 	public void drawURLImage(URL urlImg, int x, int y) throws IOException {
 		BufferedImage bi = ImageIO.read(urlImg);
 		drawImage(bi, x, y, bi.getWidth(), bi.getHeight());
@@ -51,6 +55,10 @@ public class Badge {
 	}
 	
 	public void setFontNameSizeColorType(String fontName, int fontSize, Color color, int type) {
+		p_fontName = fontName;
+		p_fontSize = fontSize;
+		p_fontColor = color;
+		p_fontType = type;
 		p_gx.setFont(BadgeFont.FontFromName(fontName).deriveFont(type, fontSize));
 		p_gx.setColor(color);
 	}
@@ -105,10 +113,10 @@ public class Badge {
 		SecureRandom random = new SecureRandom();
 		int num = random.nextInt(10000000);
 		String formatted = String.format("%07d", num); 
-		File f = new File((GlobalDefs.BOT_DEV ? GlobalDefs.LOCAL_DEV_IMGFOLDER : GlobalDefs.LOCAL_IMGFOLDER) + String.valueOf(new Date().getTime()) + "_" + formatted + ".png");
+		File f = new File((GlobalDefs.BOT_DEV ? GlobalDefs.LOCAL_DEV_BADGE_CACHE : GlobalDefs.LOCAL_BADGE_CACHE) + String.valueOf(new Date().getTime()) + "_" + formatted + ".png");
 		f.createNewFile();
 		ImageIO.write(p_baseImage,"png", f);
-		return GlobalDefs.WWW_HOST + GlobalDefs.WWW_IMGFOLDER + f.getName();
+		return GlobalDefs.WWW_HOST + GlobalDefs.WWW_BADGE_CACHE + f.getName();
 	}
 	
 	public void cleanup() {
