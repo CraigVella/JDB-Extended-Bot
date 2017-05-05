@@ -59,9 +59,9 @@ public class TrialsList extends Taskable {
 	}
 	
 	public void showList(MessageChannel mc, String startIndex, Color color) {
-		String Query = "SELECT * FROM trialsList ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
+		String Query = "SELECT * FROM trialsList WHERE rank IS NOT NULL ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
 		if (startIndex.equals("-1")) {
-			Query = "SELECT * FROM trialsList ORDER BY rank ASC";
+			Query = "SELECT * FROM trialsList WHERE rank IS NOT NULL ORDER BY rank ASC";
 			startIndex = "0";
 		} 
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult(Query);

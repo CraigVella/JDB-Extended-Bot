@@ -66,9 +66,9 @@ public class RumbleList extends Taskable {
 	}
 	
 	public void showList(MessageChannel mc, String startIndex, Color color) {
-		String Query = "SELECT * FROM rumbleList ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
+		String Query = "SELECT * FROM rumbleList WHERE rank IS NOT NULL ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
 		if (startIndex.equals(RUMBLE_ALL)) {
-			Query = "SELECT * FROM rumbleList ORDER BY rank ASC";
+			Query = "SELECT * FROM rumbleList WHERE rank IS NOT NULL ORDER BY rank ASC";
 			startIndex = "0";
 		} 
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult(Query);
