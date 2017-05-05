@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.reztek.Badges.Badge;
+import com.reztek.Badges.StockImages.StockImages;
 import com.reztek.modules.RumbleCommands.RumbleList;
 
 public class RumbleBadge extends Badge {
@@ -21,6 +22,10 @@ public class RumbleBadge extends Badge {
 		InputStream is = null;
 		int playerOffset = 0;
 		switch (BadgeType) {
+		case RumbleList.RUMBLE_WOOD:
+			is = RumbleBadge.class.getResourceAsStream("SGA_RWOOD.png");
+			playerOffset = 30;
+			break;
 		case RumbleList.RUMBLE_BRONZE:
 			is = RumbleBadge.class.getResourceAsStream("SGA_RBRONZE.png");
 			playerOffset = 20;
@@ -43,14 +48,16 @@ public class RumbleBadge extends Badge {
 	public boolean addPlayer(String name, String rank, String elo, String console) {
 		if (p_playerCount >= 10) return false;
 		setFontName("Arial Bold");
-		setFontSize(18);
-		drawShadowedText(String.valueOf(++p_playerCount + p_playerOffset) + ".", 120, 170 + (p_playerCount * 30), true, Color.BLACK, Color.GRAY);
-		setFontName("Arial Narrow");
-		drawShadowedText(name, 125, 170 + (p_playerCount * 30), false, Color.BLACK, Color.GRAY);
-		setFontName("Arial Bold");
-		drawShadowedText(rank, 330, 170 + (p_playerCount * 30), true, Color.BLACK, Color.GRAY);
-		drawShadowedText(elo, 465, 170 + (p_playerCount * 30), true, Color.BLACK, Color.GRAY);
-		drawShadowedText(console, 550, 170 + (p_playerCount * 30), false, Color.BLACK, Color.GRAY);
+		setFontSize(22);
+		drawShadowedText(String.valueOf(++p_playerCount + p_playerOffset) + ".", 55, 160 + (p_playerCount * 30), true, Color.DARK_GRAY, Color.GRAY);
+		setFontColor(Color.BLACK);
+		drawText(name, 60, 160 + (p_playerCount * 30), false);
+		setFontColor(Color.BLACK);
+		drawText(rank, 315, 160 + (p_playerCount * 30), true);
+		drawText(elo, 415, 160 + (p_playerCount * 30), true);
+		try {
+			drawImage(StockImages.ImageFromName(console + "_ICON_C.png"),480,140 + (p_playerCount * 30), 25,25);
+		} catch (IOException e) {}
 		return true;
 	}
 

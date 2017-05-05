@@ -69,6 +69,9 @@ public class RumbleCommands extends CommandModule {
 			case "rumblelistbronze":
 				rumbleList(mre.getChannel(), RumbleList.RUMBLE_BRONZE, new Color(205, 127, 50));
 				break;
+			case "rumblelistwood":
+				rumbleList(mre.getChannel(), RumbleList.RUMBLE_WOOD, new Color(160, 82, 45));
+				break;
 			case "rumblerefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
 					rumbleRefresh(mre.getChannel());

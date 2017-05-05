@@ -21,10 +21,11 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
 public class RumbleList extends Taskable {
-	public static final String RUMBLE_ALL = "-1";
-	public static final String RUMBLE_GOLD = "0";
+	public static final String RUMBLE_ALL    = "-1";
+	public static final String RUMBLE_GOLD   = "0";
 	public static final String RUMBLE_SILVER = "10";
 	public static final String RUMBLE_BRONZE = "20";
+	public static final String RUMBLE_WOOD   = "30";
 	
 	public RumbleList(SGAExtendedBot bot) {
 		super(bot);

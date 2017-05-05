@@ -27,7 +27,7 @@ public class BadgeCacheTask extends Taskable{
 	
 	public void cleanCache() {
 		System.out.println("Starting Cache Cleaning Check...");
-		File cacheDir = new File((GlobalDefs.BOT_DEV ? GlobalDefs.LOCAL_DEV_IMGFOLDER : GlobalDefs.LOCAL_IMGFOLDER));
+		File cacheDir = new File((GlobalDefs.BOT_DEV ? GlobalDefs.LOCAL_DEV_BADGE_CACHE : GlobalDefs.LOCAL_BADGE_CACHE));
 		if (!cacheDir.isDirectory()) {
 			System.out.println("GlobalDefs.LOCAL_IMGFOLDER is not a Directory!");
 			return;
