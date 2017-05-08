@@ -397,10 +397,13 @@ public class Guardian {
 					StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
 					// Add Ignores here
 					if (shr.getHash().equals("1270552711")) continue;
-					if (shr.getHash().equals("643689081")) continue;
-					if (shr.getHash().equals("472357138")) continue;
+					if (shr.getHash().equals("643689081" )) continue;
+					if (shr.getHash().equals("472357138" )) continue;
 					if (shr.getHash().equals("1975859941")) continue;
 					if (shr.getHash().equals("2688431654")) continue;
+					if (shr.getHash().equals("2133116599")) continue; // Deactivate Chroma
+					if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
+					// Ignores Complete
 					gw.p_PerkList.add(new GuardianWeaponPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
 				}
 			}
