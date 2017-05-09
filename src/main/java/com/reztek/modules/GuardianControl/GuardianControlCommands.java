@@ -2,6 +2,7 @@ package com.reztek.modules.GuardianControl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.base.CommandModule;
@@ -13,6 +14,7 @@ import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class GuardianControlCommands extends CommandModule {
@@ -43,6 +45,16 @@ public class GuardianControlCommands extends CommandModule {
 					debugGuardian(mre.getChannel(), args);
 				}
 			break;
+			case "getauthguardian":
+			case "getauthguardian-ps":
+			case "getauthguardian-xb":
+				if (args != null) {
+					sendHelpString(mre, "!getAuthGuardian[-ps][-xb]");
+				} else {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					getAuthGuardian(mre, d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command));
+				}
+				break;
 			case "primary":
 			case "primary-ps":
 			case "primary-p-xb":
@@ -171,5 +183,25 @@ public class GuardianControlCommands extends CommandModule {
 					   "Name: " + g.getName() + "\n" + 
 				       "Platform: " + g.getPlatform()).queue();
 		
+	}
+	
+	protected void getAuthGuardian(MessageReceivedEvent mre, String playerName, String platform) {
+		mre.getChannel().sendTyping().queue();
+		AuthenticatedGuardian ag = AuthenticatedGuardian.AuthenticatedGuardianFromNameAndPlatform(playerName, platform);
+		PrivateChannel pc;
+		try {
+			pc = mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get();
+			if (ag == null) {
+				pc.sendMessage("Hey " + mre.getAuthor().getAsMention() + ", You need to allow us permission - Follow this link\n" + GlobalDefs.BUNGIE_APP_AUTH).queue();
+			} else {
+				if (ag.areTokensValid()) {
+					pc.sendMessage(mre.getAuthor().getAsMention() + ", I have succesfully validated that we have permission to your authenticated character").queue();
+				} else {
+					pc.sendMessage(mre.getAuthor().getAsMention() + ", It's been a while, I need you to reauthenticate with us here - \n" + GlobalDefs.BUNGIE_APP_AUTH).queue();
+				}
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			mre.getChannel().sendMessage(mre.getAuthor().getAsMention() + ", I tried to open private chat with you but it failed. Let me?").queue();
+		}
 	}
 }

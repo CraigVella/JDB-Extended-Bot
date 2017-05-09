@@ -1,6 +1,7 @@
 package com.reztek.utils;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +27,7 @@ public abstract class BotUtils {
 		return padding;
 	}
 	
-	public static String getJSONString(String sURL, HashMap<String, String> props) {
+	public static String getJSONStringGet(String sURL, HashMap<String, String> props) {
 		String retObj = null;
 		
 		try {
@@ -40,6 +41,44 @@ public abstract class BotUtils {
 				for (String key : keys) {
 					urlConnection.setRequestProperty(key, props.get(key));
 				}
+			}
+			
+			InputStream is = urlConnection.getInputStream();
+			String enc = urlConnection.getContentEncoding() == null ? "UTF-8" : urlConnection.getContentEncoding();
+			String jsonReq = IOUtils.toString(is,enc);
+			
+			retObj = jsonReq;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return retObj;
+	}
+	
+	public static String getJSONStringPost(String sURL, HashMap<String, String> props, String content) {
+		String retObj = null;
+		
+		try {
+			URL url = new URL(sURL);
+			HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+			urlConnection.setDoOutput(true);
+			urlConnection.setInstanceFollowRedirects(false);
+			urlConnection.addRequestProperty("User-Agent", "Mozilla/4.76"); 
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setUseCaches(false);
+			urlConnection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded"); 
+			urlConnection.setRequestProperty( "charset", "utf-8");
+			urlConnection.setRequestProperty( "Content-Length", Integer.toString( content.getBytes().length ));
+			if (props != null) {
+				Set<String> keys = props.keySet();
+				for (String key : keys) {
+					urlConnection.setRequestProperty(key, props.get(key));
+				}
+			}
+			
+			try (DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream())) {
+				wr.write(content.getBytes());
+				wr.close();
 			}
 			
 			InputStream is = urlConnection.getInputStream();
