@@ -185,7 +185,7 @@ public class TrialsCommands extends CommandModule {
 	
 	protected void trialsMap(MessageReceivedEvent mre) {
 		mre.getChannel().sendTyping().queue();
-		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONString(DTR_MAP_URL, null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONStringGet(DTR_MAP_URL, null) + "}").getJSONArray("DTRArray").getJSONObject(0);
 		MessageBuilder mb = new MessageBuilder();
 		EmbedBuilder emBu = new EmbedBuilder();
 		emBu.setImage(BUNGIE_BASE + ob.getString("pgcrImage"));
