@@ -85,10 +85,10 @@ public class AuthenticatedGuardian extends Guardian {
 		
 		if (ob.getInt("ErrorCode") != 1) { return false; }
 		
-		p_CurrentAuthToken = ob.getJSONObject("accessToken").getString("value");
-		p_CurrentAuthTokenExpire = String.valueOf(d.getTime() + (ob.getJSONObject("accessToken").getInt("expires") * 1000));
-		p_CurrentRefreshToken = ob.getJSONObject("refreshToken").getString("value");
-		p_CurrentAuthTokenExpire = String.valueOf(d.getTime() + (ob.getJSONObject("refreshToken").getInt("expires") * 1000));
+		p_CurrentAuthToken = ob.getJSONObject("Response").getJSONObject("accessToken").getString("value");
+		p_CurrentAuthTokenExpire = String.valueOf(d.getTime() + (ob.getJSONObject("Response").getJSONObject("accessToken").getInt("expires") * 1000));
+		p_CurrentRefreshToken = ob.getJSONObject("Response").getJSONObject("refreshToken").getString("value");
+		p_CurrentAuthTokenExpire = String.valueOf(d.getTime() + (ob.getJSONObject("Response").getJSONObject("refreshToken").getInt("expires") * 1000));
 		
 		// Write new values to DB
 		MySQLConnector.getInstance().runUpdateQuery("UPDATE registered SET currentToken = '" + p_CurrentAuthToken + "', currentTokenExpire = '" + p_CurrentAuthTokenExpire + "', "
