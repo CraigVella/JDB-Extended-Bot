@@ -7,8 +7,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Taskable;
-import com.reztek.secret.GlobalDefs;
+import com.reztek.Base.Taskable;
+import com.reztek.Secret.GlobalDefs;
 
 public class BadgeCacheTask extends Taskable{
 	

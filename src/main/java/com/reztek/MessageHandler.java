@@ -3,7 +3,8 @@ package com.reztek;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import com.reztek.base.ICommandModule;
+
+import com.reztek.Base.ICommandModule;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 

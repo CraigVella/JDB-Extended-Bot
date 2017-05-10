@@ -1,4 +1,4 @@
-package com.reztek.utils;
+package com.reztek.Utils;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.mysql.jdbc.Connection;
-import com.reztek.secret.GlobalDefs;
+import com.reztek.Secret.GlobalDefs;
 
 public class MySQLConnector {
 	

@@ -13,9 +13,9 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.CommandModule;
+import com.reztek.Base.CommandModule;
+import com.reztek.Secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Guardian;
-import com.reztek.secret.GlobalDefs;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;

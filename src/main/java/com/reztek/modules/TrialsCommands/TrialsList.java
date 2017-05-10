@@ -1,15 +1,17 @@
 package com.reztek.modules.TrialsCommands;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Taskable;
+import com.reztek.Base.Taskable;
+import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.MySQLConnector;
 import com.reztek.modules.GuardianControl.Guardian;
-import com.reztek.utils.BotUtils;
-import com.reztek.utils.MySQLConnector;
+import com.reztek.modules.TrialsCommands.Badges.TrialsBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -19,6 +21,13 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
 public class TrialsList extends Taskable {
+	
+	public static final String TRIALS_ALL    = "-1";
+	public static final String TRIALS_GOLD   = "0";
+	public static final String TRIALS_SILVER = "10";
+	public static final String TRIALS_BRONZE = "20";
+	public static final String TRIALS_WOOD   = "30";
+	
 	public TrialsList(SGAExtendedBot bot) {
 		super(bot);
 	}
@@ -59,34 +68,53 @@ public class TrialsList extends Taskable {
 	}
 	
 	public void showList(MessageChannel mc, String startIndex, Color color) {
-		String Query = "SELECT * FROM trialsList WHERE rank IS NOT NULL ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
-		if (startIndex.equals("-1")) {
-			Query = "SELECT * FROM trialsList WHERE rank IS NOT NULL ORDER BY rank ASC";
+		String Query = "SELECT * FROM trialsList WHERE rank IS NOT NULL AND rank != 0 ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
+		if (startIndex.equals(TRIALS_ALL)) {
+			Query = "SELECT * FROM trialsList WHERE rank IS NOT NULL AND rank != 0 ORDER BY rank ASC";
 			startIndex = "0";
 		} 
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult(Query);
 		try {
-			int x = 1;
-			String platformName = "";
-			String trialsList = "";
-			while (rs.next()) {
-				if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
-				if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-				trialsList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
-						rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) +
-						" (Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + " |"+ platformName +
-						"| Rank:" + BotUtils.getPaddingForLen(rs.getString("rank"),6) + rs.getString("rank") + " | FC:" + 
-						BotUtils.getPaddingForLen(rs.getString("flawlessCount"), 4) + rs.getString("flawlessCount") + ")\n";
-			}
-			MessageBuilder mb = new MessageBuilder();
-			mb.append(trialsList);
-			int page = 0;
-			for (Message msg : mb.buildAll(SplitPolicy.NEWLINE)) {
-				EmbedBuilder em = new EmbedBuilder();
-				em.setDescription((page == 0 ? "**Current Trials of Osiris Leaders**" : "") + "```" + msg.getRawContent() + "```");
-				em.setColor(color);
-				mc.sendMessage(em.build()).queue();
-				page++;
+			if (startIndex.equals(TRIALS_ALL)) {
+				int x = 1;
+				String platformName = "";
+				String trialsList = "";
+				while (rs.next()) {
+					if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
+					if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
+					trialsList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
+							rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) +
+							" (Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + " |"+ platformName +
+							"| Rank:" + BotUtils.getPaddingForLen(rs.getString("rank"),6) + rs.getString("rank") + " | FC:" + 
+							BotUtils.getPaddingForLen(rs.getString("flawlessCount"), 4) + rs.getString("flawlessCount") + ")\n";
+				}
+				MessageBuilder mb = new MessageBuilder();
+				mb.append(trialsList);
+				int page = 0;
+				for (Message msg : mb.buildAll(SplitPolicy.NEWLINE)) {
+					EmbedBuilder em = new EmbedBuilder();
+					em.setDescription((page == 0 ? "**Current Trials of Osiris Leaders**" : "") + "```" + msg.getRawContent() + "```");
+					em.setColor(color);
+					mc.sendMessage(em.build()).queue();
+					page++;
+				}
+			} else {
+				try {
+					TrialsBadge tb = TrialsBadge.BadgeFromType(startIndex);
+					while (rs.next()) {
+						String platformName = "";
+						if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
+						if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
+						tb.addPlayer(rs.getString("playerName"), rs.getString("rank"), rs.getString("elo"), platformName, rs.getString("flawlessCount"));
+					}
+					EmbedBuilder em = new EmbedBuilder();
+					em.setColor(color);
+					em.setImage(tb.finalizeBadge());
+					mc.sendMessage(em.build()).queue();
+					tb.cleanup();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

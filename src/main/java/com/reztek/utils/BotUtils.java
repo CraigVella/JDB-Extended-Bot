@@ -1,4 +1,4 @@
-package com.reztek.utils;
+package com.reztek.Utils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -15,7 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.reztek.secret.GlobalDefs;
+import com.reztek.Secret.GlobalDefs;
 
 public abstract class BotUtils {
 	public static String getPaddingForLen(String toPad, int desiredLen) {

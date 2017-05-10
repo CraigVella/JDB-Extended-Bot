@@ -1,4 +1,4 @@
-package com.reztek.base;
+package com.reztek.Base;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 

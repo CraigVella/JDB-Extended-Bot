@@ -2,7 +2,7 @@ package com.reztek.modules.GuardianControl;
 
 import org.json.JSONObject;
 
-import com.reztek.utils.BotUtils;
+import com.reztek.Utils.BotUtils;
 
 public abstract class BungieHashDefines {
 	static class BaseHashReturn {
