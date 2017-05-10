@@ -15,11 +15,11 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.CommandModule;
+import com.reztek.Base.CommandModule;
+import com.reztek.Secret.GlobalDefs;
+import com.reztek.Utils.BotUtils;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
-import com.reztek.secret.GlobalDefs;
-import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -101,17 +101,20 @@ public class TrialsCommands extends CommandModule {
 				break;
 			case "trialslist":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-					trialsList(mre.getChannel(), "-1", Color.WHITE);
+					trialsList(mre.getChannel(), TrialsList.TRIALS_ALL, Color.WHITE);
 				}
 				break;
 			case "trialslistgold":
-				trialsList(mre.getChannel(), "0", new Color(212,175,55));
+				trialsList(mre.getChannel(), TrialsList.TRIALS_GOLD, new Color(212,175,55));
 				break;
 			case "trialslistsilver":
-				trialsList(mre.getChannel(), "10", new Color(192,192,192));
+				trialsList(mre.getChannel(), TrialsList.TRIALS_SILVER, new Color(192,192,192));
 				break;
 			case "trialslistbronze":
-				trialsList(mre.getChannel(), "20", new Color(205, 127, 50));
+				trialsList(mre.getChannel(), TrialsList.TRIALS_BRONZE, new Color(205, 127, 50));
+				break;
+			case "trialslistwood":
+				trialsList(mre.getChannel(), TrialsList.TRIALS_WOOD, new Color(160, 82, 45));
 				break;
 			case "trialsrefresh":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -129,9 +132,9 @@ public class TrialsCommands extends CommandModule {
 					}
 				}
 				break;
-			case "trialsremovegromlist-ps":
-			case "trialsremovegromlist-xb":
-			case "trialsremovegromlist":
+			case "trialsremovefromlist-ps":
+			case "trialsremovefromlist-xb":
+			case "trialsremovefromlist":
 				if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
 					if (args == null) {
 						sendHelpString(mre, "!trialsRemoveFromList[or !trialsRemoveFromList-ps or !trialsRemoveFromList-xb] PlayerNameHere");

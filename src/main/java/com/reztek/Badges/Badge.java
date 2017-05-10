@@ -15,7 +15,7 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 
 import com.reztek.Badges.Fonts.BadgeFont;
-import com.reztek.secret.GlobalDefs;
+import com.reztek.Secret.GlobalDefs;
 
 public class Badge {
 	private BufferedImage p_baseImage = null;

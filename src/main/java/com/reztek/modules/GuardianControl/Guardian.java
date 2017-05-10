@@ -10,9 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.reztek.Secret.GlobalDefs;
+import com.reztek.Utils.BotUtils;
 import com.reztek.modules.GuardianControl.BungieHashDefines.StepsHashReturn;
-import com.reztek.secret.GlobalDefs;
-import com.reztek.utils.BotUtils;
 
 public class Guardian {
 	

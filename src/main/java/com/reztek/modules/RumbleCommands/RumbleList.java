@@ -7,11 +7,11 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Taskable;
+import com.reztek.Base.Taskable;
+import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.MySQLConnector;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.RumbleCommands.Badges.RumbleBadge;
-import com.reztek.utils.BotUtils;
-import com.reztek.utils.MySQLConnector;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -67,9 +67,9 @@ public class RumbleList extends Taskable {
 	}
 	
 	public void showList(MessageChannel mc, String startIndex, Color color) {
-		String Query = "SELECT * FROM rumbleList WHERE rank IS NOT NULL ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
+		String Query = "SELECT * FROM rumbleList WHERE rank IS NOT NULL AND rank != 0 ORDER BY rank ASC LIMIT 10 OFFSET " + startIndex;
 		if (startIndex.equals(RUMBLE_ALL)) {
-			Query = "SELECT * FROM rumbleList WHERE rank IS NOT NULL ORDER BY rank ASC";
+			Query = "SELECT * FROM rumbleList WHERE rank IS NOT NULL AND rank != 0 ORDER BY rank ASC";
 			startIndex = "0";
 		} 
 		ResultSet rs = MySQLConnector.getInstance().runQueryWithResult(Query);

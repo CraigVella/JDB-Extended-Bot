@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.Taskable;
+import com.reztek.Base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
 

@@ -7,8 +7,8 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
-import com.reztek.utils.BotUtils;
-import com.reztek.utils.MySQLConnector;
+import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.MySQLConnector;
 
 public class AuthenticatedGuardian extends Guardian {
 	private static final String BUNGIE_API_REFRESH = "https://www.bungie.net/Platform/App/GetAccessTokensFromRefreshToken/";

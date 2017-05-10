@@ -10,14 +10,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.security.auth.login.LoginException;
 
 import com.reztek.Badges.BadgeCacheTask;
-import com.reztek.base.Taskable;
+import com.reztek.Base.Taskable;
+import com.reztek.Secret.GlobalDefs;
+import com.reztek.Utils.BotUtils;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
 import com.reztek.modules.RumbleCommands.RumbleCommands;
 import com.reztek.modules.SGAAutoPromoter.SGAAutoPromoterCommands;
 import com.reztek.modules.TrialsCommands.TrialsCommands;
-import com.reztek.secret.GlobalDefs;
-import com.reztek.utils.BotUtils;
 
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.events.Event;

@@ -3,11 +3,11 @@ package com.reztek.modules.BaseCommands;
 import java.util.Random;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.CommandModule;
-import com.reztek.base.ICommandModule;
-import com.reztek.base.Taskable;
-import com.reztek.secret.GlobalDefs;
-import com.reztek.utils.BotUtils;
+import com.reztek.Base.CommandModule;
+import com.reztek.Base.ICommandModule;
+import com.reztek.Base.Taskable;
+import com.reztek.Secret.GlobalDefs;
+import com.reztek.Utils.BotUtils;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;

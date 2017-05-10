@@ -1,4 +1,4 @@
-package com.reztek.base;
+package com.reztek.Base;
 
 import com.reztek.SGAExtendedBot;
 

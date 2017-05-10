@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import com.reztek.SGAExtendedBot;
-import com.reztek.base.CommandModule;
+import com.reztek.Base.CommandModule;
+import com.reztek.Secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Badges.InfoBadge;
-import com.reztek.secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 
