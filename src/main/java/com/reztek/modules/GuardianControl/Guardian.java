@@ -438,7 +438,7 @@ public class Guardian {
 		a.p_ArmorHash = pItemHash;
 		a.p_ArmorName = BungieHashDefines.GetArmorForHash(pItemHash).getName();
 		a.p_ArmorDescription = BungieHashDefines.GetArmorForHash(pItemHash).getDescription();
-		a.p_ArmorIcon = BungieHashDefines.GetArmorForHash(pItemHash).getIcon();
+		a.p_ArmorIcon = BUNGIE_BASE_IMAGES + BungieHashDefines.GetArmorForHash(pItemHash).getIcon();
 		a.p_Tier = BungieHashDefines.GetArmorForHash(pItemHash).getTier();
 		for (int x = 0; x < pNodes.length(); ++x) {
 			if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {

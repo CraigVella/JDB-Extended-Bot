@@ -20,7 +20,8 @@ public class TrialsDetailedBadge extends Badge {
 		b.drawURLImage(new URL(g.getCurrentPrimaryWep().getWepIcon()), 372, 172, 90, 90);
 		b.drawURLImage(new URL(g.getCurrentSpecialWep().getWepIcon()), 372, 301, 90, 90);
 		b.drawURLImage(new URL(g.getCurrentHeavyWep().getWepIcon()), 372, 432, 90, 90);
-		
+		b.drawURLImage(new URL(g.getCurrentExoticArmor().getArmorIcon()), 30, 433, 90, 90);
+		b.drawURLImage(new URL(g.getCurrentArtifact().getArmorIcon()), 150, 433, 90, 90);
 		return b;
 	}
 

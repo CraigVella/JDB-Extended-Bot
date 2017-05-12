@@ -260,10 +260,6 @@ public class TrialsCommands extends CommandModule {
 			TrialsDetailedBadge tb = TrialsDetailedBadge.TrialsDetailedBadgeFromGuardian(g);
 			EmbedBuilder em = new EmbedBuilder();
 			em.setImage(tb.finalizeBadge());
-			String platformS = null, platformD = null;
-			if (g.getPlatform().equals("1")) { platformS = "XB"; platformD = "XBox"; }
-			if (g.getPlatform().equals("2")) { platformS = "PS"; platformD = "Playstation"; }
-			em.setFooter(platformD + " Guardian", GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + platformS + "_ICON.png");
 			mc.sendMessage(em.build()).queue();
 			tb.cleanup();
 		} catch (IOException e) {}
