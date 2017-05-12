@@ -8,7 +8,7 @@ import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
 import com.reztek.Secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Badges.InfoBadge;
-import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
+import com.reztek.modules.GuardianControl.Guardian.GuardianPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -143,7 +143,7 @@ public class GuardianControlCommands extends CommandModule {
 						eb.addField("Kills", gw.getWeaponKills(), true);
 						eb.addField("Headshot %", gw.getHeadshotPercentage(), true);
 					}
-					for (GuardianWeaponPerk gp : gw.getWepPerks()) {
+					for (GuardianPerk gp : gw.getWepPerks()) {
 						eb.addField(gp.getPerkName(), gp.getPerkDesc(), false);
 					}
 					mc.sendMessage(eb.build()).queue();

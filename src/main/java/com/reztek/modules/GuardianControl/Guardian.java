@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -34,9 +36,16 @@ public class Guardian {
 	private static final String   DTR_API_THISWEEKWEPS = "/lastWeapons/";
 	private static final String   DTR_API_WEPSTATS = "/weaponStats/";
 	
-	private static final int WEAPON_PRIMARY = 1;
-	private static final int WEAPON_SPECIAL = 2;
-	private static final int WEAPON_HEAVY = 3;
+	private static final int WEAPON_PRIMARY  =  1;
+	private static final int WEAPON_SPECIAL  =  2;
+	private static final int WEAPON_HEAVY    =  3;
+	private static final int ARMOR_SHELL     =  4;
+	private static final int ARMOR_HELM      =  5;
+	private static final int ARMOR_GAUNTLETS =  6;
+	private static final int ARMOR_CHEST     =  7;
+	private static final int ARMOR_GREAVES   =  8;
+	private static final int ARMOR_MARK      =  9;
+	private static final int ARMOR_ARTIFACT  = 10;
 	
 	public class GuardianWeaponStats {
 		private String p_WepName = null;
@@ -44,12 +53,12 @@ public class Guardian {
 		private String p_WepHeadshots = null;
 		private String p_WepIcon = null;
 		private DamageTypeReturn p_dtr = null;
-		private ArrayList<GuardianWeaponPerk> p_PerkList = new ArrayList<GuardianWeaponPerk>();
+		private ArrayList<GuardianPerk> p_PerkList = new ArrayList<GuardianPerk>();
 		public String getWeaponName() { return p_WepName; }
 		public String getWeaponKills(){return p_WepKills; }
 		public String getWeaponHeadshots() { return p_WepHeadshots; }
 		public String getWepIcon() { return p_WepIcon; }
-		public final ArrayList <GuardianWeaponPerk> getWepPerks() { return p_PerkList; }
+		public final Collection<GuardianPerk> getWepPerks() { return Collections.unmodifiableCollection(p_PerkList); }
 		public String getHeadshotPercentage() {
 			DecimalFormat df = new DecimalFormat();
 			df.setMaximumFractionDigits(2); 
@@ -60,6 +69,21 @@ public class Guardian {
 		public DamageTypeReturn getDamageType() {
 			return p_dtr;
 		}
+	}
+	
+	public class GuardianArmor {
+		private String p_ArmorName = null;
+		private String p_ArmorDescription = null;
+		private String p_ArmorHash = null;
+		private String p_ArmorIcon = null;
+		private int p_Tier = 0;
+		private ArrayList<GuardianPerk> p_PerkList = new ArrayList<GuardianPerk>();
+		public String getArmorName() { return  p_ArmorName; }
+		public String getArmorDescription() { return  p_ArmorDescription; }
+		public String getArmorHash() { return  p_ArmorHash; }
+		public String getArmorIcon() { return  p_ArmorIcon; }
+		public int getArmorTier() { return p_Tier; }
+		public final Collection<GuardianPerk> getArmorPerks() { return Collections.unmodifiableCollection(p_PerkList); }
 	}
 	
 	public class DamageTypeReturn {
@@ -79,14 +103,14 @@ public class Guardian {
 		}
 	}
 	
-	public class GuardianWeaponPerk {
+	public class GuardianPerk {
 		private String p_PerkName = null;
 		private String p_PerkDesc = null;
 		private String p_PerkIcon = null;
 		public String getPerkName() { return p_PerkName; }
 		public String getPerkDesc() { return p_PerkDesc; }
 		public String getPerkIcon() { return p_PerkIcon; }
-		public GuardianWeaponPerk(String perkName, String perkDesc, String perkIcon) {
+		public GuardianPerk(String perkName, String perkDesc, String perkIcon) {
 			p_PerkName = perkName;
 			p_PerkDesc = perkDesc;
 			p_PerkIcon = perkIcon;
@@ -103,6 +127,7 @@ public class Guardian {
 	}
 	
 	// -- BUNGIE
+	private JSONObject p_propsCache = null;
 	protected String p_id = null;
 	protected String p_name = null;
 	protected String p_platform = null;
@@ -114,6 +139,17 @@ public class Guardian {
 	private GuardianWeaponStats p_currentPrimaryWep = new GuardianWeaponStats();
 	private GuardianWeaponStats p_currentSpecialWep = new GuardianWeaponStats();
 	private GuardianWeaponStats p_currentHeavyWep = new GuardianWeaponStats();
+	private GuardianArmor p_currentExoticArmor = new GuardianArmor();
+	private GuardianArmor p_currentArtifact = new GuardianArmor();
+	private ArrayList<GuardianPerk> p_currentSubclassPerks = new ArrayList<GuardianPerk>();
+	private int p_currentCharacterIntellect = 0;
+	private int p_currentCharacterDiscipline = 0;
+	private int p_currentCharacterStrength = 0;
+	private int p_currentCharacterArmor = 0;
+	private int p_currentCharacterAgility = 0;
+	private int p_currentCharacterRecovery = 0;
+	private String p_currentCharacterLight = "0";
+	private String p_currentCharacterLevel = "1";
 	
 	// -- Guardian GG
 	private String p_rumbleELO = "N/A";
@@ -354,27 +390,85 @@ public class Guardian {
 			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getBigInteger("itemHash"));
 			p_currentEmblemPath = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getString("emblemPath");
 			p_currentBackgroundPath = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getString("backgroundPath");
+			p_currentCharacterAgility = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_AGILITY").getInt("value");
+			p_currentCharacterArmor = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_ARMOR").getInt("value");
+			p_currentCharacterDiscipline = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_DISCIPLINE").getInt("value");
+			p_currentCharacterIntellect = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_INTELLECT").getInt("value");
+			p_currentCharacterRecovery = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_RECOVERY").getInt("value");
+			p_currentCharacterStrength = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_STRENGTH").getInt("value");
+			p_currentCharacterLight = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_LIGHT").getInt("value"));
+			p_currentCharacterLevel = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getInt("characterLevel"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 		
+		JSONObject ob = getPropsCache();
+		String pTalentGridHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(0).getJSONArray("items").getJSONObject(0).getBigInteger("talentGridHash"));
+		JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(0).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
+		for (int x = 0; x < pNodes.length(); ++x) {
+			if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
+				StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+				// Add Ignores here
+				// Ignores Complete
+				p_currentSubclassPerks.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+			}
+		}
+		
 		p_currentPrimaryWep = currentWeapon(WEAPON_PRIMARY);
 		p_currentSpecialWep = currentWeapon(WEAPON_SPECIAL);
 		p_currentHeavyWep   = currentWeapon(WEAPON_HEAVY);
+		p_currentArtifact   = getArmor(ARMOR_ARTIFACT);
+		for (int x = ARMOR_HELM; x <= ARMOR_MARK; ++x) {
+			GuardianArmor a = getArmor(x);
+			if (a.getArmorTier() == 6) {
+				p_currentExoticArmor = a;
+				break; // So we dont get Artifact Marks if both are equipped
+			}
+		}
+	}
+	
+	private GuardianArmor getArmor(int armorSlot) {
+		GuardianArmor a = new GuardianArmor();
+		JSONObject ob = getPropsCache();
+		String pItemHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getBigInteger("itemHash"));
+		String pTalentGridHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getBigInteger("talentGridHash"));
+		JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
+		a.p_ArmorHash = pItemHash;
+		a.p_ArmorName = BungieHashDefines.GetArmorForHash(pItemHash).getName();
+		a.p_ArmorDescription = BungieHashDefines.GetArmorForHash(pItemHash).getDescription();
+		a.p_ArmorIcon = BungieHashDefines.GetArmorForHash(pItemHash).getIcon();
+		a.p_Tier = BungieHashDefines.GetArmorForHash(pItemHash).getTier();
+		for (int x = 0; x < pNodes.length(); ++x) {
+			if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
+				StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+				// Add Ignores here
+				if (shr.getHash().equals("1270552711")) continue; // Infuse
+				if (shr.getHash().equals("1263323987")) continue; // Increase Discipline
+				if (shr.getHash().equals("1034209669")) continue; // Increase Intellect
+				if (shr.getHash().equals("193091484" )) continue; // Increase Strength
+				if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
+				// Ignores Complete
+				a.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+			}
+		}
+		return a;
+	}
+	
+	private JSONObject getPropsCache() {
+		if (p_propsCache == null) {
+			HashMap<String,String> props = new HashMap<String,String>();
+			props.put("X-API-Key", BUNGIE_API_KEY);
+			p_propsCache = new JSONObject(BotUtils.getJSONStringGet(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/Character/" + p_characterIdLastPlayed + "/Inventory/", props));
+		}
+		return p_propsCache;
 	}
 	
 	private GuardianWeaponStats currentWeapon(int weapon) {
 		GuardianWeaponStats gw = new GuardianWeaponStats();
-		
-		HashMap<String,String> props = new HashMap<String,String>();
-		props.put("X-API-Key", BUNGIE_API_KEY);
-		
 		try {
-			JSONObject ob = new JSONObject(BotUtils.getJSONStringGet(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/Character/" + p_characterIdLastPlayed + "/Inventory/", props));
-			
-			//primary info
+			JSONObject ob = getPropsCache();
 			String pItemHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getBigInteger("itemHash"));
 			String pTalentGridHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getBigInteger("talentGridHash"));
 			JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(weapon).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
@@ -400,7 +494,7 @@ public class Guardian {
 				if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
 					StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
 					// Add Ignores here
-					if (shr.getHash().equals("1270552711")) continue;
+					if (shr.getHash().equals("1270552711")) continue; // Infuse
 					if (shr.getHash().equals("643689081" )) continue;
 					if (shr.getHash().equals("472357138" )) continue;
 					if (shr.getHash().equals("1975859941")) continue;
@@ -408,7 +502,7 @@ public class Guardian {
 					if (shr.getHash().equals("2133116599")) continue; // Deactivate Chroma
 					if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
 					// Ignores Complete
-					gw.p_PerkList.add(new GuardianWeaponPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+					gw.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
 				}
 			}
 			
@@ -560,5 +654,49 @@ public class Guardian {
 	
 	public final GuardianWeaponStats getCurrentHeavyWep() {
 		return p_currentHeavyWep;
+	}
+	
+	public final GuardianArmor getCurrentExoticArmor() {
+		return p_currentExoticArmor;
+	}
+	
+	public final GuardianArmor getCurrentArtifact() {
+		return p_currentArtifact;
+	}
+	
+	public final Collection<GuardianPerk> getCurrentSubclassPerks() {
+		return Collections.unmodifiableCollection(p_currentSubclassPerks);
+	}
+	
+	public int getCurrentAgility() {
+		return p_currentCharacterAgility;
+	}
+	
+	public int getCurrentArmor() {
+		return p_currentCharacterArmor;
+	}
+	
+	public int getCurrentDiscipline() {
+		return p_currentCharacterDiscipline;
+	}
+	
+	public int getCurrentIntellect() {
+		return p_currentCharacterIntellect;
+	}
+	
+	public int getCurrentRecovery() {
+		return p_currentCharacterRecovery;
+	}
+	
+	public int getCurrentStrength() {
+		return p_currentCharacterStrength;
+	}
+	
+	public String getCurrentLight() {
+		return p_currentCharacterLight;
+	}
+	
+	public String getCurrentLevel() {
+		return p_currentCharacterLevel;
 	}
 }

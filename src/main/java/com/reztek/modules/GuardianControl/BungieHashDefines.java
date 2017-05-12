@@ -19,10 +19,22 @@ public abstract class BungieHashDefines {
 			return _hash;
 		}
 	}
+	
 	static class StepsHashReturn extends BaseHashReturn {
 		protected String _description;
 		public String getDescription() {
 			return _description;
+		}
+	}
+	
+	static class ArmorHashReturn extends BaseHashReturn {
+		protected String _description;
+		protected int _tier;
+		public String getDescription() {
+			return _description;
+		}
+		public int getTier() {
+			return _tier;
 		}
 	}
 	
@@ -61,6 +73,20 @@ public abstract class BungieHashDefines {
 		sr._icon = StepsHashDefinitions.getJSONObject(Hash).getString("i");
 		sr._description = StepsHashDefinitions.getJSONObject(Hash).getString("d");
 		return sr;
+	}
+	
+	private static JSONObject ArmorHashDefinitions = null;
+	public static ArmorHashReturn GetArmorForHash(String Hash) {
+		ArmorHashReturn ar = new ArmorHashReturn();
+		if (ArmorHashDefinitions == null) {
+			ArmorHashDefinitions = new BotUtils.JsonConverter("DestinyArmorDefinition.json", BungieHashDefines.class).getJsonObject();
+		}
+		ar._hash = Hash;
+		ar._name = ArmorHashDefinitions.getJSONObject(Hash).getString("name");
+		ar._icon = ArmorHashDefinitions.getJSONObject(Hash).getString("icon");
+		ar._description = ArmorHashDefinitions.getJSONObject(Hash).getString("description");
+		ar._tier = ArmorHashDefinitions.getJSONObject(Hash).getInt("tierType");
+		return ar;
 	}
 	
 	private static JSONObject TalentGridDefinitions = null;

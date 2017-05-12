@@ -11,7 +11,7 @@ import com.reztek.Base.Taskable;
 import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.MySQLConnector;
 import com.reztek.modules.GuardianControl.Guardian;
-import com.reztek.modules.TrialsCommands.Badges.TrialsBadge;
+import com.reztek.modules.TrialsCommands.Badges.TrialsListBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -100,7 +100,7 @@ public class TrialsList extends Taskable {
 				}
 			} else {
 				try {
-					TrialsBadge tb = TrialsBadge.BadgeFromType(startIndex);
+					TrialsListBadge tb = TrialsListBadge.BadgeFromType(startIndex);
 					while (rs.next()) {
 						String platformName = "";
 						if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";

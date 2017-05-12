@@ -20,6 +20,7 @@ import com.reztek.Secret.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
+import com.reztek.modules.TrialsCommands.Badges.TrialsDetailedBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -66,6 +67,16 @@ public class TrialsCommands extends CommandModule {
 					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), true);
 				}
 				break;
+			case "trials#-ps":
+			case "trials#-xb":
+			case "trials#":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					trialsInfoBadge(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command));
+				} else {
+					trialsInfoBadge(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				}
+			break;
 			case "trials-ps":
 			case "trials-xb":
 			case "trials":
@@ -240,6 +251,22 @@ public class TrialsCommands extends CommandModule {
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}
+	}
+	
+	protected void trialsInfoBadge(MessageChannel mc, String playerName, String platform) {
+		mc.sendTyping().queue();
+		try {
+			Guardian g = Guardian.guardianFromName(playerName, platform);
+			TrialsDetailedBadge tb = TrialsDetailedBadge.TrialsDetailedBadgeFromGuardian(g);
+			EmbedBuilder em = new EmbedBuilder();
+			em.setImage(tb.finalizeBadge());
+			String platformS = null, platformD = null;
+			if (g.getPlatform().equals("1")) { platformS = "XB"; platformD = "XBox"; }
+			if (g.getPlatform().equals("2")) { platformS = "PS"; platformD = "Playstation"; }
+			em.setFooter(platformD + " Guardian", GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + platformS + "_ICON.png");
+			mc.sendMessage(em.build()).queue();
+			tb.cleanup();
+		} catch (IOException e) {}
 	}
 	
 	protected void trialsInfo(MessageChannel mc, String playerName, String platform, boolean verbose) {
