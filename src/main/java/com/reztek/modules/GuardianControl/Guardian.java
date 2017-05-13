@@ -319,7 +319,7 @@ public class Guardian {
 			for (int x = 0; x < thisWeekMapWeps.length(); ++x) {
 				JSONObject wep = thisWeekMapWeps.getJSONObject(x);
 				GuardianWeaponStats gws = new GuardianWeaponStats();
-				gws.p_WepName = wep.getString("itemTypeName");
+				gws.p_WepName = wep.getString("name");
 				gws.p_WepKills = String.valueOf(wep.getInt("sum_kills"));
 				gws.p_WepHeadshots = String.valueOf(wep.getInt("sum_headshots"));
 				p_thisWeekMapWepStats.add(gws);
@@ -509,8 +509,8 @@ public class Guardian {
 			// get Stats for weapon
 			try {
 				JSONObject ws = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONStringGet(DTR_API_BASE_URL + DTR_API_WEPSTATS + p_id + "/" + pItemHash,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
-				gw.p_WepKills = ws.getString("kills");
-				gw.p_WepHeadshots = ws.getString("headshots");
+				gw.p_WepKills = String.valueOf(ws.getInt("kills"));
+				gw.p_WepHeadshots = String.valueOf(ws.getInt("headshots"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
