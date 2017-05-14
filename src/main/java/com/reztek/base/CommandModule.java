@@ -1,5 +1,8 @@
 package com.reztek.Base;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.reztek.SGAExtendedBot;
 
 import net.dv8tion.jda.core.JDA;
@@ -12,6 +15,7 @@ public abstract class CommandModule implements ICommandModule {
 	private String p_moduleName;
 	private String p_author;
 	private String p_uniqueModuleID;
+	private ArrayList<String> p_commandList = new ArrayList<String>();
 	
 	public CommandModule(JDA pJDA, SGAExtendedBot pbot, String uniqueModuleID) {
 		p_jda = pJDA;
@@ -19,6 +23,30 @@ public abstract class CommandModule implements ICommandModule {
 		p_moduleName = "Unknown-Module";
 		p_author = "Unknown-Author";
 		p_uniqueModuleID = uniqueModuleID;
+	}
+	
+	protected void addCommand(String command) {
+		if (respondsToCommand(command.toLowerCase())) return;
+		p_commandList.add(command.toLowerCase());
+	}
+	
+	protected void addCommand(Collection<String> commands) {
+		addCommand(commands.toArray(new String[0]));
+	}
+	
+	protected void addCommand(String[] commands) {
+		for(String cmd : commands) {
+			addCommand(cmd);
+		}
+	}
+	
+	public boolean respondsToCommand(String command) {
+		for (String cmd : p_commandList) {
+			if (cmd.equals(command)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void sendHelpString(MessageReceivedEvent mre, String usage) {

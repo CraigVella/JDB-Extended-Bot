@@ -20,6 +20,7 @@ import com.reztek.Secret.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
+import com.reztek.modules.TrialsCommands.Badges.TrialsDetailedBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -40,13 +41,26 @@ public class TrialsCommands extends CommandModule {
 		// I have a task!
 		p_trialsList = new TrialsList(pBot);
 		p_trialsList.setTaskName("TrialsList Refresh");
+		addCommand(new String[] {
+				"fireteam-ps", "fireteam-xb", "fireteam", 
+				"fireteam+-ps", "fireteam+-xb", "fireteam+",
+				"trials#-ps", "trials#-xb", "trials#",
+				"trials-ps", "trials-xb", "trials",
+				"trials+-ps", "trials+-xb", "trials+",
+				"trialsmap", "trialslist-importcsv", "trialslist-csv",
+				"trialslist", "trialslistgold", "trialslistsilver", "trialslistbronze",
+				"trialslistwood", "trialsrefresh", "trialsaddtolist-ps", 
+				"trialsaddtolist-xb", "trialsaddtolist", "trialsremovefromlist-ps", 
+				"trialsremovefromlist-xb", "trialsremovefromlist"
+				
+		});
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(100);
 		getBot().addTask(p_trialsList);
 	}
 
 	@Override
-	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
+	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 			switch (command) {
 			case "fireteam-ps":
 			case "fireteam-xb":
@@ -66,6 +80,16 @@ public class TrialsCommands extends CommandModule {
 					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), true);
 				}
 				break;
+			case "trials#-ps":
+			case "trials#-xb":
+			case "trials#":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					trialsInfoBadge(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command));
+				} else {
+					trialsInfoBadge(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				}
+			break;
 			case "trials-ps":
 			case "trials-xb":
 			case "trials":
@@ -143,11 +167,7 @@ public class TrialsCommands extends CommandModule {
 					}
 				}
 				break;
-			default:
-				return false;
 		}
-		
-		return true;
 	}
 	
 	protected void trialsImportCSV(MessageReceivedEvent mre) {
@@ -240,6 +260,18 @@ public class TrialsCommands extends CommandModule {
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}
+	}
+	
+	protected void trialsInfoBadge(MessageChannel mc, String playerName, String platform) {
+		mc.sendTyping().queue();
+		try {
+			Guardian g = Guardian.guardianFromName(playerName, platform);
+			TrialsDetailedBadge tb = TrialsDetailedBadge.TrialsDetailedBadgeFromGuardian(g);
+			EmbedBuilder em = new EmbedBuilder();
+			em.setImage(tb.finalizeBadge());
+			mc.sendMessage(em.build()).queue();
+			tb.cleanup();
+		} catch (IOException e) {}
 	}
 	
 	protected void trialsInfo(MessageChannel mc, String playerName, String platform, boolean verbose) {

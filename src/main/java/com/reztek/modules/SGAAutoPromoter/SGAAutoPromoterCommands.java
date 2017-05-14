@@ -27,6 +27,9 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	public SGAAutoPromoterCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot, "SGAAUTOPROMOTER");
 		setModuleNameAndAuthor("SGA Auto Promoter", "ChaseHQ85");
+		addCommand(new String[] {
+				"runpromotions", "testmsg"
+		});
 		p_sgaGuild = pJDA.getGuildById(SGA_GUILD_ID);
 		if (p_sgaGuild == null) {
 			System.out.println("Error Connecting To Guild - Disabling Plugin");
@@ -46,12 +49,12 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	}
 
 	@Override
-	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
+	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 		
 		if (p_disabled) {
 			getBot().getMessageHandler().removeCommandModule(getModuleID());
 			System.out.println("SGA Auto Promoter removed due to disabled");
-			return false;
+			return;
 		}
 		
 		switch (command) {
@@ -76,11 +79,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 				mre.getChannel().sendMessage(eb.build()).queue();
 			}
 			break;
-		default:
-			return false;
 		}
-		
-		return true;
 	}
 	
 	public Guild getSGAGuild() {

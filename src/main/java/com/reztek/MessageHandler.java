@@ -3,6 +3,8 @@ package com.reztek;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.reztek.Base.ICommandModule;
 
@@ -11,7 +13,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class MessageHandler {
 
 	HashMap<String,ICommandModule> p_commandModules = new HashMap<String,ICommandModule>();
-	
+	private ExecutorService p_executor = Executors.newCachedThreadPool();
+
 	public void addCommandModule(ICommandModule cpm) {
 		if (p_commandModules.containsKey(cpm.getModuleID())) {
 			System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it's already added or duplicate unique ID!");
@@ -45,9 +48,16 @@ public class MessageHandler {
 				args += cmdSplit[x] + " ";
 			}
 			
+			final String argsTL = args;
+			
 			for (ICommandModule proc : getAllLoadedCommandModules()) {
-				if (proc.processCommand(cmdSplit[0], args.equals("") ? null : args.trim(), mre)) {
-					return;
+				if (proc.respondsToCommand(cmdSplit[0])) {
+					p_executor.execute(new Runnable() {
+						@Override
+						public void run() {
+							proc.processCommand(cmdSplit[0], argsTL.equals("") ? null : argsTL.trim(), mre);
+						}
+					});
 				}
 			}
 		}

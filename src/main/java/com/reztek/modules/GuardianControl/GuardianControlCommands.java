@@ -8,7 +8,7 @@ import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
 import com.reztek.Secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Badges.InfoBadge;
-import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponPerk;
+import com.reztek.modules.GuardianControl.Guardian.GuardianPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -27,16 +27,16 @@ public class GuardianControlCommands extends CommandModule {
 	public GuardianControlCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"GUARDIANCOMMANDS");
 		setModuleNameAndAuthor("Destiny Guardian", "ChaseHQ85");
+		addCommand(new String[]{
+				"debugguardian", "getauthguardian", "getauthguardian-ps", "getauthguardian-xb",
+				"primary","primary-ps","primary-xb","special","special-ps","special-xb",
+				"heavy","heavy-ps","heavy-xb","loadout","loadout-ps","loadout-xb",
+				"info","info-xb","info-ps"
+				});
 	}
 
 	@Override
-	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
-		
-		/*String[] splitArg = {""};
-		if (args != null) {
-			splitArg = args.split(" ");
-		}*/
-		
+	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 		switch (command) {
 			case "debugguardian":
 				if (args == null) {
@@ -107,11 +107,7 @@ public class GuardianControlCommands extends CommandModule {
 					playerInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 				break;
-			default: 
-				return false;
 		}
-		
-		return true;
 	}
 	
 	protected void loadOutInfo(MessageChannel mc, String playerName, String platform, int showLoadoutType) {
@@ -143,7 +139,7 @@ public class GuardianControlCommands extends CommandModule {
 						eb.addField("Kills", gw.getWeaponKills(), true);
 						eb.addField("Headshot %", gw.getHeadshotPercentage(), true);
 					}
-					for (GuardianWeaponPerk gp : gw.getWepPerks()) {
+					for (GuardianPerk gp : gw.getWepPerks()) {
 						eb.addField(gp.getPerkName(), gp.getPerkDesc(), false);
 					}
 					mc.sendMessage(eb.build()).queue();

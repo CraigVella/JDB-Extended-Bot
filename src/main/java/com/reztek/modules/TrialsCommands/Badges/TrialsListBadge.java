@@ -8,38 +8,38 @@ import com.reztek.Badges.Badge;
 import com.reztek.Badges.StockImages.StockImages;
 import com.reztek.modules.TrialsCommands.TrialsList;
 
-public class TrialsBadge extends Badge{
+public class TrialsListBadge extends Badge{
 	
 	private int p_playerCount = 0;
 	private int p_playerOffset = 0;
 
-	private TrialsBadge(InputStream baseImage, int playerOffset) throws IOException {
+	private TrialsListBadge(InputStream baseImage, int playerOffset) throws IOException {
 		super(baseImage);
 		p_playerOffset = playerOffset;
 	}
 	
-	public static TrialsBadge BadgeFromType(String BadgeType) throws IOException {
+	public static TrialsListBadge BadgeFromType(String BadgeType) throws IOException {
 		InputStream is = null;
 		int playerOffset = 0;
 		switch (BadgeType) {
 		case TrialsList.TRIALS_WOOD:
-			is = TrialsBadge.class.getResourceAsStream("SGA_TWOOD.png");
+			is = TrialsListBadge.class.getResourceAsStream("SGA_TWOOD.png");
 			playerOffset = 30;
 			break;
 		case TrialsList.TRIALS_BRONZE:
-			is = TrialsBadge.class.getResourceAsStream("SGA_TBRONZE.png");
+			is = TrialsListBadge.class.getResourceAsStream("SGA_TBRONZE.png");
 			playerOffset = 20;
 			break;
 		case TrialsList.TRIALS_SILVER:
-			is = TrialsBadge.class.getResourceAsStream("SGA_TSILVER.png");
+			is = TrialsListBadge.class.getResourceAsStream("SGA_TSILVER.png");
 			playerOffset = 10;
 			break;
 		case TrialsList.TRIALS_GOLD:
-			is = TrialsBadge.class.getResourceAsStream("SGA_TGOLD.png");
+			is = TrialsListBadge.class.getResourceAsStream("SGA_TGOLD.png");
 			break;
 		}
 		if (is != null) {
-			return new TrialsBadge(is,playerOffset);
+			return new TrialsListBadge(is,playerOffset);
 		} else {
 			return null;
 		}

@@ -29,6 +29,12 @@ public class RumbleCommands extends CommandModule {
 	public RumbleCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"RUMBLECOMMANDS");
 		setModuleNameAndAuthor("Rumble", "ChaseHQ85");
+		addCommand(new String[] {
+				"rumblelist-importcsv", "rumblelist", "rumblelist-csv", 
+				"rumblelistgold", "rumblelistsilver", "rumblelistbronze", "rumblelistwood",
+				"rumblerefresh", "rumbleaddtolist-ps", "rumbleaddtolist-xb", "rumbleaddtolist",
+				"rumbleremovefromlist-ps", "rumbleremovefromlist-xb", "rumbleremovefromlist"
+		});
 		// I have a task!
 		p_rumbleList = new RumbleList(pBot);
 		p_rumbleList.setTaskName("RumbleList Refresh");
@@ -37,7 +43,7 @@ public class RumbleCommands extends CommandModule {
 	}
 
 	@Override
-	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
+	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 		
 		/*String[] splitArg = {""};
 		if (args != null) {
@@ -99,11 +105,7 @@ public class RumbleCommands extends CommandModule {
 					}
 				}
 				break;
-			default:
-				return false;
 		}
-		
-		return true;
 	}
 	
 	protected void rumbleImportCSV(MessageReceivedEvent mre) {

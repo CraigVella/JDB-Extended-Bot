@@ -11,7 +11,7 @@ import com.reztek.Base.Taskable;
 import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.MySQLConnector;
 import com.reztek.modules.GuardianControl.Guardian;
-import com.reztek.modules.RumbleCommands.Badges.RumbleBadge;
+import com.reztek.modules.RumbleCommands.Badges.RumbleListBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -98,7 +98,7 @@ public class RumbleList extends Taskable {
 				}
 			} else {
 				try {
-					RumbleBadge rb = RumbleBadge.BadgeFromType(startIndex);
+					RumbleListBadge rb = RumbleListBadge.BadgeFromType(startIndex);
 					while (rs.next()) {
 						String platformName = "";
 						if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";

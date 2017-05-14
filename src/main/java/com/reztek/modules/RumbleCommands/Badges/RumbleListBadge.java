@@ -8,38 +8,38 @@ import com.reztek.Badges.Badge;
 import com.reztek.Badges.StockImages.StockImages;
 import com.reztek.modules.RumbleCommands.RumbleList;
 
-public class RumbleBadge extends Badge {
+public class RumbleListBadge extends Badge {
 	
 	private int p_playerCount = 0;
 	private int p_playerOffset = 0;
 	
-	private RumbleBadge(InputStream is, int playerOffset) throws IOException {
+	private RumbleListBadge(InputStream is, int playerOffset) throws IOException {
 		super(is);
 		p_playerOffset = playerOffset;
 	}
 	
-	public static RumbleBadge BadgeFromType(String BadgeType) throws IOException {
+	public static RumbleListBadge BadgeFromType(String BadgeType) throws IOException {
 		InputStream is = null;
 		int playerOffset = 0;
 		switch (BadgeType) {
 		case RumbleList.RUMBLE_WOOD:
-			is = RumbleBadge.class.getResourceAsStream("SGA_RWOOD.png");
+			is = RumbleListBadge.class.getResourceAsStream("SGA_RWOOD.png");
 			playerOffset = 30;
 			break;
 		case RumbleList.RUMBLE_BRONZE:
-			is = RumbleBadge.class.getResourceAsStream("SGA_RBRONZE.png");
+			is = RumbleListBadge.class.getResourceAsStream("SGA_RBRONZE.png");
 			playerOffset = 20;
 			break;
 		case RumbleList.RUMBLE_SILVER:
-			is = RumbleBadge.class.getResourceAsStream("SGA_RSILVER.png");
+			is = RumbleListBadge.class.getResourceAsStream("SGA_RSILVER.png");
 			playerOffset = 10;
 			break;
 		case RumbleList.RUMBLE_GOLD:
-			is = RumbleBadge.class.getResourceAsStream("SGA_RGOLD.png");
+			is = RumbleListBadge.class.getResourceAsStream("SGA_RGOLD.png");
 			break;
 		}
 		if (is != null) {
-			return new RumbleBadge(is,playerOffset);
+			return new RumbleListBadge(is,playerOffset);
 		} else {
 			return null;
 		}

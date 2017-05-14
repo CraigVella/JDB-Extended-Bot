@@ -24,6 +24,11 @@ public class InfoBadge extends Badge {
 		drawShadowedText(g.getThisYearTrialsKD(), 440, 199, true, Color.BLACK, Color.GRAY);
 		drawShadowedText(g.getRumbleKD(), 440, 256, true, Color.BLACK, Color.GRAY);
 		drawShadowedText(g.getLighthouseCount()+"X", 155, 314, false, new Color(17,114,4), Color.GRAY);
+		setFontName("Arial");
+		setFontSize(50);
+		drawShadowedText(g.getCurrentLevel(), 465,60, true, Color.WHITE, Color.GRAY);
+		setFontSize(25);
+		drawShadowedText(g.getCurrentLight(), 460,85, true, Color.YELLOW, Color.GRAY);
 	}
 
 }
