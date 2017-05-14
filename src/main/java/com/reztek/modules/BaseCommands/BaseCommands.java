@@ -18,10 +18,13 @@ public class BaseCommands extends CommandModule {
 	public BaseCommands(JDA pJDA, SGAExtendedBot pBot) {
 		super(pJDA, pBot,"BASECOMMANDS");
 		setModuleNameAndAuthor("Base Bot Commands", "ChaseHQ85");
+		addCommand(new String[]{
+				"version", "decision", "showmodules", "showtasks", 
+				"chase"});
 	}
-
+	
 	@Override
-	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
+	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 		
 		/*String[] splitArg = {""};
 		if (args != null) {
@@ -48,11 +51,8 @@ public class BaseCommands extends CommandModule {
 			case "showtasks":
 				showTasks(mre.getChannel());
 				break;
-			default:
-				return false;
 		}
 		
-		return true;
 	}
 	
 	protected void showTasks(MessageChannel mc) {

@@ -41,13 +41,26 @@ public class TrialsCommands extends CommandModule {
 		// I have a task!
 		p_trialsList = new TrialsList(pBot);
 		p_trialsList.setTaskName("TrialsList Refresh");
+		addCommand(new String[] {
+				"fireteam-ps", "fireteam-xb", "fireteam", 
+				"fireteam+-ps", "fireteam+-xb", "fireteam+",
+				"trials#-ps", "trials#-xb", "trials#",
+				"trials-ps", "trials-xb", "trials",
+				"trials+-ps", "trials+-xb", "trials+",
+				"trialsmap", "trialslist-importcsv", "trialslist-csv",
+				"trialslist", "trialslistgold", "trialslistsilver", "trialslistbronze",
+				"trialslistwood", "trialsrefresh", "trialsaddtolist-ps", 
+				"trialsaddtolist-xb", "trialsaddtolist", "trialsremovefromlist-ps", 
+				"trialsremovefromlist-xb", "trialsremovefromlist"
+				
+		});
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(100);
 		getBot().addTask(p_trialsList);
 	}
 
 	@Override
-	public boolean processCommand(String command, String args, MessageReceivedEvent mre) {
+	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 			switch (command) {
 			case "fireteam-ps":
 			case "fireteam-xb":
@@ -154,11 +167,7 @@ public class TrialsCommands extends CommandModule {
 					}
 				}
 				break;
-			default:
-				return false;
 		}
-		
-		return true;
 	}
 	
 	protected void trialsImportCSV(MessageReceivedEvent mre) {
