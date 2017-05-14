@@ -286,7 +286,7 @@ public class Guardian {
 		
 		p_lighthouseCount = String.valueOf(flawlessCount);
 		
-		JSONObject thisWeekOb = ob.getJSONArray("thisWeek").getJSONObject(0);
+		JSONObject thisWeekOb = ob.getJSONObject("thisWeek").getJSONObject("0");
 		
 		p_thisWeekTrialsMatches =  String.valueOf(thisWeekOb.getInt("matches"));
 		p_thisWeekTrialsFlawless =  String.valueOf(thisWeekOb.getInt("flawless"));
@@ -430,30 +430,35 @@ public class Guardian {
 	}
 	
 	private GuardianArmor getArmor(int armorSlot) {
-		GuardianArmor a = new GuardianArmor();
-		JSONObject ob = getPropsCache();
-		String pItemHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getBigInteger("itemHash"));
-		String pTalentGridHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getBigInteger("talentGridHash"));
-		JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
-		a.p_ArmorHash = pItemHash;
-		a.p_ArmorName = BungieHashDefines.GetArmorForHash(pItemHash).getName();
-		a.p_ArmorDescription = BungieHashDefines.GetArmorForHash(pItemHash).getDescription();
-		a.p_ArmorIcon = BUNGIE_BASE_IMAGES + BungieHashDefines.GetArmorForHash(pItemHash).getIcon();
-		a.p_Tier = BungieHashDefines.GetArmorForHash(pItemHash).getTier();
-		for (int x = 0; x < pNodes.length(); ++x) {
-			if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
-				StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
-				// Add Ignores here
-				if (shr.getHash().equals("1270552711")) continue; // Infuse
-				if (shr.getHash().equals("1263323987")) continue; // Increase Discipline
-				if (shr.getHash().equals("1034209669")) continue; // Increase Intellect
-				if (shr.getHash().equals("193091484" )) continue; // Increase Strength
-				if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
-				// Ignores Complete
-				a.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+		try {
+			GuardianArmor a = new GuardianArmor();
+			JSONObject ob = getPropsCache();
+			String pItemHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getBigInteger("itemHash"));
+			String pTalentGridHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getBigInteger("talentGridHash"));
+			JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(armorSlot).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
+			a.p_ArmorHash = pItemHash;
+			a.p_ArmorName = BungieHashDefines.GetArmorForHash(pItemHash).getName();
+			a.p_ArmorDescription = BungieHashDefines.GetArmorForHash(pItemHash).getDescription();
+			a.p_ArmorIcon = BUNGIE_BASE_IMAGES + BungieHashDefines.GetArmorForHash(pItemHash).getIcon();
+			a.p_Tier = BungieHashDefines.GetArmorForHash(pItemHash).getTier();
+			for (int x = 0; x < pNodes.length(); ++x) {
+				if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
+					StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+					// Add Ignores here
+					if (shr.getHash().equals("1270552711")) continue; // Infuse
+					if (shr.getHash().equals("1263323987")) continue; // Increase Discipline
+					if (shr.getHash().equals("1034209669")) continue; // Increase Intellect
+					if (shr.getHash().equals("193091484" )) continue; // Increase Strength
+					if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
+					// Ignores Complete
+					a.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+				}
 			}
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		return a;
 	}
 	
 	private JSONObject getPropsCache() {
