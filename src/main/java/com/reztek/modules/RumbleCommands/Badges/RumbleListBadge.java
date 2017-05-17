@@ -49,12 +49,12 @@ public class RumbleListBadge extends Badge {
 		if (p_playerCount >= 10) return false;
 		setFontName("Arial Bold");
 		setFontSize(22);
-		drawShadowedText(String.valueOf(++p_playerCount + p_playerOffset) + ".", 55, 160 + (p_playerCount * 30), true, Color.DARK_GRAY, Color.GRAY);
+		drawShadowedText(String.valueOf(++p_playerCount + p_playerOffset) + ".", 55, 160 + (p_playerCount * 30), TEXT_RIGHT, Color.DARK_GRAY, Color.GRAY);
 		setFontColor(Color.BLACK);
-		drawText(name, 60, 160 + (p_playerCount * 30), false);
+		drawText(name, 60, 160 + (p_playerCount * 30), TEXT_LEFT);
 		setFontColor(Color.BLACK);
-		drawText(rank, 315, 160 + (p_playerCount * 30), true);
-		drawText(elo, 415, 160 + (p_playerCount * 30), true);
+		drawText(rank, 315, 160 + (p_playerCount * 30), TEXT_RIGHT);
+		drawText(elo, 415, 160 + (p_playerCount * 30), TEXT_RIGHT);
 		try {
 			drawImage(StockImages.ImageFromName(console + "_ICON_C.png"),480,140 + (p_playerCount * 30), 25,25);
 		} catch (IOException e) {}

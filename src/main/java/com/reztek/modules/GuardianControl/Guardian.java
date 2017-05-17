@@ -48,9 +48,9 @@ public class Guardian {
 	private static final int ARMOR_ARTIFACT  = 10;
 	
 	public class GuardianWeaponStats {
-		private String p_WepName = null;
-		private String p_WepKills = null;
-		private String p_WepHeadshots = null;
+		private String p_WepName = "N/A";
+		private String p_WepKills = "0";
+		private String p_WepHeadshots = "0";
 		private String p_WepIcon = null;
 		private DamageTypeReturn p_dtr = null;
 		private ArrayList<GuardianPerk> p_PerkList = new ArrayList<GuardianPerk>();
@@ -72,8 +72,8 @@ public class Guardian {
 	}
 	
 	public class GuardianArmor {
-		private String p_ArmorName = null;
-		private String p_ArmorDescription = null;
+		private String p_ArmorName = "N/A";
+		private String p_ArmorDescription = "N/A";
 		private String p_ArmorHash = null;
 		private String p_ArmorIcon = null;
 		private int p_Tier = 0;

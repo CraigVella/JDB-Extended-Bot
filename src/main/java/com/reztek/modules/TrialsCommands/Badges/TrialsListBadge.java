@@ -49,13 +49,13 @@ public class TrialsListBadge extends Badge{
 		if (p_playerCount >= 10) return false;
 		setFontName("Arial Bold");
 		setFontSize(22);
-		drawShadowedText(String.valueOf(++p_playerCount + p_playerOffset) + ".", 85, 163 + (p_playerCount * 30), true, Color.DARK_GRAY, Color.GRAY);
+		drawShadowedText(String.valueOf(++p_playerCount + p_playerOffset) + ".", 85, 163 + (p_playerCount * 30), TEXT_RIGHT, Color.DARK_GRAY, Color.GRAY);
 		setFontColor(Color.BLACK);
-		drawText(name, 87, 163 + (p_playerCount * 30), false);
+		drawText(name, 87, 163 + (p_playerCount * 30), TEXT_LEFT);
 		setFontColor(Color.BLACK);
-		drawText(rank, 357, 163 + (p_playerCount * 30), true);
-		drawText(elo, 450, 163 + (p_playerCount * 30), true);
-		drawText(flawlessCount, 538, 163 + (p_playerCount * 30), true);
+		drawText(rank, 357, 163 + (p_playerCount * 30), TEXT_RIGHT);
+		drawText(elo, 450, 163 + (p_playerCount * 30), TEXT_RIGHT);
+		drawText(flawlessCount, 538, 163 + (p_playerCount * 30), TEXT_RIGHT);
 		try {
 			drawImage(StockImages.ImageFromName(console + "_ICON_C.png"),615,143 + (p_playerCount * 30), 25,25);
 		} catch (IOException e) {}

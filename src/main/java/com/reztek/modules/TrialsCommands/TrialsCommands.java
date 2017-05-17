@@ -43,6 +43,7 @@ public class TrialsCommands extends CommandModule {
 		p_trialsList.setTaskName("TrialsList Refresh");
 		addCommand(new String[] {
 				"fireteam-ps", "fireteam-xb", "fireteam", 
+				"fireteam#-ps", "fireteam#-xb", "fireteam#", 
 				"fireteam+-ps", "fireteam+-xb", "fireteam+",
 				"trials#-ps", "trials#-xb", "trials#",
 				"trials-ps", "trials-xb", "trials",
@@ -52,7 +53,6 @@ public class TrialsCommands extends CommandModule {
 				"trialslistwood", "trialsrefresh", "trialsaddtolist-ps", 
 				"trialsaddtolist-xb", "trialsaddtolist", "trialsremovefromlist-ps", 
 				"trialsremovefromlist-xb", "trialsremovefromlist"
-				
 		});
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(100);
@@ -69,6 +69,15 @@ public class TrialsCommands extends CommandModule {
 					sendHelpString(mre, "!fireteam[or !fireteam-ps or !fireteam-xb] PlayerNameHere");
 				} else {
 					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), false);
+				}
+				break;
+			case "fireteam#-ps":
+			case "fireteam#-xb":
+			case "fireteam#":
+				if (args == null) {
+					sendHelpString(mre, "!fireteam[or !fireteam-ps or !fireteam-xb] PlayerNameHere");
+				} else {
+					fireteamInfoBadge(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 				break;
 			case "fireteam+-ps":
@@ -299,6 +308,37 @@ public class TrialsCommands extends CommandModule {
 			mc.sendMessage(eb.build()).queue();
 		} else {
 			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
+		}
+	}
+	
+	protected void fireteamInfoBadge(MessageChannel mc, String playerName, String platform) {
+		mc.sendTyping().queue();
+		Guardian g = Guardian.guardianFromName(playerName, platform);
+		ArrayList<Guardian> gFireteam = new ArrayList<Guardian>();
+		if (g != null) {
+			ArrayList<HashMap<String,String>> members = g.getTrialsFireteamMembershipId();
+			for (HashMap<String, String> hashMap : members) {
+				gFireteam.add(Guardian.guardianFromName(hashMap.get("name"), hashMap.get("platform")));
+			}
+			try {
+				mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's ").queue();
+				EmbedBuilder em = new EmbedBuilder();
+				em.setColor(Color.YELLOW);
+				TrialsDetailedBadge gb = TrialsDetailedBadge.TrialsDetailedBadgeFromGuardian(g);
+				em.setImage(gb.finalizeBadge());
+				mc.sendMessage(em.build()).queue();
+				gb.cleanup();
+				for (Guardian gFt : gFireteam) {
+					EmbedBuilder eFt = new EmbedBuilder();
+					eFt.setColor(Color.YELLOW);
+					TrialsDetailedBadge ftb = TrialsDetailedBadge.TrialsDetailedBadgeFromGuardian(gFt);
+					eFt.setImage(ftb.finalizeBadge());
+					mc.sendMessage(eFt.build()).queue();
+					ftb.cleanup();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

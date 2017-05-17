@@ -18,6 +18,10 @@ import com.reztek.Badges.Fonts.BadgeFont;
 import com.reztek.Secret.GlobalDefs;
 
 public class Badge {
+	public static final int TEXT_LEFT   = 0;
+	public static final int TEXT_RIGHT  = 1;
+	public static final int TEXT_CENTER = 2;
+	
 	private BufferedImage p_baseImage = null;
 	private Graphics2D p_gx = null;
 	private String p_fontName = "Arial Bold";
@@ -80,33 +84,44 @@ public class Badge {
 	}
 	
 	public void drawText(String text, int x, int y) {
-		drawText(text,x,y,false);
+		drawText(text,x,y,TEXT_LEFT);
 	}
 	
-	public void drawText(String text, int x, int y, boolean rightAlign) {
-		drawText(text,x,y,rightAlign,p_fontColor);
+	public void drawText(String text, int x, int y, int align) {
+		drawText(text,x,y,align,p_fontColor);
 	}
 	
-	public void drawText(String text, int x, int y, boolean rightAlign, Color color) {
-		drawText(text,x,y,rightAlign,color,p_fontSize);
+	public void drawText(String text, int x, int y, int align, Color color) {
+		drawText(text,x,y,align,color,p_fontSize);
 	}
 	
-	public void drawText(String text, int x, int y, boolean rightAlign, Color color, int size) {
-		drawText(text,x,y,rightAlign,color,size,p_fontName);
+	public void drawText(String text, int x, int y, int align, Color color, int size) {
+		drawText(text,x,y,align,color,size,p_fontName);
 	}
 	
-	public void drawText(String text, int x, int y, boolean rightAlign, Color color, int size, String fontName) {
-		drawText(text,x,y,rightAlign,color,size,fontName,p_fontType);
+	public void drawText(String text, int x, int y, int align, Color color, int size, String fontName) {
+		drawText(text,x,y,align,color,size,fontName,p_fontType);
 	}
 	
-	public void drawText(String text, int x, int y, boolean rightAlign, Color color, int size, String fontName, int type) {
+	public void drawText(String text, int x, int y, int align, Color color, int size, String fontName, int type) {
 		setFontNameSizeColorType(fontName, size, color, type);
-		p_gx.drawString(text, (rightAlign ? (x - p_gx.getFontMetrics().stringWidth(text)) : x), y);
+		switch (align) {
+		case TEXT_RIGHT:
+			p_gx.drawString(text,(x - p_gx.getFontMetrics().stringWidth(text)), y);
+			break;
+		case TEXT_CENTER:
+			p_gx.drawString(text, (x - (p_gx.getFontMetrics().stringWidth(text) / 2)) ,y);
+			break;
+		case TEXT_LEFT:
+		default:
+			p_gx.drawString(text,  x, y);
+			break;
+		}
 	}
 	
-	public void drawShadowedText(String text, int x, int y, boolean rightAlign, Color foreColor, Color backColor) {
-		drawText(text, x+1, y+1, rightAlign, backColor);
-		drawText(text, x, y, rightAlign, foreColor);
+	public void drawShadowedText(String text, int x, int y, int align, Color foreColor, Color backColor) {
+		drawText(text, x+1, y+1, align, backColor);
+		drawText(text, x, y, align, foreColor);
 	}
 	
 	public String finalizeBadge() throws IOException {
