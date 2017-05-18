@@ -159,4 +159,21 @@ public abstract class BotUtils {
 		    return _requestclass;
 		}
 	}
+	
+	public static String abvString(String toAbv) {
+		String abvName = null;
+		if (toAbv.contains(" ")) {
+			int y = 0;
+			for (String w : toAbv.split(" ")) {
+				if (y++ == 0) {
+					abvName = w.substring(0, 2) + ". ";
+				} else {
+					abvName += w;
+				}
+			}
+		} else {
+			abvName = toAbv;
+		}
+		return abvName;
+	}
 }

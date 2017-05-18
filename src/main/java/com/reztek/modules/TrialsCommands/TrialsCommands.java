@@ -321,7 +321,7 @@ public class TrialsCommands extends CommandModule {
 				gFireteam.add(Guardian.guardianFromName(hashMap.get("name"), hashMap.get("platform")));
 			}
 			try {
-				mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's ").queue();
+				mc.sendMessage("**" + g.getName() + "**'s Current Fireteam ").queue();
 				EmbedBuilder em = new EmbedBuilder();
 				em.setColor(Color.YELLOW);
 				TrialsDetailedBadge gb = TrialsDetailedBadge.TrialsDetailedBadgeFromGuardian(g);
@@ -370,7 +370,7 @@ public class TrialsCommands extends CommandModule {
 					"[Flawlesses]("+ BotUtils.getPaddingForLen(g.getLighthouseCount(), 4)+ g.getLighthouseCount() +")" + (verbose ? "<WK: "+ BotUtils.getPaddingForLen(g.getThisWeekTrialsFlawless(), 5) + g.getThisWeekTrialsFlawless() +  ">" : "") + "\n" +
 					(verbose ? bestWeps : "") +
 					"```");
-			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam's " + (verbose ? "Detailed " : "") + "Weekly Stats").queue();
+			mc.sendMessage("**" + g.getName() + "**'s Current Fireteam " + (verbose ? "Detailed " : "") + "Weekly Stats").queue();
 			mc.sendMessage(eb.build()).queue();
 			for (Guardian gFt : gFireteam) {
 				String bestWepsFt = "--  This Week Weapons  : Kills ( HS )--\n";

@@ -96,4 +96,14 @@ public abstract class BungieHashDefines {
 		}
 		return String.valueOf(TalentGridDefinitions.getJSONArray(talentGridHash).getJSONObject(node).getJSONArray("s").getBigInteger(stepIndex));
 	}
+	
+	public static boolean isHashDangerous(String hash) {
+		switch (hash) {
+		case "3125734432": // Rangefinder
+		case "2399787380": // Unstoppable
+			return true;
+		default:
+			return false;
+		}
+	}
 }
