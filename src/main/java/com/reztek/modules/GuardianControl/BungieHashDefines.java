@@ -117,7 +117,19 @@ public abstract class BungieHashDefines {
 		case "1402025913": /* Last Word */             case "3359693707": /* Explosive Rounds */    case "904218236" : /* Zen Moment */
 		case "941706941" : /* Tac */                   case "1288562798": /* no backpack */         case "3985037411": /* Force Multiplier */
 		case "1373548822": /* Elusive Shadow */        case "212007830" : /* Rapid Cooldown */      case "3240940051": /* NBBL 1 */
-		case "3757369523": /* NBBL 2 */
+		case "3757369523": /* NBBL 2 */				   case "3844755601": /* Flashbang */			case "79448980"  : /* Pulse Grenade */
+		case "2880143637": /* Magnetic Grenade */	   case "332456255" : /* Spike Grenade */       case "1701872319": /* Suppressor Grenade */
+		case "162969499" : /* Juggernaut */            case "679801967" : /* Transfusion */	        case "2777454294": /* Headstrong */
+		case "3122403418": /* Increased Height */	   case "441640956" : /* Shockwave */		    case "618747093" : /* Overload */
+		case "141946841" : /* Discharge */			   case "3943586113": /* Armor of Light */		case "1140240393": /* Blessing Of Light */
+		case "2392353811": /* Weapons of Light */      case "4159561638": /* Gift of Light */	    case "1219909731": /* Unbreakable */
+		case "4189296612": /* War Machine */	       case "3515582023": /* Catapult */		    case "2921757985": /* Bastion */
+		case "582778565" : /* Gift of the Void */      case "4175262968": /* Relentless */			case "478012927" : /* Illuminated */
+		case "4182145704": /* Iron Harvest */		   case "3395472529": /* Untouchable */			case "3975810408": /* Forge Master */
+		case "329796776" : /* Scorched Earth */ 	   case "1329601567": /* Suncharge */			case "562560721" : /* Melting Point */
+		case "505818755" : /* Stoke the Forge */	   case "1090584231": /* Thermal Vent */	    case "3255243428": /* Explosive Pyre */
+		case "1754924561": /* Flameseeker */		   case "2098505219": /* Fleetfire */			case "346180023" : /* Cauterize */
+		case "15930289"  : /* Fire Keeper */		   case "65858584"  : /* Simmering Flames */
 			return true;
 		default:
 			return false;
