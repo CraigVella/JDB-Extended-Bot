@@ -99,8 +99,25 @@ public abstract class BungieHashDefines {
 	
 	public static boolean isHashDangerous(String hash) {
 		switch (hash) {
-		case "3125734432": // Rangefinder
-		case "2399787380": // Unstoppable
+		// List of Dangerous Perks
+		case "3125734432": /* Rangefinder */           case "2399787380": /* Unstoppable */         case "2110331143": /* "Rifled Barrel" */
+		case "386636896" : /* "Luck in the Chamber" */ case "3528431156": /* "Hidden Hand" */       case "855592488" : /* "Unflinching" */
+		case "2806121217": /* "Outlaw" */              case "2479685401": /* "Snapshot" */          case "3058480256": /* "High Caliber Rounds" */
+		case "265561391" : /* "Counterbalance" */      case "868135889" : /* "Full Auto" */         case "838935487" : /* "Third Eye" */
+		case "1085914778": /* "Icarus" */              case "3687977041": /* "Rescue Mag" */        case "1628173634": /* "Grenades and Horseshoes" */
+		case "4031916258": /* "Tracking" */            case "3811945819": /* Lightning Grenade */   case "2803404526": /* Aftershocks */
+		case "4161884601": /* Shoulder Charge */       case "2707746729": /* Aftermath */           case "2239884867": /* Amplify */
+		case "893232146" : /* Increased Control */     case "1324739096": /* Perfect Balance */     case "2133887516": /* Mulligan */
+		case "1419200282": /* Persistance */           case "2164126547": /* Eye of the storm */    case "3967906128": /* Keeper of the pack */
+		case "35631069"  : /* Plan C */                case "3561707758": /* Str of the Ram */      case "4168601465": /* Skorri Harmony */
+		case "3861334725": /* The whisper */           case "2786446346": /* Hungering Void */      case "1435119775": /* Starfire Protocol */
+		case "2464979084": /* Universal Remote*/       case "1123695440": /* Mida */                case "3614286088": /* NLB */ 
+		case "453334051" : /* Braced Frame */          case "3409718360": /* QuickDraw */           case "1729865861": /* Longview */
+		case "788826872" : /* ShortGaze*/              case "186107093" : /* AGG */                 case "1644354530": /* Sword Strike */
+		case "1402025913": /* Last Word */             case "3359693707": /* Explosive Rounds */    case "904218236" : /* Zen Moment */
+		case "941706941" : /* Tac */                   case "1288562798": /* no backpack */         case "3985037411": /* Force Multiplier */
+		case "1373548822": /* Elusive Shadow */        case "212007830" : /* Rapid Cooldown */      case "3240940051": /* NBBL 1 */
+		case "3757369523": /* NBBL 2 */
 			return true;
 		default:
 			return false;

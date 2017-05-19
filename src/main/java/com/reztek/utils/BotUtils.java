@@ -166,9 +166,9 @@ public abstract class BotUtils {
 			int y = 0;
 			for (String w : toAbv.split(" ")) {
 				if (y++ == 0) {
-					abvName = w.substring(0, 2) + ". ";
+					abvName = w.substring(0, 2) + ".";
 				} else {
-					abvName += w;
+					abvName += " " + w;
 				}
 			}
 		} else {

@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import com.reztek.Badges.Badge;
 import com.reztek.Badges.StockImages.StockImages;
 import com.reztek.Utils.BotUtils;
 import com.reztek.modules.GuardianControl.Guardian;
+import com.reztek.modules.GuardianControl.Guardian.GuardianPerk;
+import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 
 public class TrialsDetailedBadge extends Badge {
 
@@ -60,7 +63,6 @@ public class TrialsDetailedBadge extends Badge {
 		b.setFontSize(15);
 		b.setFontName("Arial Bold");
 		Color textColor = new Color(31,133,0);
-		Color textWarn  = Color.RED;
 		b.drawShadowedText(g.getTrialsELO(), 112, 132, TEXT_RIGHT, textColor, Color.GRAY);
 		b.drawShadowedText(g.getLighthouseCount(), 235, 132, TEXT_RIGHT, textColor, Color.GRAY);
 		b.drawShadowedText(g.getThisWeekTrialsFlawless(), 237, 161, TEXT_RIGHT, textColor, Color.GRAY);
@@ -95,6 +97,59 @@ public class TrialsDetailedBadge extends Badge {
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getHeadshotPercentage(), 428, 415);
 				break;
 			default:
+			}
+		}
+		// Danger Subclass Perks
+		{
+			b.setFontSize(8);
+			int x = 0;
+			for (GuardianPerk p : g.getCurrentSubclassPerksDangerous()) {
+				switch (x++) {
+				case 0:
+					b.drawText(p.getPerkName(), 95, 228);
+					break;
+				case 1:
+					b.drawText(p.getPerkName(), 95, 250);
+					break;
+				case 2:
+					b.drawText(p.getPerkName(), 95, 271);
+					break;
+				case 3:
+					b.drawText(p.getPerkName(), 177, 228);
+					break;
+				case 4:
+					b.drawText(p.getPerkName(), 177, 250);
+					break;
+				case 5:
+					b.drawText(p.getPerkName(), 177, 271);
+					break;
+					default:
+				}
+			}
+		}
+		// Danger Wep Perks
+		{
+			b.setFontNameSizeColorType("Arial", 8, Color.WHITE, Font.PLAIN);
+			ArrayList<GuardianWeaponStats> gws = new ArrayList<GuardianWeaponStats>();
+			gws.add(g.getCurrentPrimaryWep());
+			gws.add(g.getCurrentSpecialWep());
+			gws.add(g.getCurrentHeavyWep());
+			int y = 0;
+			for (GuardianWeaponStats w : gws) {
+				int x = 0;
+				for (GuardianPerk p : w.getWepPerksDangerous()) {
+					switch (x) {
+					case 0:
+					case 1:
+					case 2:
+						b.drawURLImage(new URL(p.getPerkIcon()), (x * 53) + 322, (y * 92) + 122, 46, 46);
+						b.drawText(BotUtils.abvString(p.getPerkName()),(x * 53) + 345, (y * 92) + 174, TEXT_CENTER);
+						break;
+						default:
+					}
+					x++;
+				}
+				y++;
 			}
 		}
 		return b;
