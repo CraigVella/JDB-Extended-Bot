@@ -31,7 +31,7 @@ public class GuardianControlCommands extends CommandModule {
 				"debugguardian", "getauthguardian", "getauthguardian-ps", "getauthguardian-xb",
 				"primary","primary-ps","primary-xb","special","special-ps","special-xb",
 				"heavy","heavy-ps","heavy-xb","loadout","loadout-ps","loadout-xb",
-				"info","info-xb","info-ps"
+				"info","info-xb","info-ps", "build", "build-ps", "build-xb"
 				});
 	}
 
@@ -107,6 +107,37 @@ public class GuardianControlCommands extends CommandModule {
 					playerInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 				break;
+			case "build":
+			case "build-ps":
+			case "build-xb":
+				if (args == null) {
+					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
+					build(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command));
+				} else {
+					build(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
+				}
+				break;
+		}
+	}
+	
+	protected void build(MessageChannel mc, String playerName, String platform) {
+		mc.sendTyping().queue();
+		Guardian g = Guardian.guardianFromName(playerName, platform);
+		if (g != null) {
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setTitle(g.getName() + "'s current build",null);
+			eb.setThumbnail(g.getCharacterLastPlayedSubclassIcon());
+			eb.setDescription("***" + g.getCharacterLastPlayedSubclass() + "***");
+			for (GuardianPerk p : g.getCurrentSubclassPerks()) {
+				eb.addField(p.getPerkName(), p.getPerkDesc(), false);
+			}
+			String platformS = null, platformD = null;
+			if (g.getPlatform().equals("1")) { platformS = "XB"; platformD = "XBox"; }
+			if (g.getPlatform().equals("2")) { platformS = "PS"; platformD = "Playstation"; }
+			eb.setFooter(platformD + " Guardian", GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + platformS + "_ICON.png");
+			mc.sendMessage(eb.build()).queue();
+		} else {
+			mc.sendMessage("Hmm... Cant seem to find " + playerName + ", You sure you have the right platform or spelling?").queue();
 		}
 	}
 	

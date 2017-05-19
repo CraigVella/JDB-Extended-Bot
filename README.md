@@ -1,6 +1,6 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 1.10**
+**Current Bot Commands as of Version 1.11**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
@@ -18,10 +18,10 @@ All commands begin with an '!'
     12. rumblelistrefresh                               - MOD ONLY - Refresh's all the stats in the current rumble list
     13. rumblelist-importcsv           <CSV Attachment> - MOD ONLY - Import CSV with header of "playername, platform, show" into db
     14. trialsmap                                       - Displays current trials map with picture
-    15. fireteam[-ps][-xb]             <PlayerName>     - Displays information about current players ToO Fireteam
-    16. fireteam+[-ps][-xb]            <PlayerName>     - Displays Detailed information about current players ToO Fireteam
-    17. trials[-ps][-xb]               [PlayerName]     - Displays information about ToO Player
-    18. trials+[-ps][-xb]              [PlayerName]     - Displays Detailed information about ToO player
+    15. fireteam[-ps][-xb]             <PlayerName>     - Displays Detailed information about current players ToO Fireteam
+    16. fireteam#[-ps][-xb]            <PlayerName>     - Displays Detailed information about current players ToO Fireteam ( In Text Form )
+    17. trials[-ps][-xb]               [PlayerName]     - Displays Detailed information about ToO player
+    18. trials#[-ps][-xb]              [PlayerName]     - Displays Detailed information about ToO player ( In Text Form )
     19. trialslistgold                                  - Displays top 10 of Trials list
     20. trialslistsilver                                - Displays rank 11-20 of Trials list
     21. trialslistbronze                                - Displays rank 21-30 of Trials list

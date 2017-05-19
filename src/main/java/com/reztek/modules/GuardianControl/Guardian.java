@@ -48,9 +48,9 @@ public class Guardian {
 	private static final int ARMOR_ARTIFACT  = 10;
 	
 	public class GuardianWeaponStats {
-		private String p_WepName = null;
-		private String p_WepKills = null;
-		private String p_WepHeadshots = null;
+		private String p_WepName = "N/A";
+		private String p_WepKills = "0";
+		private String p_WepHeadshots = "0";
 		private String p_WepIcon = null;
 		private DamageTypeReturn p_dtr = null;
 		private ArrayList<GuardianPerk> p_PerkList = new ArrayList<GuardianPerk>();
@@ -58,6 +58,7 @@ public class Guardian {
 		public String getWeaponKills(){return p_WepKills; }
 		public String getWeaponHeadshots() { return p_WepHeadshots; }
 		public String getWepIcon() { return p_WepIcon; }
+		public DamageTypeReturn getDamageType() { return p_dtr; }
 		public final Collection<GuardianPerk> getWepPerks() { return Collections.unmodifiableCollection(p_PerkList); }
 		public String getHeadshotPercentage() {
 			DecimalFormat df = new DecimalFormat();
@@ -66,14 +67,18 @@ public class Guardian {
 			hsPerc *= 100;
 			return df.format(hsPerc) + "%";
 		}
-		public DamageTypeReturn getDamageType() {
-			return p_dtr;
+		public final Collection<GuardianPerk> getWepPerksDangerous() {
+			ArrayList<GuardianPerk> dPerks = new ArrayList<GuardianPerk>();
+			for (GuardianPerk p : p_PerkList) {
+				if (p.isPerkDangerous()) dPerks.add(p);
+			}
+			return Collections.unmodifiableCollection(dPerks);
 		}
 	}
 	
 	public class GuardianArmor {
-		private String p_ArmorName = null;
-		private String p_ArmorDescription = null;
+		private String p_ArmorName = "N/A";
+		private String p_ArmorDescription = "N/A";
 		private String p_ArmorHash = null;
 		private String p_ArmorIcon = null;
 		private int p_Tier = 0;
@@ -84,6 +89,13 @@ public class Guardian {
 		public String getArmorIcon() { return  p_ArmorIcon; }
 		public int getArmorTier() { return p_Tier; }
 		public final Collection<GuardianPerk> getArmorPerks() { return Collections.unmodifiableCollection(p_PerkList); }
+		public final Collection<GuardianPerk> getArmorPerksDangerous() {
+			ArrayList<GuardianPerk> dPerks = new ArrayList<GuardianPerk>();
+			for (GuardianPerk p : p_PerkList) {
+				if (p.isPerkDangerous()) dPerks.add(p);
+			}
+			return Collections.unmodifiableCollection(dPerks);
+		}
 	}
 	
 	public class DamageTypeReturn {
@@ -107,13 +119,19 @@ public class Guardian {
 		private String p_PerkName = null;
 		private String p_PerkDesc = null;
 		private String p_PerkIcon = null;
+		private String p_PerkHash = null;
+		private boolean p_PerkDangerous = false;
 		public String getPerkName() { return p_PerkName; }
 		public String getPerkDesc() { return p_PerkDesc; }
 		public String getPerkIcon() { return p_PerkIcon; }
-		public GuardianPerk(String perkName, String perkDesc, String perkIcon) {
+		public String getPerkHash() { return p_PerkHash; }
+		public boolean isPerkDangerous() { return p_PerkDangerous; }
+		public GuardianPerk(String perkName, String perkDesc, String perkIcon, String perkHash) {
 			p_PerkName = perkName;
 			p_PerkDesc = perkDesc;
 			p_PerkIcon = perkIcon;
+			p_PerkHash = perkHash;
+			p_PerkDangerous = BungieHashDefines.isHashDangerous(perkHash);
 		}
 	}
 	
@@ -412,7 +430,7 @@ public class Guardian {
 				StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
 				// Add Ignores here
 				// Ignores Complete
-				p_currentSubclassPerks.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+				p_currentSubclassPerks.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon(), shr.getHash()));
 			}
 		}
 		
@@ -451,7 +469,7 @@ public class Guardian {
 					if (shr.getHash().equals("193091484" )) continue; // Increase Strength
 					if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
 					// Ignores Complete
-					a.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+					a.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon(), shr.getHash()));
 				}
 			}
 			return a;
@@ -507,7 +525,7 @@ public class Guardian {
 					if (shr.getHash().equals("2133116599")) continue; // Deactivate Chroma
 					if (shr.getHash().equals("217480046" )) continue; // Twist of Fate
 					// Ignores Complete
-					gw.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon()));
+					gw.p_PerkList.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon(), shr.getHash()));
 				}
 			}
 			
@@ -671,6 +689,14 @@ public class Guardian {
 	
 	public final Collection<GuardianPerk> getCurrentSubclassPerks() {
 		return Collections.unmodifiableCollection(p_currentSubclassPerks);
+	}
+	
+	public final Collection<GuardianPerk> getCurrentSubclassPerksDangerous() {
+		ArrayList<GuardianPerk> dPerks = new ArrayList<GuardianPerk>();
+		for (GuardianPerk p : p_currentSubclassPerks) {
+			if (p.isPerkDangerous()) dPerks.add(p);
+		}
+		return Collections.unmodifiableCollection(dPerks);
 	}
 	
 	public int getCurrentAgility() {
