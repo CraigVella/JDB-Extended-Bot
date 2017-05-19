@@ -129,7 +129,8 @@ public abstract class BungieHashDefines {
 		case "329796776" : /* Scorched Earth */ 	   case "1329601567": /* Suncharge */			case "562560721" : /* Melting Point */
 		case "505818755" : /* Stoke the Forge */	   case "1090584231": /* Thermal Vent */	    case "3255243428": /* Explosive Pyre */
 		case "1754924561": /* Flameseeker */		   case "2098505219": /* Fleetfire */			case "346180023" : /* Cauterize */
-		case "15930289"  : /* Fire Keeper */		   case "65858584"  : /* Simmering Flames */
+		case "15930289"  : /* Fire Keeper */		   case "65858584"  : /* Simmering Flames */	case "3632189236": /* Lockdown */
+		case "2845051978": /* Ice Breaker */		   case "2995804739": /* Fusion Grenade */ 	    
 			return true;
 		default:
 			return false;

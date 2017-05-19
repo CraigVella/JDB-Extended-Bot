@@ -43,11 +43,11 @@ public class TrialsCommands extends CommandModule {
 		p_trialsList.setTaskName("TrialsList Refresh");
 		addCommand(new String[] {
 				"fireteam-ps", "fireteam-xb", "fireteam", 
-				"fireteam#-ps", "fireteam#-xb", "fireteam#", 
 				"fireteam+-ps", "fireteam+-xb", "fireteam+",
+				"fireteam#-ps", "fireteam#-xb", "fireteam#", 
 				"trials#-ps", "trials#-xb", "trials#",
-				"trials-ps", "trials-xb", "trials",
 				"trials+-ps", "trials+-xb", "trials+",
+				"trials-ps", "trials-xb", "trials",
 				"trialsmap", "trialslist-importcsv", "trialslist-csv",
 				"trialslist", "trialslistgold", "trialslistsilver", "trialslistbronze",
 				"trialslistwood", "trialsrefresh", "trialsaddtolist-ps", 
@@ -65,33 +65,30 @@ public class TrialsCommands extends CommandModule {
 			case "fireteam-ps":
 			case "fireteam-xb":
 			case "fireteam":
-				if (args == null) {
-					sendHelpString(mre, "!fireteam[or !fireteam-ps or !fireteam-xb] PlayerNameHere");
-				} else {
-					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), false);
-				}
-				break;
-			case "fireteam#-ps":
-			case "fireteam#-xb":
-			case "fireteam#":
+			case "fireteam+-ps":
+			case "fireteam+-xb":
+			case "fireteam+":
 				if (args == null) {
 					sendHelpString(mre, "!fireteam[or !fireteam-ps or !fireteam-xb] PlayerNameHere");
 				} else {
 					fireteamInfoBadge(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 				break;
-			case "fireteam+-ps":
-			case "fireteam+-xb":
-			case "fireteam+":
+			case "fireteam#-ps":
+			case "fireteam#-xb":
+			case "fireteam#":
 				if (args == null) {
 					sendHelpString(mre, "!fireteam+[or !fireteam+-ps or !fireteam+-xb] PlayerNameHere");
 				} else {
 					fireteamInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), true);
 				}
 				break;
-			case "trials#-ps":
-			case "trials#-xb":
-			case "trials#":
+			case "trials-ps":
+			case "trials-xb":
+			case "trials":
+			case "trials+-ps":
+			case "trials+-xb":
+			case "trials+":
 				if (args == null) {
 					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
 					trialsInfoBadge(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command));
@@ -99,19 +96,9 @@ public class TrialsCommands extends CommandModule {
 					trialsInfoBadge(mre.getChannel(), args, Guardian.platformCodeFromCommand(command));
 				}
 			break;
-			case "trials-ps":
-			case "trials-xb":
-			case "trials":
-				if (args == null) {
-					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
-					trialsInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), false);
-				} else {
-					trialsInfo(mre.getChannel(), args, Guardian.platformCodeFromCommand(command), false);
-				}
-				break;
-			case "trials+-ps":
-			case "trials+-xb":
-			case "trials+":
+			case "trials#-ps":
+			case "trials#-xb":
+			case "trials#":
 				if (args == null) {
 					Guardian.PlatformCodeFromNicknameData d = Guardian.platformCodeFromNickname(mre.getMember().getEffectiveName());
 					trialsInfo(mre.getChannel(), d.getNickname(), d.usesTag() ? d.getPlatform() : Guardian.platformCodeFromCommand(command), true);
