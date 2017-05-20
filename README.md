@@ -40,6 +40,7 @@ All commands begin with an '!'
     34. showtasks                                       - Displays current tasks, run time, and when they will next run
     35. rumblelistwood                                  - Displays rank 31-40 of rumble list
     36. trialslistwood                                  - Displays rank 31-40 of trials list
+    37. build                           [PlayerName]    - Displays player build
 
     [] = optional
     <> = Required
