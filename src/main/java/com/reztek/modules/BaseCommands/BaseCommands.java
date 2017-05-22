@@ -70,7 +70,7 @@ public class BaseCommands extends CommandModule {
 		mc.sendTyping().queue();
 		int startIndex = new Random().nextInt(90-1) + 1;
 		JSONArray tacoArray = new JSONObject(BotUtils.getJSONStringGet(GOOGLE_CUSTOM_SEARCH+"taco&start=" + String.valueOf(startIndex), null)).getJSONArray("items");
-		String tacoLink = tacoArray.getJSONObject((new Random().nextInt(tacoArray.length()) + 1)).getString("link");
+		String tacoLink = tacoArray.getJSONObject((new Random().nextInt(tacoArray.length()))).getString("link");
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Color.YELLOW);
 		eb.setImage(tacoLink);
