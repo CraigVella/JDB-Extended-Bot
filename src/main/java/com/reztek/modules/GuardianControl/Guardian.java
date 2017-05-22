@@ -61,6 +61,7 @@ public class Guardian {
 		public DamageTypeReturn getDamageType() { return p_dtr; }
 		public final Collection<GuardianPerk> getWepPerks() { return Collections.unmodifiableCollection(p_PerkList); }
 		public String getHeadshotPercentage() {
+			if (p_WepKills.equals("0")) return "0%";
 			DecimalFormat df = new DecimalFormat();
 			df.setMaximumFractionDigits(2); 
 			float hsPerc = Float.valueOf(p_WepHeadshots) / Float.valueOf(p_WepKills);
