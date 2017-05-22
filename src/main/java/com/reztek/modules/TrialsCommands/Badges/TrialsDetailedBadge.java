@@ -48,8 +48,10 @@ public class TrialsDetailedBadge extends Badge {
 			b.drawURLImage(new URL(g.getCurrentExoticArmor().getArmorIcon()), 25, 304, 60, 60);
 			b.drawText(g.getCurrentExoticArmor().getArmorName().split(" ")[g.getCurrentExoticArmor().getArmorName().split(" ").length - 1], 55, 375, TEXT_CENTER);
 		}
-		b.drawURLImage(new URL(g.getCurrentArtifact().getArmorIcon()), 102, 304, 60, 60);
-		b.drawText(g.getCurrentArtifact().getArmorName().split(" ")[g.getCurrentArtifact().getArmorName().split(" ").length - 1], 132, 375, TEXT_CENTER);
+		if (g.getCurrentArtifact() != null) {
+			b.drawURLImage(new URL(g.getCurrentArtifact().getArmorIcon()), 102, 304, 60, 60);
+			b.drawText(g.getCurrentArtifact().getArmorName().split(" ")[g.getCurrentArtifact().getArmorName().split(" ").length - 1], 132, 375, TEXT_CENTER);
+		}
 		// Current Weps	
 		b.setFontName("Arial Bold");
 		b.setFontSize(14);
