@@ -1,6 +1,6 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 1.11**
+**Current Bot Commands as of Version 1.13**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
@@ -40,6 +40,8 @@ All commands begin with an '!'
     34. showtasks                                       - Displays current tasks, run time, and when they will next run
     35. rumblelistwood                                  - Displays rank 31-40 of rumble list
     36. trialslistwood                                  - Displays rank 31-40 of trials list
+    37. build                           [PlayerName]    - Displays player build
+    38. taco                                            - Displays a taco
 
     [] = optional
     <> = Required
