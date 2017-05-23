@@ -35,7 +35,7 @@ public class Guardian {
 	private static final String   DTR_API_PLAYER        = "/player/";
 	private static final String   DTR_API_THISWEEKWEPS  = "/lastWeapons/";
 	private static final String   DTR_API_WEPSTATS      = "/weaponStats/";
-	private static final String   REZ_OFFLINE_IMG       = GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + "OFFLINE.png";
+	private static final String   REZ_ORBIT_IMG         = GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + "ORBIT.png";
 	
 	private static final int WEAPON_PRIMARY  =  1;
 	private static final int WEAPON_SPECIAL  =  2;
@@ -423,7 +423,7 @@ public class Guardian {
 				HashReturnDescription hr = BungieHashDefines.GetActivityForHash(String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getBigInteger("currentActivityHash")));
 				p_currentActivity = new GuardianPerk(hr.getName(), hr.getDescription(), BUNGIE_BASE_IMAGES + hr.getIcon(), hr.getHash());
 			} catch (JSONException e) {
-				p_currentActivity = new GuardianPerk("Offline", "Sorry this guardian is currently not playing destiny", REZ_OFFLINE_IMG, "0");
+				p_currentActivity = new GuardianPerk("Orbiting", "This Guardian is in Orbit or not online", REZ_ORBIT_IMG, "0");
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
