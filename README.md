@@ -1,6 +1,6 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 1.14**
+**Current Bot Commands as of Version 1.15**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
@@ -43,6 +43,9 @@ All commands begin with an '!'
     37. build                          [PlayerName]     - Displays player build
     38. taco                                            - Displays a taco
     39. activity[-ps][-xb]             [PlayerName]     - Displays Characters current Activity
+    40. custom-list                                     - Lists custom commands
+    41. custom-add     <COMMAND> <COMMAND_TYPE> <DATA>  - MOD ONLY - Adds a custom command
+    42. custom-remove                  <COMMAND>        - MOD ONLY - Removes Added Custom Command
 
     [] = optional
     <> = Required

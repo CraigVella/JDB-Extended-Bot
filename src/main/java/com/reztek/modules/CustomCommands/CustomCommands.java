@@ -8,6 +8,7 @@ import com.reztek.Base.CommandModule;
 import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.MySQLConnector;
 
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CustomCommands extends CommandModule {
@@ -79,56 +80,60 @@ public class CustomCommands extends CommandModule {
 		}
 		
 		if (command.equals("custom-add")) {
-			if (args == null || splitArg.length < 3) {
-				sendCustomCommandHelp(mre);
-			} else {
-				if (splitArg[0].getBytes()[0] == '!') splitArg[0] = splitArg[0].substring(1); // If they accidently put ! trim it out
-				if (commandTypeFromString(splitArg[1].toUpperCase()) == CMD_ERROR) {
-					mre.getChannel().sendMessage("Incorrect Usage").queue();
+			if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+				if (args == null || splitArg.length < 3) {
 					sendCustomCommandHelp(mre);
-				} else if(SGAExtendedBot.GetBot().getMessageHandler().isCommandTaken(splitArg[0].toLowerCase())) {
-					mre.getChannel().sendMessage("Sorry " + mre.getAuthor().getAsMention() + ", that command is already taken, try another name").queue();
 				} else {
-					// Add Command
-					String cmdText = "";
-					for (int x = 2; x < splitArg.length; ++x) {
-						cmdText += splitArg[x] + " ";
-					}
-					cmdText = cmdText.trim();
-					CustomCommand cmd = null;
-					switch (commandTypeFromString(splitArg[1].toUpperCase())) {
-					case CMD_CHANNEL_TEXT:
-						cmd = new ChannelTextCommand(splitArg[0].toLowerCase(), cmdText);
-						break;
-					case CMD_PRIVATE_TEXT:
-						cmd = new PrivateTextCommand(splitArg[0].toLowerCase(), cmdText);
-						break;
-					case CMD_ERROR:
-						default:
-					}
-					if (cmd == null) {
-						mre.getChannel().sendMessage("Something went wrong adding custom command!").queue();
+					if (splitArg[0].getBytes()[0] == '!') splitArg[0] = splitArg[0].substring(1); // If they accidently put ! trim it out
+					if (commandTypeFromString(splitArg[1].toUpperCase()) == CMD_ERROR) {
+						mre.getChannel().sendMessage("Incorrect Usage").queue();
+						sendCustomCommandHelp(mre);
+					} else if(SGAExtendedBot.GetBot().getMessageHandler().isCommandTaken(splitArg[0].toLowerCase())) {
+						mre.getChannel().sendMessage("Sorry " + mre.getAuthor().getAsMention() + ", that command is already taken, try another name").queue();
 					} else {
-						addCommand(cmd.getCommand());
-						p_customCommands.put(cmd.getCommand(), cmd);
-						mre.getChannel().sendMessage("Command '!"+ cmd.getCommand() +"' Successfully Added").queue();
-						cmd.DBID = MySQLConnector.getInstance().runInsertReturnID("INSERT INTO customCommands (command,type,data1) VALUES (\"" +
-								cmd.getCommand() + "\"," + cmd.getCommandType() + ",\"" + cmd.getData() + "\")");
+						// Add Command
+						String cmdText = "";
+						for (int x = 2; x < splitArg.length; ++x) {
+							cmdText += splitArg[x] + " ";
+						}
+						cmdText = cmdText.trim();
+						CustomCommand cmd = null;
+						switch (commandTypeFromString(splitArg[1].toUpperCase())) {
+						case CMD_CHANNEL_TEXT:
+							cmd = new ChannelTextCommand(splitArg[0].toLowerCase(), cmdText);
+							break;
+						case CMD_PRIVATE_TEXT:
+							cmd = new PrivateTextCommand(splitArg[0].toLowerCase(), cmdText);
+							break;
+						case CMD_ERROR:
+							default:
+						}
+						if (cmd == null) {
+							mre.getChannel().sendMessage("Something went wrong adding custom command!").queue();
+						} else {
+							addCommand(cmd.getCommand());
+							p_customCommands.put(cmd.getCommand(), cmd);
+							mre.getChannel().sendMessage("Command '!"+ cmd.getCommand() +"' Successfully Added").queue();
+							cmd.DBID = MySQLConnector.getInstance().runInsertReturnID("INSERT INTO customCommands (command,type,data1) VALUES (\"" +
+									cmd.getCommand() + "\"," + cmd.getCommandType() + ",\"" + cmd.getData() + "\")");
+						}
 					}
 				}
 			}
 		} else if (command.equals("custom-remove")) {
-			if (args == null) {
-				sendHelpString(mre, "!custom-remove <COMMAND>");
-			} else {
-				ICustomCommand cmd = p_customCommands.get(args);
-				if (cmd == null) {
-					mre.getChannel().sendMessage(args + ", is not a custom command, You can only remove added custom commands!").queue();
+			if (mre.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+				if (args == null) {
+					sendHelpString(mre, "!custom-remove <COMMAND>");
 				} else {
-					p_customCommands.remove(cmd.getCommand());
-					removeCommand(cmd.getCommand());
-					mre.getChannel().sendMessage("Removed the '!" + args + "' command").queue();
-					MySQLConnector.getInstance().runUpdateQuery("DELETE FROM customCommands WHERE id = " + cmd.getDBID());
+					ICustomCommand cmd = p_customCommands.get(args);
+					if (cmd == null) {
+						mre.getChannel().sendMessage(args + ", is not a custom command, You can only remove added custom commands!").queue();
+					} else {
+						p_customCommands.remove(cmd.getCommand());
+						removeCommand(cmd.getCommand());
+						mre.getChannel().sendMessage("Removed the '!" + args + "' command").queue();
+						MySQLConnector.getInstance().runUpdateQuery("DELETE FROM customCommands WHERE id = " + cmd.getDBID());
+					}
 				}
 			}
 		} else if (command.equals("custom-list")) {
