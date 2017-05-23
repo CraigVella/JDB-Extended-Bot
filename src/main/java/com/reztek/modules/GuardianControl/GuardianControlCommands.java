@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
 import com.reztek.Secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Badges.InfoBadge;
@@ -12,7 +11,6 @@ import com.reztek.modules.GuardianControl.Guardian.GuardianPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -24,8 +22,8 @@ public class GuardianControlCommands extends CommandModule {
 	public static final int LOADOUT_SPECIAL_ONLY = 2;
 	public static final int LOADOUT_HEAVY_ONLY = 3;
 
-	public GuardianControlCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot,"GUARDIANCOMMANDS");
+	public GuardianControlCommands() {
+		super("GUARDIANCOMMANDS");
 		setModuleNameAndAuthor("Destiny Guardian", "ChaseHQ85");
 		addCommand(new String[]{
 				"debugguardian", "getauthguardian", "getauthguardian-ps", "getauthguardian-xb",

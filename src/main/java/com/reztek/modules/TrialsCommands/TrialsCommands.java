@@ -23,7 +23,6 @@ import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
 import com.reztek.modules.TrialsCommands.Badges.TrialsDetailedBadge;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -36,10 +35,10 @@ public class TrialsCommands extends CommandModule {
 	
 	protected TrialsList p_trialsList = null;
 
-	public TrialsCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot,"TRIALSCOMMANDS");
+	public TrialsCommands() {
+		super("TRIALSCOMMANDS");
 		// I have a task!
-		p_trialsList = new TrialsList(pBot);
+		p_trialsList = new TrialsList();
 		p_trialsList.setTaskName("TrialsList Refresh");
 		addCommand(new String[] {
 				"fireteam-ps", "fireteam-xb", "fireteam", 
@@ -56,7 +55,7 @@ public class TrialsCommands extends CommandModule {
 		});
 		setModuleNameAndAuthor("Trials of Osiris", "ChaseHQ85");
 		p_trialsList.setTaskDelay(100);
-		getBot().addTask(p_trialsList);
+		SGAExtendedBot.GetBot().addTask(p_trialsList);
 	}
 
 	@Override

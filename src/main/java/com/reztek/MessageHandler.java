@@ -19,6 +19,14 @@ public class MessageHandler {
 		if (p_commandModules.containsKey(cpm.getModuleID())) {
 			System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it's already added or duplicate unique ID!");
 		} else {
+			for (ICommandModule m : p_commandModules.values()) {
+				for (String c : m.getCommands()) {
+					if (cpm.respondsToCommand(c)) {
+						System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it responds to command '!" + c.toUpperCase() + "' which {" +  m.getModuleID() + "} already responds to!");
+						return;
+					}
+				}
+			}
 			p_commandModules.put(cpm.getModuleID(), cpm);
 			System.out.println("Added Command Module: " + cpm.getModuleName() + " - " + cpm.getAuthorName());
 		}
