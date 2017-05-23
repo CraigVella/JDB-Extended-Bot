@@ -1,6 +1,7 @@
 package com.reztek.Utils;
 
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,6 +44,20 @@ public class MySQLConnector {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public int runInsertReturnID(String query) {
+		try {
+			PreparedStatement ps = p_con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			ps.executeUpdate();
+			ResultSet rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	public ResultSet runQueryWithResult(String query) {

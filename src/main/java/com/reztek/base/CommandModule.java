@@ -24,6 +24,10 @@ public abstract class CommandModule implements ICommandModule {
 		p_commandList.add(command.toLowerCase());
 	}
 	
+	protected void removeCommand(String command) {
+		p_commandList.remove(command.toLowerCase());
+	}
+	
 	protected void addCommand(Collection<String> commands) {
 		addCommand(commands.toArray(new String[0]));
 	}
@@ -44,7 +48,7 @@ public abstract class CommandModule implements ICommandModule {
 	}
 	
 	public void sendHelpString(MessageReceivedEvent mre, String usage) {
-		mre.getChannel().sendMessage(new MessageBuilder().append("Hey " + mre.getAuthor().getAsMention() + ", that command works like this - \"" + usage + "\"").build()).queue();
+		mre.getChannel().sendMessage(new MessageBuilder().append("Hey " + mre.getAuthor().getAsMention() + ", that command works like this -> " + usage).build()).queue();
 	}
 	
 	public String getModuleName() {

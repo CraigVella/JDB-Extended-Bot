@@ -32,6 +32,13 @@ public class MessageHandler {
 		}
 	}
 	
+	public boolean isCommandTaken(String command) {
+		for (ICommandModule m : p_commandModules.values()) {
+			if (m.respondsToCommand(command.toLowerCase())) return true;
+		}
+		return false;
+	}
+	
 	public void removeCommandModule(String commandModuleID) {
 		p_commandModules.remove(commandModuleID);
 	}
