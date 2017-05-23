@@ -17,7 +17,6 @@ import com.reztek.Base.CommandModule;
 import com.reztek.Secret.GlobalDefs;
 import com.reztek.modules.GuardianControl.Guardian;
 
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -26,8 +25,8 @@ public class RumbleCommands extends CommandModule {
 	
 	protected RumbleList p_rumbleList = null;
 
-	public RumbleCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot,"RUMBLECOMMANDS");
+	public RumbleCommands() {
+		super("RUMBLECOMMANDS");
 		setModuleNameAndAuthor("Rumble", "ChaseHQ85");
 		addCommand(new String[] {
 				"rumblelist-importcsv", "rumblelist", "rumblelist-csv", 
@@ -36,10 +35,10 @@ public class RumbleCommands extends CommandModule {
 				"rumbleremovefromlist-ps", "rumbleremovefromlist-xb", "rumbleremovefromlist"
 		});
 		// I have a task!
-		p_rumbleList = new RumbleList(pBot);
+		p_rumbleList = new RumbleList();
 		p_rumbleList.setTaskName("RumbleList Refresh");
 		p_rumbleList.setTaskDelay(90);
-		getBot().addTask(p_rumbleList);
+		SGAExtendedBot.GetBot().addTask(p_rumbleList);
 	}
 
 	@Override

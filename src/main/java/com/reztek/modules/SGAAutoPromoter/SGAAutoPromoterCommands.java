@@ -8,7 +8,6 @@ import com.reztek.Base.CommandModule;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -24,13 +23,13 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	private MessageChannel p_sgaCourtyard = null;
 	private boolean p_disabled = false;
 
-	public SGAAutoPromoterCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot, "SGAAUTOPROMOTER");
+	public SGAAutoPromoterCommands() {
+		super("SGAAUTOPROMOTER");
 		setModuleNameAndAuthor("SGA Auto Promoter", "ChaseHQ85");
 		addCommand(new String[] {
 				"runpromotions", "testmsg"
 		});
-		p_sgaGuild = pJDA.getGuildById(SGA_GUILD_ID);
+		p_sgaGuild = SGAExtendedBot.GetBot().getJDA().getGuildById(SGA_GUILD_ID);
 		if (p_sgaGuild == null) {
 			System.out.println("Error Connecting To Guild - Disabling Plugin");
 			p_disabled = true;
@@ -40,10 +39,10 @@ public class SGAAutoPromoterCommands extends CommandModule {
 				System.out.println("Error Getting Courtyard Channel - Disabling Plugin");
 				p_disabled = true;
 			} else {
-				p_aptask = new SGAAutoPromoterTask(this, pBot);
+				p_aptask = new SGAAutoPromoterTask(this);
 				p_aptask.setTaskDelay(30);
 				p_aptask.setTaskName("SGA Auto Promoter");
-				getBot().addTask(p_aptask);
+				SGAExtendedBot.GetBot().addTask(p_aptask);
 			}
 		}
 	}
@@ -52,7 +51,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	public void processCommand(String command, String args, MessageReceivedEvent mre) {
 		
 		if (p_disabled) {
-			getBot().getMessageHandler().removeCommandModule(getModuleID());
+			SGAExtendedBot.GetBot().getMessageHandler().removeCommandModule(getModuleID());
 			System.out.println("SGA Auto Promoter removed due to disabled");
 			return;
 		}
