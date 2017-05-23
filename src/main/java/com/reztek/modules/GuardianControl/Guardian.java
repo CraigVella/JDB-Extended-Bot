@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import com.reztek.Secret.GlobalDefs;
 import com.reztek.Utils.BotUtils;
-import com.reztek.modules.GuardianControl.BungieHashDefines.StepsHashReturn;
+import com.reztek.modules.GuardianControl.BungieHashDefines.HashReturnDescription;
 
 public class Guardian {
 	
@@ -22,19 +22,20 @@ public class Guardian {
 	public static final String PLATFORM_PS = "2";
 	public static final String PLATFORM_ALL = "All";
 	
-	protected static final String BUNGIE_API_KEY = GlobalDefs.BUNGIE_API_KEY;
-	private static final String   BUNGIE_BASE_URL = "https://www.bungie.net/Platform/Destiny";
-	private static final String   BUNGIE_SEARCH_URL = "/SearchDestinyPlayer/";
-	private static final String   BUNGIE_ACCOUNT_URL = "/Account/";
-	private static final String   BUNGIE_BASE_IMAGES = "https://www.bungie.net";
+	protected static final String BUNGIE_API_KEY        = GlobalDefs.BUNGIE_API_KEY;
+	private static final String   BUNGIE_BASE_URL       = "https://www.bungie.net/Platform/Destiny";
+	private static final String   BUNGIE_SEARCH_URL     = "/SearchDestinyPlayer/";
+	private static final String   BUNGIE_ACCOUNT_URL    = "/Account/";
+	private static final String   BUNGIE_BASE_IMAGES    = "https://www.bungie.net";
 	private static final String   GUARDIAN_API_BASE_URL = "https://api.guardian.gg";
-	private static final String   GUARDIAN_API_ELO = "/elo/";
+	private static final String   GUARDIAN_API_ELO      = "/elo/";
 	private static final String   GUARDIAN_API_FIRETEAM = "/fireteam/14/";
-	private static final String   GUARDIAN_API_PLAYERS = "/v2/players/";
-	private static final String   DTR_API_BASE_URL = "https://api.destinytrialsreport.com";
-	private static final String   DTR_API_PLAYER = "/player/";
-	private static final String   DTR_API_THISWEEKWEPS = "/lastWeapons/";
-	private static final String   DTR_API_WEPSTATS = "/weaponStats/";
+	private static final String   GUARDIAN_API_PLAYERS  = "/v2/players/";
+	private static final String   DTR_API_BASE_URL      = "https://api.destinytrialsreport.com";
+	private static final String   DTR_API_PLAYER        = "/player/";
+	private static final String   DTR_API_THISWEEKWEPS  = "/lastWeapons/";
+	private static final String   DTR_API_WEPSTATS      = "/weaponStats/";
+	private static final String   REZ_OFFLINE_IMG       = GlobalDefs.WWW_HOST + GlobalDefs.WWW_ASSETS + "OFFLINE.png";
 	
 	private static final int WEAPON_PRIMARY  =  1;
 	private static final int WEAPON_SPECIAL  =  2;
@@ -169,6 +170,7 @@ public class Guardian {
 	private int p_currentCharacterRecovery = 0;
 	private String p_currentCharacterLight = "0";
 	private String p_currentCharacterLevel = "1";
+	private GuardianPerk p_currentActivity = null;
 	
 	// -- Guardian GG
 	private String p_rumbleELO = "N/A";
@@ -417,6 +419,12 @@ public class Guardian {
 			p_currentCharacterStrength = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_STRENGTH").getInt("value");
 			p_currentCharacterLight = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("stats").getJSONObject("STAT_LIGHT").getInt("value"));
 			p_currentCharacterLevel = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getInt("characterLevel"));
+			try {
+				HashReturnDescription hr = BungieHashDefines.GetActivityForHash(String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getBigInteger("currentActivityHash")));
+				p_currentActivity = new GuardianPerk(hr.getName(), hr.getDescription(), BUNGIE_BASE_IMAGES + hr.getIcon(), hr.getHash());
+			} catch (JSONException e) {
+				p_currentActivity = new GuardianPerk("Offline", "Sorry this guardian is currently not playing destiny", REZ_OFFLINE_IMG, "0");
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -428,7 +436,7 @@ public class Guardian {
 		JSONArray pNodes = ob.getJSONObject("Response").getJSONObject("data").getJSONObject("buckets").getJSONArray("Equippable").getJSONObject(0).getJSONArray("items").getJSONObject(0).getJSONArray("nodes");
 		for (int x = 0; x < pNodes.length(); ++x) {
 			if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
-				StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+				HashReturnDescription shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
 				// Add Ignores here
 				// Ignores Complete
 				p_currentSubclassPerks.add(new GuardianPerk(shr.getName(), shr.getDescription(), BUNGIE_BASE_IMAGES + shr.getIcon(), shr.getHash()));
@@ -462,7 +470,7 @@ public class Guardian {
 			a.p_Tier = BungieHashDefines.GetArmorForHash(pItemHash).getTier();
 			for (int x = 0; x < pNodes.length(); ++x) {
 				if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
-					StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+					HashReturnDescription shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
 					// Add Ignores here
 					if (shr.getHash().equals("1270552711")) continue; // Infuse
 					if (shr.getHash().equals("1263323987")) continue; // Increase Discipline
@@ -516,7 +524,7 @@ public class Guardian {
 			
 			for (int x = 0; x < pNodes.length(); ++x) {
 				if (pNodes.getJSONObject(x).getBoolean("isActivated") && !pNodes.getJSONObject(x).getBoolean("hidden")) {
-					StepsHashReturn shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
+					HashReturnDescription shr = BungieHashDefines.GetStepForHash(BungieHashDefines.getStepHashForTalentGridNode(pTalentGridHash, x, pNodes.getJSONObject(x).getInt("stepIndex")));
 					// Add Ignores here
 					if (shr.getHash().equals("1270552711")) continue; // Infuse
 					if (shr.getHash().equals("643689081" )) continue;
@@ -698,6 +706,10 @@ public class Guardian {
 			if (p.isPerkDangerous()) dPerks.add(p);
 		}
 		return Collections.unmodifiableCollection(dPerks);
+	}
+	
+	public final GuardianPerk getCurrentActivity() {
+		return p_currentActivity;
 	}
 	
 	public int getCurrentAgility() {
