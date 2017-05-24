@@ -23,21 +23,24 @@ public class SGARankDefines {
 			_weight = weight;
 		}
 	}
-	
-	private static final int RANK_FORCE_SENSITIVE_CANDIDATE      = 0;
-	private static final int RANK_FORCE_BELIEVER                 = 1;
-	private static final int RANK_INITIATE                       = 2;
-	private static final int RANK_PADAWAN                        = 3;
-	private static final int RANK_JEDI_KNIGHT                    = 4;
-	private static final int RANK_JEDI_GUARDIAN                  = 5;
-	private static final int RANK_JEDI_HIGH_GENERAL              = 6;
-	private static final int RANK_JEDI_MASTER                    = 7;
-	private static final int RANK_JEDI_GRAND_MASTER              = 8;
-	private static final int RANK_JEDI_GRAND_MASTER_OF_THE_ORDER = 9;
-	
+	private static final int RANK_EVERYONE      				 = 0;
+	private static final int RANK_NEW_RECRUIT				     = 1;
+	private static final int RANK_FORCE_SENSITIVE_CANDIDATE      = 2;
+	private static final int RANK_FORCE_BELIEVER                 = 3;
+	private static final int RANK_INITIATE                       = 4;
+	private static final int RANK_PADAWAN                        = 5;
+	private static final int RANK_JEDI_KNIGHT                    = 6;
+	private static final int RANK_JEDI_GUARDIAN                  = 7;
+	private static final int RANK_JEDI_HIGH_GENERAL              = 8;
+	private static final int RANK_JEDI_MASTER                    = 9;
+	private static final int RANK_JEDI_GRAND_MASTER              = 10;
+	private static final int RANK_JEDI_GRAND_MASTER_OF_THE_ORDER = 11;
+
 	private static final List<SGARank> SGARanks;
 	static {
 		List<SGARank> sgaranks = new ArrayList<SGARank>();
+		sgaranks.add(new SGARank("316965205626191884", "Everyone", RANK_EVERYONE));
+		sgaranks.add(new SGARank("285837753617219584", "New Recruit", RANK_NEW_RECRUIT));
 		sgaranks.add(new SGARank("254192803800678400", "Force Sensitive Candidate", RANK_FORCE_SENSITIVE_CANDIDATE));
 		sgaranks.add(new SGARank("284213958301450250", "Force Believer", RANK_FORCE_BELIEVER));
 		sgaranks.add(new SGARank("254192370722144256", "Initiate", RANK_INITIATE));
@@ -72,9 +75,9 @@ public class SGARankDefines {
 		}
 		return null;
 	}
-	
+
 	public static boolean ShouldUpgradeToRank(Member m, SGARank proposedRank) {
-		int currentHighestRank = RANK_FORCE_SENSITIVE_CANDIDATE;
+		int currentHighestRank = RANK_EVERYONE;
 		for (Role r : m.getRoles()) {
 			SGARank testRank = GetRankForID(r.getId());
 			if (testRank != null) {
@@ -91,13 +94,18 @@ public class SGARankDefines {
 	
 	public static SGARank GetRankForGuardian(Guardian g) {
 		if (g == null) return null;
-		SGARank returnRank = GetRankByWeight(RANK_FORCE_SENSITIVE_CANDIDATE);
+		SGARank returnRank = GetRankByWeight(RANK_EVERYONE);
 		for (SGARank r : SGARanks) {
 			try {
 				switch (r._weight) {
+				case RANK_NEW_RECRUIT:
+						if (returnRank._weight < r._weight) {
+							returnRank = r;
+					}
+					break;
 				case RANK_FORCE_BELIEVER:
 					if (Integer.valueOf(g.getRumbleRank()) <= 100000) {
-						if (returnRank._weight < r._weight) returnRank = r;
+							if (returnRank._weight < r._weight) returnRank = r;
 					}
 					break;
 				case RANK_INITIATE:
@@ -154,6 +162,9 @@ public class SGARankDefines {
 				// Number was probably "N/A" just move on...
 				
 			}
+		}
+		if (returnRank._weight == 1) {
+			return null;
 		}
 		return returnRank;
 	}
