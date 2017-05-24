@@ -72,8 +72,6 @@ public class CustomCommands extends CommandModule {
 
 	@Override
 	public void processCommand(String command, String args, MessageReceivedEvent mre) {
-		mre.getChannel().sendTyping().queue();
-		
 		String[] splitArg = {""};
 		if (args != null) {
 			splitArg = args.split(" ");
@@ -140,9 +138,9 @@ public class CustomCommands extends CommandModule {
 			if (p_customCommands.size() == 0) {
 				mre.getChannel().sendMessage("There are currently no custom commands registered").queue();
 			} else {
-				String commandList = "Command" + BotUtils.getPaddingForLen("Command", 16) + " - " + "Command Type";
+				String commandList = "Command" + BotUtils.GetPaddingForLen("Command", 16) + " - " + "Command Type";
 				for (ICustomCommand cmd : p_customCommands.values()) {
-					commandList += "\n!" + cmd.getCommand() + BotUtils.getPaddingForLen(cmd.getCommand(), 15) + " - " + commandStringFromType(cmd.getCommandType());
+					commandList += "\n!" + cmd.getCommand() + BotUtils.GetPaddingForLen(cmd.getCommand(), 15) + " - " + commandStringFromType(cmd.getCommandType());
 				}
 				mre.getChannel().sendMessage("**The current custom command list is: **```" + commandList + "```").queue();
 			}

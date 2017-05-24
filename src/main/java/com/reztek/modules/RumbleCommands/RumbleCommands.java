@@ -14,7 +14,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 import com.reztek.modules.GuardianControl.Guardian;
 
 import net.dv8tion.jda.core.Permission;
@@ -108,7 +108,6 @@ public class RumbleCommands extends CommandModule {
 	}
 	
 	protected void rumbleImportCSV(MessageReceivedEvent mre) {
-		mre.getChannel().sendTyping().queue();
 		if (mre.getMessage().getAttachments().size() < 1) {
 			mre.getChannel().sendMessage("Hmm... did you forget to attach a file?").queue();
 		} else {
@@ -144,7 +143,6 @@ public class RumbleCommands extends CommandModule {
 	}
 	
 	protected void rumbleListCSV(MessageReceivedEvent mre) {
-		mre.getChannel().sendTyping().queue();
 		mre.getChannel().sendMessage("On it " + mre.getAuthor().getAsMention() + ", lets take this to a private chat!").queue();
 		try {
 			p_rumbleList.sendListCSV(mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get());
@@ -154,17 +152,14 @@ public class RumbleCommands extends CommandModule {
 	}
 	
 	protected void rumbleList(MessageChannel mc, String indexStart, Color color) {
-		mc.sendTyping().queue();
 		p_rumbleList.showList(mc,indexStart, color);
 	}
 	
 	protected void rumbleRefresh(MessageChannel mc) {
-		mc.sendTyping().queue();
 		p_rumbleList.refreshList(mc, true);
 	}
 	
 	protected void rumbleRemoveFromList(MessageChannel mc, String playerName, String platform) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			p_rumbleList.removePlayer(mc,g);
@@ -174,7 +169,6 @@ public class RumbleCommands extends CommandModule {
 	}
 	
 	protected void rumbleAddToList (MessageChannel mc, String playerName, String platform) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			if (g.getRumbleRank() == "N/A" || g.getRumbleRank() == null) {

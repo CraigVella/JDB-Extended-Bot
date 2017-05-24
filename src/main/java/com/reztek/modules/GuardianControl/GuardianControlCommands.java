@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import com.reztek.Base.CommandModule;
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 import com.reztek.modules.GuardianControl.Badges.InfoBadge;
 import com.reztek.modules.GuardianControl.Guardian.GuardianPerk;
 import com.reztek.modules.GuardianControl.Guardian.GuardianWeaponStats;
@@ -129,7 +129,6 @@ public class GuardianControlCommands extends CommandModule {
 	}
 	
 	protected void build(MessageChannel mc, String playerName, String platform) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -150,7 +149,6 @@ public class GuardianControlCommands extends CommandModule {
 	}
 	
 	protected void activity(MessageChannel mc, String playerName, String platform) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -172,7 +170,6 @@ public class GuardianControlCommands extends CommandModule {
 	}
 	
 	protected void loadOutInfo(MessageChannel mc, String playerName, String platform, int showLoadoutType) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		String loadoutTitle = "Loadout";
 		if (showLoadoutType == LOADOUT_HEAVY_ONLY) loadoutTitle = "Heavy Weapon";
@@ -212,7 +209,6 @@ public class GuardianControlCommands extends CommandModule {
 	}
 	
 	protected void playerInfo(MessageChannel mc, String playerName, String platform) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName, platform);
 		if (g != null) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -234,7 +230,6 @@ public class GuardianControlCommands extends CommandModule {
 	}
 	
 	protected void debugGuardian(MessageChannel mc, String playerName) {
-		mc.sendTyping().queue();
 		Guardian g = Guardian.guardianFromName(playerName,Guardian.PLATFORM_ALL);
 		mc.sendMessage("DEBUG: " + g.getId() +"\n" +
 					   "Name: " + g.getName() + "\n" + 
@@ -243,7 +238,6 @@ public class GuardianControlCommands extends CommandModule {
 	}
 	
 	protected void getAuthGuardian(MessageReceivedEvent mre, String playerName, String platform) {
-		mre.getChannel().sendTyping().queue();
 		AuthenticatedGuardian ag = AuthenticatedGuardian.AuthenticatedGuardianFromNameAndPlatform(playerName, platform);
 		PrivateChannel pc;
 		try {

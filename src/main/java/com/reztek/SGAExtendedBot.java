@@ -11,8 +11,9 @@ import javax.security.auth.login.LoginException;
 
 import com.reztek.Badges.BadgeCacheTask;
 import com.reztek.Base.Taskable;
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.ConfigReader;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.CustomCommands.CustomCommands;
 import com.reztek.modules.GuardianControl.GuardianControlCommands;
@@ -44,11 +45,20 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 	}
 	
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
+		if (!ConfigReader.GetConfigReader().isConfigLoaded()) { 
+			System.out.println("Configuration Error - Cannot Continue"); 
+			return; 
+		}
+		
 		SGAExtendedBot bot = SGAExtendedBot.GetBot();
-		
-		JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addListener(bot).buildBlocking();
-		
-		bot.run(jda);
+		try {
+			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addListener(bot).buildBlocking();
+			bot.run(jda);
+		} catch (LoginException e) {
+			e.printStackTrace();
+			System.out.println("[ERROR] Could not continue - It may be your configuration file?? Please check");
+			System.exit(3);
+		}
 	}
 	
 	public void run(JDA jda) throws InterruptedException {
@@ -61,6 +71,8 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh.addCommandModule(new GuardianControlCommands());
 		p_mh.addCommandModule(new TrialsCommands());
 		p_mh.addCommandModule(new SGAAutoPromoterCommands());
+		
+		p_mh.loadAllPlugins();
 		
 		// Add custom commands last
 		p_mh.addCommandModule(new CustomCommands());
@@ -97,7 +109,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		
 		if (e instanceof ReadyEvent) {
 			p_ready = true;
-			System.out.println("SGA-Extended-Bot - Version: " + BotUtils.getVersion());
+			System.out.println("SGA-Extended-Bot - Version: " + BotUtils.GetVersion());
 		}
 		
 		if (e instanceof MessageReceivedEvent) {

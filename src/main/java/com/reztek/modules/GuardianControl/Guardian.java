@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 import com.reztek.modules.GuardianControl.BungieHashDefines.HashReturnDescription;
 
@@ -270,7 +270,7 @@ public class Guardian {
 	
 	public ArrayList<HashMap<String,String>> getTrialsFireteamMembershipId() {
 		ArrayList<HashMap<String,String>> fireteam =  new ArrayList<HashMap<String,String>>();
-		JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONStringGet(GUARDIAN_API_BASE_URL + GUARDIAN_API_FIRETEAM + getId(), null) + "}").getJSONArray("GGArray");
+		JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.GetJSONStringGet(GUARDIAN_API_BASE_URL + GUARDIAN_API_FIRETEAM + getId(), null) + "}").getJSONArray("GGArray");
 		
 		for (int x = 0; x < ob.length(); ++x) {
 			JSONObject itObj = ob.getJSONObject(x);
@@ -285,7 +285,7 @@ public class Guardian {
 	}
 	
 	protected boolean getGuardianDTR() {
-		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONStringGet(DTR_API_BASE_URL + DTR_API_PLAYER + p_id,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+		JSONObject ob = new JSONObject("{\"DTRArray\":" + BotUtils.GetJSONStringGet(DTR_API_BASE_URL + DTR_API_PLAYER + p_id,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
 		JSONObject flYearArray = null;
 		
 		try {
@@ -336,7 +336,7 @@ public class Guardian {
 		}
 		
 		try {
-			JSONArray thisWeekMapWeps = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONStringGet(DTR_API_BASE_URL + DTR_API_THISWEEKWEPS + p_characterIdLastPlayed,null) + "}").getJSONArray("DTRArray");
+			JSONArray thisWeekMapWeps = new JSONObject("{\"DTRArray\":" + BotUtils.GetJSONStringGet(DTR_API_BASE_URL + DTR_API_THISWEEKWEPS + p_characterIdLastPlayed,null) + "}").getJSONArray("DTRArray");
 			for (int x = 0; x < thisWeekMapWeps.length(); ++x) {
 				JSONObject wep = thisWeekMapWeps.getJSONObject(x);
 				GuardianWeaponStats gws = new GuardianWeaponStats();
@@ -354,7 +354,7 @@ public class Guardian {
 	
 	protected boolean getGuardianGG() {
 		try {
-			JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.getJSONStringGet(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + p_id, null) + "}").getJSONArray("GGArray");
+			JSONArray ob = new JSONObject("{\"GGArray\":" + BotUtils.GetJSONStringGet(GUARDIAN_API_BASE_URL + GUARDIAN_API_ELO + p_id, null) + "}").getJSONArray("GGArray");
 			for (int x = 0; x < ob.length(); ++x) {
 				JSONObject itObj = ob.getJSONObject(x);
 				if (itObj.getInt("mode") == 13) { // rumble
@@ -366,7 +366,7 @@ public class Guardian {
 				}
 			}
 			
-			JSONObject plOb = new JSONObject(BotUtils.getJSONStringGet(GUARDIAN_API_BASE_URL + GUARDIAN_API_PLAYERS + p_id, null)).getJSONObject("data").getJSONObject("modes");
+			JSONObject plOb = new JSONObject(BotUtils.GetJSONStringGet(GUARDIAN_API_BASE_URL + GUARDIAN_API_PLAYERS + p_id, null)).getJSONObject("data").getJSONObject("modes");
 			p_rumbleKD = (float) ((plOb.getJSONObject("13").getInt("kills"))) / (plOb.getJSONObject("13").getInt("deaths"));
 			
 		} catch (NullPointerException e) {
@@ -385,7 +385,7 @@ public class Guardian {
 		props.put("X-API-Key", BUNGIE_API_KEY);
 		
 		try {
-			JSONObject ob = new JSONObject (BotUtils.getJSONStringGet(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
+			JSONObject ob = new JSONObject (BotUtils.GetJSONStringGet(BUNGIE_BASE_URL + BUNGIE_SEARCH_URL + platform + "/" + guardianName + "/", props));
 			p_id = ob.getJSONArray("Response").getJSONObject(0).getString("membershipId");
 			p_name = ob.getJSONArray("Response").getJSONObject(0).getString("displayName");
 			p_platform = String.valueOf(ob.getJSONArray("Response").getJSONObject(0).getInt("membershipType"));
@@ -405,7 +405,7 @@ public class Guardian {
 		props.put("X-API-Key", BUNGIE_API_KEY);
 		
 		try {
-			JSONObject ob = new JSONObject(BotUtils.getJSONStringGet(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/", props));
+			JSONObject ob = new JSONObject(BotUtils.GetJSONStringGet(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/", props));
 			p_grimoireScore = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getInt("grimoireScore"));
 			p_characterIdLastPlayed = ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getString("characterId");
 			p_characterLastPlayedSubclassHash = String.valueOf(ob.getJSONObject("Response").getJSONObject("data").getJSONArray("characters").getJSONObject(0).getJSONObject("characterBase").getJSONObject("peerView").getJSONArray("equipment").getJSONObject(0).getBigInteger("itemHash"));
@@ -492,7 +492,7 @@ public class Guardian {
 		if (p_propsCache == null) {
 			HashMap<String,String> props = new HashMap<String,String>();
 			props.put("X-API-Key", BUNGIE_API_KEY);
-			p_propsCache = new JSONObject(BotUtils.getJSONStringGet(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/Character/" + p_characterIdLastPlayed + "/Inventory/", props));
+			p_propsCache = new JSONObject(BotUtils.GetJSONStringGet(BUNGIE_BASE_URL + "/" + p_platform + BUNGIE_ACCOUNT_URL + p_id + "/Character/" + p_characterIdLastPlayed + "/Inventory/", props));
 		}
 		return p_propsCache;
 	}
@@ -540,7 +540,7 @@ public class Guardian {
 			
 			// get Stats for weapon
 			try {
-				JSONObject ws = new JSONObject("{\"DTRArray\":" + BotUtils.getJSONStringGet(DTR_API_BASE_URL + DTR_API_WEPSTATS + p_id + "/" + pItemHash,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
+				JSONObject ws = new JSONObject("{\"DTRArray\":" + BotUtils.GetJSONStringGet(DTR_API_BASE_URL + DTR_API_WEPSTATS + p_id + "/" + pItemHash,null) + "}").getJSONArray("DTRArray").getJSONObject(0);
 				gw.p_WepKills = String.valueOf(ws.getInt("kills"));
 				gw.p_WepHeadshots = String.valueOf(ws.getInt("headshots"));
 			} catch (Exception e) {

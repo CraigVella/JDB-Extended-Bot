@@ -2,9 +2,11 @@ package com.reztek.Utils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,10 +17,10 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 
 public abstract class BotUtils {
-	public static String getPaddingForLen(String toPad, int desiredLen) {
+	public static String GetPaddingForLen(String toPad, int desiredLen) {
 		String padding = "";
 		if (toPad == null) return padding;
 		for (int y = 0; y < (desiredLen - toPad.length()); ++y) {
@@ -27,7 +29,7 @@ public abstract class BotUtils {
 		return padding;
 	}
 	
-	public static String getJSONStringGet(String sURL, HashMap<String, String> props) {
+	public static String GetJSONStringGet(String sURL, HashMap<String, String> props) {
 		String retObj = null;
 		
 		try {
@@ -55,7 +57,7 @@ public abstract class BotUtils {
 		return retObj;
 	}
 	
-	public static String getJSONStringPost(String sURL, HashMap<String, String> props, String content) {
+	public static String GetJSONStringPost(String sURL, HashMap<String, String> props, String content) {
 		String retObj = null;
 		
 		try {
@@ -93,7 +95,7 @@ public abstract class BotUtils {
 		return retObj;
 	}
 	
-	public static String getVersion() {
+	public static String GetVersion() {
 		return GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "");
 	}
 	
@@ -119,6 +121,36 @@ public abstract class BotUtils {
 		public T getSecond() {
 			return _second;
 		}
+	}
+	
+    static public boolean ExportResource(String resourceName, Class<?> requestObject) {
+        InputStream stream = null;
+        OutputStream resStreamOut = null;
+        try {
+            stream = requestObject.getResourceAsStream(resourceName);
+            if(stream == null) {
+                throw new Exception("Cannot get resource \"" + resourceName + "\" from Jar file.");
+            }
+
+            int readBytes;
+            byte[] buffer = new byte[4096];
+            resStreamOut = new FileOutputStream(GetExecutionPath(requestObject) + "/" + resourceName);
+            while ((readBytes = stream.read(buffer)) > 0) {
+                resStreamOut.write(buffer, 0, readBytes);
+            }
+            stream.close();
+            resStreamOut.close();
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static String GetExecutionPath(Class<?> requestObject){
+	    String absolutePath = requestObject.getProtectionDomain().getCodeSource().getLocation().getPath();
+	    absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
+	    absolutePath = absolutePath.replaceAll("%20"," "); 
+	    return absolutePath;
 	}
 	
 	public static class JsonConverter {
@@ -160,7 +192,7 @@ public abstract class BotUtils {
 		}
 	}
 	
-	public static String abvString(String toAbv) {
+	public static String AbvString(String toAbv) {
 		String abvName = null;
 		if (toAbv.contains(" ")) {
 			int y = 0;

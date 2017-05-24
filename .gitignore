@@ -48,7 +48,6 @@ Temporary Items
 /.gradle/
 /build/
 
-src/main/java/com/reztek/secret/GlobalDefs.java
 *.class
-bin/com/reztek/secret/GlobalDefs.java.template
 build/libs/SGAExtendedBot.jar
+BotConfig.conf
