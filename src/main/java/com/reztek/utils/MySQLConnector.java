@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.mysql.jdbc.Connection;
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 
 public class MySQLConnector {
 	

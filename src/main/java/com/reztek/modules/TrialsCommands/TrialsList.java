@@ -77,11 +77,11 @@ public class TrialsList extends Taskable {
 				while (rs.next()) {
 					if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
 					if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-					trialsList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
-							rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) +
-							" (Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + " |"+ platformName +
-							"| Rank:" + BotUtils.getPaddingForLen(rs.getString("rank"),6) + rs.getString("rank") + " | FC:" + 
-							BotUtils.getPaddingForLen(rs.getString("flawlessCount"), 4) + rs.getString("flawlessCount") + ")\n";
+					trialsList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.GetPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
+							rs.getString("playerName") + BotUtils.GetPaddingForLen(rs.getString("playerName"),18) +
+							" (Elo: " + BotUtils.GetPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + " |"+ platformName +
+							"| Rank:" + BotUtils.GetPaddingForLen(rs.getString("rank"),6) + rs.getString("rank") + " | FC:" + 
+							BotUtils.GetPaddingForLen(rs.getString("flawlessCount"), 4) + rs.getString("flawlessCount") + ")\n";
 				}
 				MessageBuilder mb = new MessageBuilder();
 				mb.append(trialsList);

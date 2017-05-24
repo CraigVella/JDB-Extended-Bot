@@ -76,10 +76,10 @@ public class RumbleList extends Taskable {
 				while (rs.next()) {
 					if (rs.getString("platform").equalsIgnoreCase("1")) platformName = "XB";
 					if (rs.getString("platform").equalsIgnoreCase("2")) platformName = "PS";
-					rumbleList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.getPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
-							rs.getString("playerName") + BotUtils.getPaddingForLen(rs.getString("playerName"),18) + 
-							" (Rank:"+ BotUtils.getPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
-							platformName +"| Elo: " + BotUtils.getPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
+					rumbleList += String.valueOf(x + Integer.valueOf(startIndex)) + "." + BotUtils.GetPaddingForLen(String.valueOf(x++ + Integer.valueOf(startIndex)), 3) + 
+							rs.getString("playerName") + BotUtils.GetPaddingForLen(rs.getString("playerName"),18) + 
+							" (Rank:"+ BotUtils.GetPaddingForLen(rs.getString("rank"), 6) + rs.getString("rank") + " |"+ 
+							platformName +"| Elo: " + BotUtils.GetPaddingForLen(rs.getString("elo"), 4) + rs.getString("elo") + ")\n";
 				}
 				MessageBuilder mb = new MessageBuilder();
 				mb.append(rumbleList);

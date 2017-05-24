@@ -79,21 +79,21 @@ public class TrialsDetailedBadge extends Badge {
 			switch (x) {
 			case 0:
 				b.setFontSize(15);
-				b.drawText(BotUtils.abvString(g.getThisWeekMapWeaponStats().get(x).getWeaponName()), 123, 401);
+				b.drawText(BotUtils.AbvString(g.getThisWeekMapWeaponStats().get(x).getWeaponName()), 123, 401);
 				b.setFontSize(10);
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getWeaponKills(), 130, 415);
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getHeadshotPercentage(), 162, 415);
 				break;
 			case 1:
 				b.setFontSize(15);
-				b.drawText(BotUtils.abvString(g.getThisWeekMapWeaponStats().get(x).getWeaponName()), 246, 401);
+				b.drawText(BotUtils.AbvString(g.getThisWeekMapWeaponStats().get(x).getWeaponName()), 246, 401);
 				b.setFontSize(10);
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getWeaponKills(), 256, 415);
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getHeadshotPercentage(), 290, 415);
 				break;
 			case 2:
 				b.setFontSize(15);
-				b.drawText(BotUtils.abvString(g.getThisWeekMapWeaponStats().get(x).getWeaponName()), 380, 401);
+				b.drawText(BotUtils.AbvString(g.getThisWeekMapWeaponStats().get(x).getWeaponName()), 380, 401);
 				b.setFontSize(10);
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getWeaponKills(), 387, 415);
 				b.drawText(g.getThisWeekMapWeaponStats().get(x).getHeadshotPercentage(), 428, 415);
@@ -145,7 +145,7 @@ public class TrialsDetailedBadge extends Badge {
 					case 1:
 					case 2:
 						b.drawURLImage(new URL(p.getPerkIcon()), (x * 53) + 322, (y * 92) + 122, 46, 46);
-						b.drawText(BotUtils.abvString(p.getPerkName()),(x * 53) + 345, (y * 92) + 174, TEXT_CENTER);
+						b.drawText(BotUtils.AbvString(p.getPerkName()),(x * 53) + 345, (y * 92) + 174, TEXT_CENTER);
 						break;
 						default:
 					}

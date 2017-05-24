@@ -10,7 +10,7 @@ import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
 import com.reztek.Base.ICommandModule;
 import com.reztek.Base.Taskable;
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -66,9 +66,8 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void showTaco(MessageChannel mc) {
-		mc.sendTyping().queue();
 		int startIndex = new Random().nextInt(90-1) + 1;
-		JSONArray tacoArray = new JSONObject(BotUtils.getJSONStringGet(GOOGLE_CUSTOM_SEARCH+"taco&start=" + String.valueOf(startIndex), null)).getJSONArray("items");
+		JSONArray tacoArray = new JSONObject(BotUtils.GetJSONStringGet(GOOGLE_CUSTOM_SEARCH+"taco&start=" + String.valueOf(startIndex), null)).getJSONArray("items");
 		String tacoLink = tacoArray.getJSONObject((new Random().nextInt(tacoArray.length()))).getString("link");
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Color.YELLOW);
@@ -78,12 +77,11 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void showTasks(MessageChannel mc) {
-		mc.sendTyping();
 		String tasks = "**All Queued Tasks**\n```";
 		for (Taskable task : SGAExtendedBot.GetBot().getTasks()) {
-			tasks += task.getTaskName() + BotUtils.getPaddingForLen(task.getTaskName(), 20) + " - runs every " + 
-					BotUtils.getPaddingForLen(String.valueOf(task.getTaskDelay()), 3) + (task.getTaskDelay() == 0 ? "1" : String.valueOf(task.getTaskDelay())) +
-					" min(s), will run in " + BotUtils.getPaddingForLen(((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) , 3) +
+			tasks += task.getTaskName() + BotUtils.GetPaddingForLen(task.getTaskName(), 20) + " - runs every " + 
+					BotUtils.GetPaddingForLen(String.valueOf(task.getTaskDelay()), 3) + (task.getTaskDelay() == 0 ? "1" : String.valueOf(task.getTaskDelay())) +
+					" min(s), will run in " + BotUtils.GetPaddingForLen(((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) , 3) +
 					((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) + 
 					" min(s)\n";
 		}
@@ -92,22 +90,19 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void showModules(MessageChannel mc) {
-		mc.sendTyping();
 		String modules = "**All Loaded Modules**\n```";
 		for (ICommandModule cm : SGAExtendedBot.GetBot().getMessageHandler().getAllLoadedCommandModules()) {
-			modules += cm.getModuleName() + BotUtils.getPaddingForLen(cm.getModuleName(), 20) + " by " + cm.getAuthorName() + "\n";
+			modules += cm.getModuleName() + BotUtils.GetPaddingForLen(cm.getModuleName(), 20) + " by " + cm.getAuthorName() + "\n";
 		}
 		modules += "```";
 		mc.sendMessage(modules).queue();
 	}
 	
 	protected void chaseCmd(MessageChannel mc) {
-		mc.sendTyping().queue();
 		mc.sendMessage("Peeks twice!").queue();
 	}
 	
 	protected void decision(MessageReceivedEvent mre, String question) {
-		mre.getChannel().sendTyping().queue();
 		String[] decArray = {"I would say yes to that.", "Most definitely yes.", "Absolutely not.", "Sometime next year probably.", 
 				"I'd say maybe...", "Never seen a bigger NO to a question ever."};
 		
@@ -117,7 +112,6 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void showVersion(MessageChannel mc) {
-		mc.sendTyping().queue();
 		mc.sendMessage("I am running version: " + GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "")).queue();
 	}
 

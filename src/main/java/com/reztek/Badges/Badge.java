@@ -15,7 +15,7 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 
 import com.reztek.Badges.Fonts.BadgeFont;
-import com.reztek.Secret.GlobalDefs;
+import com.reztek.Global.GlobalDefs;
 
 public class Badge {
 	public static final int TEXT_LEFT   = 0;

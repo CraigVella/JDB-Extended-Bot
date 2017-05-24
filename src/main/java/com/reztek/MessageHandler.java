@@ -70,6 +70,7 @@ public class MessageHandler {
 					p_executor.execute(new Runnable() {
 						@Override
 						public void run() {
+							mre.getChannel().sendTyping().queue();
 							proc.processCommand(cmdSplit[0].toLowerCase(), argsTL.equals("") ? null : argsTL.trim(), mre);
 						}
 					});

@@ -81,7 +81,7 @@ public class AuthenticatedGuardian extends Guardian {
 		// Refresh token is valid, current token is invalid - refresh current token
 		HashMap<String,String> props = new HashMap<String,String>();
 		props.put("X-API-Key", BUNGIE_API_KEY);
-		JSONObject ob = new JSONObject(BotUtils.getJSONStringPost(BUNGIE_API_REFRESH, props, "{\"refreshToken\":\""+ p_CurrentRefreshToken +"\"}"));
+		JSONObject ob = new JSONObject(BotUtils.GetJSONStringPost(BUNGIE_API_REFRESH, props, "{\"refreshToken\":\""+ p_CurrentRefreshToken +"\"}"));
 		
 		if (ob.getInt("ErrorCode") != 1) { return false; }
 		
