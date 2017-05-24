@@ -1,5 +1,10 @@
 package com.reztek;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.reztek.Base.ICommandModule;
+import com.reztek.Utils.BotUtils;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -29,6 +35,34 @@ public class MessageHandler {
 			}
 			p_commandModules.put(cpm.getModuleID(), cpm);
 			System.out.println("Added Command Module: " + cpm.getModuleName() + " - " + cpm.getAuthorName());
+		}
+	}
+	
+	public void loadAllPlugins() {
+		File pluginDir = new File(BotUtils.GetExecutionPath(getClass()) + "/plugins");
+		if (pluginDir.exists() && pluginDir.isDirectory()) {
+			FilenameFilter jarFilter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String lowercaseName = name.toLowerCase();
+					if (lowercaseName.endsWith(".jar")) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			};
+			for (File f : pluginDir.listFiles(jarFilter)) {
+				try {
+					URLClassLoader pluginModule = new URLClassLoader( new URL[] {f.toURI().toURL()}, getClass().getClassLoader());
+					Class<?> plugin = Class.forName(f.getName().substring(0, f.getName().length() - 4), true, pluginModule);
+					addCommandModule((ICommandModule) plugin.newInstance());
+				} catch (MalformedURLException | IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+					System.out.println("Failed Loading Plugin: " + f.getName() + " [" + e.toString() + "]");
+				}
+			}
+		} else {
+			pluginDir.mkdirs();
+			System.out.println("[WARNING] Plugin Directory did not exits - creating one");
 		}
 	}
 	

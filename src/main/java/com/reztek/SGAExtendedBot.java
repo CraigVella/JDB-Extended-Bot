@@ -72,6 +72,8 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh.addCommandModule(new TrialsCommands());
 		p_mh.addCommandModule(new SGAAutoPromoterCommands());
 		
+		p_mh.loadAllPlugins();
+		
 		// Add custom commands last
 		p_mh.addCommandModule(new CustomCommands());
 		
