@@ -1,6 +1,10 @@
 package com.reztek.modules.BaseCommands;
 
+import java.awt.Color;
 import java.util.Random;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
@@ -9,18 +13,21 @@ import com.reztek.Base.Taskable;
 import com.reztek.Secret.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 
-import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class BaseCommands extends CommandModule {
+	
+	private static final String GOOGLE_CUSTOM_SEARCH = "https://www.googleapis.com/customsearch/v1?key=" + GlobalDefs.GOOGLE_API_KEY +
+			"&cx=" + GlobalDefs.GOOGLE_API_CX + "&filter=1&searchType=image&q=";
 
-	public BaseCommands(JDA pJDA, SGAExtendedBot pBot) {
-		super(pJDA, pBot,"BASECOMMANDS");
+	public BaseCommands() {
+		super("BASECOMMANDS");
 		setModuleNameAndAuthor("Base Bot Commands", "ChaseHQ85");
 		addCommand(new String[]{
 				"version", "decision", "showmodules", "showtasks", 
-				"chase"});
+				"chase", "taco"});
 	}
 	
 	@Override
@@ -51,14 +58,29 @@ public class BaseCommands extends CommandModule {
 			case "showtasks":
 				showTasks(mre.getChannel());
 				break;
+			case "taco":
+				showTaco(mre.getChannel());
+				break;
 		}
 		
+	}
+	
+	protected void showTaco(MessageChannel mc) {
+		mc.sendTyping().queue();
+		int startIndex = new Random().nextInt(90-1) + 1;
+		JSONArray tacoArray = new JSONObject(BotUtils.getJSONStringGet(GOOGLE_CUSTOM_SEARCH+"taco&start=" + String.valueOf(startIndex), null)).getJSONArray("items");
+		String tacoLink = tacoArray.getJSONObject((new Random().nextInt(tacoArray.length()))).getString("link");
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.YELLOW);
+		eb.setImage(tacoLink);
+		eb.setDescription("**Random Taco Generator Accessed**");
+		mc.sendMessage(eb.build()).queue();
 	}
 	
 	protected void showTasks(MessageChannel mc) {
 		mc.sendTyping();
 		String tasks = "**All Queued Tasks**\n```";
-		for (Taskable task : getBot().getTasks()) {
+		for (Taskable task : SGAExtendedBot.GetBot().getTasks()) {
 			tasks += task.getTaskName() + BotUtils.getPaddingForLen(task.getTaskName(), 20) + " - runs every " + 
 					BotUtils.getPaddingForLen(String.valueOf(task.getTaskDelay()), 3) + (task.getTaskDelay() == 0 ? "1" : String.valueOf(task.getTaskDelay())) +
 					" min(s), will run in " + BotUtils.getPaddingForLen(((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) , 3) +
@@ -72,7 +94,7 @@ public class BaseCommands extends CommandModule {
 	protected void showModules(MessageChannel mc) {
 		mc.sendTyping();
 		String modules = "**All Loaded Modules**\n```";
-		for (ICommandModule cm : getBot().getMessageHandler().getAllLoadedCommandModules()) {
+		for (ICommandModule cm : SGAExtendedBot.GetBot().getMessageHandler().getAllLoadedCommandModules()) {
 			modules += cm.getModuleName() + BotUtils.getPaddingForLen(cm.getModuleName(), 20) + " by " + cm.getAuthorName() + "\n";
 		}
 		modules += "```";

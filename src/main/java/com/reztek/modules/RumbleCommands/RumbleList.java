@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import com.reztek.SGAExtendedBot;
 import com.reztek.Base.Taskable;
 import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.MySQLConnector;
@@ -26,10 +25,6 @@ public class RumbleList extends Taskable {
 	public static final String RUMBLE_SILVER = "10";
 	public static final String RUMBLE_BRONZE = "20";
 	public static final String RUMBLE_WOOD   = "30";
-	
-	public RumbleList(SGAExtendedBot bot) {
-		super(bot);
-	}
 	
 	public void addPlayer(MessageChannel mc, Guardian guardian, boolean verbose) {
 		if (guardian == null) return;
