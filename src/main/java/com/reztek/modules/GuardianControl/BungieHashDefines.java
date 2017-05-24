@@ -1,5 +1,6 @@
 package com.reztek.modules.GuardianControl;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.reztek.Utils.BotUtils;
@@ -20,22 +21,31 @@ public abstract class BungieHashDefines {
 		}
 	}
 	
-	static class StepsHashReturn extends BaseHashReturn {
+	static class HashReturnDescription extends BaseHashReturn {
 		protected String _description;
 		public String getDescription() {
 			return _description;
 		}
 	}
 	
-	static class ArmorHashReturn extends BaseHashReturn {
-		protected String _description;
+	static class ArmorHashReturn extends HashReturnDescription {
 		protected int _tier;
-		public String getDescription() {
-			return _description;
-		}
 		public int getTier() {
 			return _tier;
 		}
+	}
+	
+	private static JSONObject ActivityHashDefinitions = null;
+	public static HashReturnDescription GetActivityForHash(String Hash) throws JSONException {
+		HashReturnDescription hr = new HashReturnDescription();
+		if (ActivityHashDefinitions == null) {
+			ActivityHashDefinitions = new BotUtils.JsonConverter("DestinyActivityDefinition.json", BungieHashDefines.class).getJsonObject();
+		}
+		hr._hash = Hash;
+		hr._name = ActivityHashDefinitions.getJSONObject(Hash).getString("activityName");
+		hr._description = ActivityHashDefinitions.getJSONObject(Hash).getString("activityDescription");
+		hr._icon = ActivityHashDefinitions.getJSONObject(Hash).getString("icon");
+		return hr;
 	}
 	
 	private static JSONObject SubclassHashDefinitions = null;
@@ -63,8 +73,8 @@ public abstract class BungieHashDefines {
 	}
 	
 	private static JSONObject StepsHashDefinitions = null;
-	public static StepsHashReturn GetStepForHash(String Hash) {
-		StepsHashReturn sr = new StepsHashReturn();
+	public static HashReturnDescription GetStepForHash(String Hash) {
+		HashReturnDescription sr = new HashReturnDescription();
 		if (StepsHashDefinitions == null) {
 			StepsHashDefinitions = new BotUtils.JsonConverter("DestinyStepsDefinition.json", BungieHashDefines.class).getJsonObject();
 		}

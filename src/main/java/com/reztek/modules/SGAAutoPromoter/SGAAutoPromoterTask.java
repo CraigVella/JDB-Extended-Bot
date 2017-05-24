@@ -3,7 +3,6 @@ package com.reztek.modules.SGAAutoPromoter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import com.reztek.SGAExtendedBot;
 import com.reztek.Base.Taskable;
 import com.reztek.modules.GuardianControl.Guardian;
 import com.reztek.modules.SGAAutoPromoter.SGARankDefines.SGARank;
@@ -16,8 +15,7 @@ public class SGAAutoPromoterTask extends Taskable {
 
 	private SGAAutoPromoterCommands p_sgaAutoPromoter = null;
 	
-	public SGAAutoPromoterTask(SGAAutoPromoterCommands sgaAutoPromoter, SGAExtendedBot bot) {
-		super(bot);
+	public SGAAutoPromoterTask(SGAAutoPromoterCommands sgaAutoPromoter) {
 		p_sgaAutoPromoter = sgaAutoPromoter;
 	}
 	

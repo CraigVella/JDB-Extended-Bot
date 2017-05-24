@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
-import com.reztek.SGAExtendedBot;
 import com.reztek.Base.Taskable;
 import com.reztek.Secret.GlobalDefs;
 
@@ -14,8 +13,7 @@ public class BadgeCacheTask extends Taskable{
 	
 	private final long CACHE_TIMEOUT = 86400000; // 24 hrs
 	
-	public BadgeCacheTask(SGAExtendedBot bot) {
-		super(bot);
+	public BadgeCacheTask() {
 		setTaskName("Badge Cache Cleaner");
 		setTaskDelay(20);
 	}

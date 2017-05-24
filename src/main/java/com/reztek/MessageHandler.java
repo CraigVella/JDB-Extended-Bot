@@ -19,9 +19,24 @@ public class MessageHandler {
 		if (p_commandModules.containsKey(cpm.getModuleID())) {
 			System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it's already added or duplicate unique ID!");
 		} else {
+			for (ICommandModule m : p_commandModules.values()) {
+				for (String c : m.getCommands()) {
+					if (cpm.respondsToCommand(c)) {
+						System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it responds to command '!" + c.toUpperCase() + "' which {" +  m.getModuleID() + "} already responds to!");
+						return;
+					}
+				}
+			}
 			p_commandModules.put(cpm.getModuleID(), cpm);
 			System.out.println("Added Command Module: " + cpm.getModuleName() + " - " + cpm.getAuthorName());
 		}
+	}
+	
+	public boolean isCommandTaken(String command) {
+		for (ICommandModule m : p_commandModules.values()) {
+			if (m.respondsToCommand(command.toLowerCase())) return true;
+		}
+		return false;
 	}
 	
 	public void removeCommandModule(String commandModuleID) {
@@ -40,7 +55,7 @@ public class MessageHandler {
 		if (mre.getMessage().getRawContent().length() > 0 && mre.getMessage().getRawContent().charAt(0) == '!' && !mre.getAuthor().isBot()) {
 			
 			String command = mre.getMessage().getRawContent().substring(1);
-			String[] cmdSplit = command.toLowerCase().split(" ");
+			String[] cmdSplit = command.split(" ");
 			
 			String args = "";
 			
@@ -51,11 +66,11 @@ public class MessageHandler {
 			final String argsTL = args;
 			
 			for (ICommandModule proc : getAllLoadedCommandModules()) {
-				if (proc.respondsToCommand(cmdSplit[0])) {
+				if (proc.respondsToCommand(cmdSplit[0].toLowerCase())) {
 					p_executor.execute(new Runnable() {
 						@Override
 						public void run() {
-							proc.processCommand(cmdSplit[0], argsTL.equals("") ? null : argsTL.trim(), mre);
+							proc.processCommand(cmdSplit[0].toLowerCase(), argsTL.equals("") ? null : argsTL.trim(), mre);
 						}
 					});
 				}
