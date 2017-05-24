@@ -55,7 +55,7 @@ public class MessageHandler {
 		if (mre.getMessage().getRawContent().length() > 0 && mre.getMessage().getRawContent().charAt(0) == '!' && !mre.getAuthor().isBot()) {
 			
 			String command = mre.getMessage().getRawContent().substring(1);
-			String[] cmdSplit = command.toLowerCase().split(" ");
+			String[] cmdSplit = command.split(" ");
 			
 			String args = "";
 			
@@ -66,11 +66,11 @@ public class MessageHandler {
 			final String argsTL = args;
 			
 			for (ICommandModule proc : getAllLoadedCommandModules()) {
-				if (proc.respondsToCommand(cmdSplit[0])) {
+				if (proc.respondsToCommand(cmdSplit[0].toLowerCase())) {
 					p_executor.execute(new Runnable() {
 						@Override
 						public void run() {
-							proc.processCommand(cmdSplit[0], argsTL.equals("") ? null : argsTL.trim(), mre);
+							proc.processCommand(cmdSplit[0].toLowerCase(), argsTL.equals("") ? null : argsTL.trim(), mre);
 						}
 					});
 				}
