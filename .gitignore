@@ -50,4 +50,4 @@ Temporary Items
 
 *.class
 build/libs/SGAExtendedBot.jar
-BotConfig.conf
+bin/

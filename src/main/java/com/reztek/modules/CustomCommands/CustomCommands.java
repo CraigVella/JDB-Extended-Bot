@@ -13,6 +13,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CustomCommands extends CommandModule {
 	
+	public static final String PLUGIN_ID = "CUSTOMCOMMANDS";
+	
 	public static final int CMD_ERROR        = -1;
 	public static final int CMD_CHANNEL_TEXT =  0;
 	public static final int CMD_PRIVATE_TEXT =  1;
@@ -42,7 +44,7 @@ public class CustomCommands extends CommandModule {
     }
 
 	public CustomCommands() {
-		super("CUSTOMCOMMANDS");
+		super(PLUGIN_ID);
 		setModuleNameAndAuthor("Custom Commands", "ChaseHQ85");
 		addCommand(new String[] {"custom-add", "custom-remove", "custom-list"});
 		try {

@@ -15,6 +15,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class SGAAutoPromoterCommands extends CommandModule {
 	
+	public static final String PLUGIN_ID = "SGAAUTOPROMOTER";
+	
 	public static final String SGA_GUILD_ID             = "252581874596184065";
 	public static final String SGA_COURTYARD_CHANNEL_ID = "255514407121977344";
 	
@@ -24,7 +26,7 @@ public class SGAAutoPromoterCommands extends CommandModule {
 	private boolean p_disabled = false;
 
 	public SGAAutoPromoterCommands() {
-		super("SGAAUTOPROMOTER");
+		super(PLUGIN_ID);
 		setModuleNameAndAuthor("SGA Auto Promoter", "ChaseHQ85");
 		addCommand(new String[] {
 				"runpromotions", "testmsg"

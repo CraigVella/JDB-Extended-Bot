@@ -30,13 +30,15 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class TrialsCommands extends CommandModule {
 	
+	public static final String PLUGIN_ID = "TRIALSCOMMANDS";
+	
 	private static final String DTR_MAP_URL = "https://api.destinytrialsreport.com/currentMap";
 	private static final String BUNGIE_BASE = "https://www.bungie.net";
 	
 	protected TrialsList p_trialsList = null;
 
 	public TrialsCommands() {
-		super("TRIALSCOMMANDS");
+		super(PLUGIN_ID);
 		// I have a task!
 		p_trialsList = new TrialsList();
 		p_trialsList.setTaskName("TrialsList Refresh");

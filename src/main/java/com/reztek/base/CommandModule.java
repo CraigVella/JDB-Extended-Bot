@@ -19,6 +19,14 @@ public abstract class CommandModule implements ICommandModule {
 		p_uniqueModuleID = uniqueModuleID;
 	}
 	
+	public static void SetupPlugin() {
+		
+	}
+	
+	public static Collection<String> GetDependencies() {
+		return Collections.unmodifiableCollection(new ArrayList<String>());
+	}
+	
 	protected void addCommand(String command) {
 		if (respondsToCommand(command.toLowerCase())) return;
 		p_commandList.add(command.toLowerCase());

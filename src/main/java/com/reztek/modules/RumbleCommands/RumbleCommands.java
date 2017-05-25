@@ -23,10 +23,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class RumbleCommands extends CommandModule {
 	
+	public static final String PLUGIN_ID = "RUMBLECOMMANDS";
+	
 	protected RumbleList p_rumbleList = null;
 
 	public RumbleCommands() {
-		super("RUMBLECOMMANDS");
+		super(PLUGIN_ID);
 		setModuleNameAndAuthor("Rumble", "ChaseHQ85");
 		addCommand(new String[] {
 				"rumblelist-importcsv", "rumblelist", "rumblelist-csv", 

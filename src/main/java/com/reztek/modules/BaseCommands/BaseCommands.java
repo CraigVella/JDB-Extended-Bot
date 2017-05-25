@@ -19,11 +19,13 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class BaseCommands extends CommandModule {
 	
+	public static final String PLUGIN_ID = "BASECOMMANDS";
+	
 	private static final String GOOGLE_CUSTOM_SEARCH = "https://www.googleapis.com/customsearch/v1?key=" + GlobalDefs.GOOGLE_API_KEY +
 			"&cx=" + GlobalDefs.GOOGLE_API_CX + "&filter=1&searchType=image&q=";
 
 	public BaseCommands() {
-		super("BASECOMMANDS");
+		super(PLUGIN_ID);
 		setModuleNameAndAuthor("Base Bot Commands", "ChaseHQ85");
 		addCommand(new String[]{
 				"version", "decision", "showmodules", "showtasks", 
@@ -32,12 +34,6 @@ public class BaseCommands extends CommandModule {
 	
 	@Override
 	public void processCommand(String command, String args, MessageReceivedEvent mre) {
-		
-		/*String[] splitArg = {""};
-		if (args != null) {
-			splitArg = args.split(" ");
-		}*/
-		
 		switch (command) {
 			case "version":
 				showVersion(mre.getChannel());

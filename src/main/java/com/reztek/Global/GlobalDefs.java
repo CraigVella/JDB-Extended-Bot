@@ -29,5 +29,5 @@ public abstract class GlobalDefs {
 	public static final String BUNGIE_APP_AUTH        = ConfigReader.GetConfigReader().getConfigString("BUNGIE_APP_AUTH");
 	
 	public static final boolean BOT_DEV               = true;
-	public static final String  BOT_VERSION           = "2.0";
+	public static final String  BOT_VERSION           = "2.1";
 }

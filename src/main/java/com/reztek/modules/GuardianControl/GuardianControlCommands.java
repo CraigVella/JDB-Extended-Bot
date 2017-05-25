@@ -17,13 +17,15 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class GuardianControlCommands extends CommandModule {
 	
+	public static final String PLUGIN_ID = "GUARDIANCOMMANDS";
+	
 	public static final int LOADOUT_ALL = 0;
 	public static final int LOADOUT_PRIMARY_ONLY = 1;
 	public static final int LOADOUT_SPECIAL_ONLY = 2;
 	public static final int LOADOUT_HEAVY_ONLY = 3;
 
 	public GuardianControlCommands() {
-		super("GUARDIANCOMMANDS");
+		super(PLUGIN_ID);
 		setModuleNameAndAuthor("Destiny Guardian", "ChaseHQ85");
 		addCommand(new String[]{
 				"debugguardian", "getauthguardian", "getauthguardian-ps", "getauthguardian-xb",
