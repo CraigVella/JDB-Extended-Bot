@@ -24,5 +24,5 @@ public abstract class GlobalDefs {
 	public static final String LOCAL_DEV_BADGE_CACHE  = ConfigReader.GetConfigReader().getConfigString("LOCAL_DEV_BADGE_CACHE");
 	
 	public static final boolean BOT_DEV               = true;
-	public static final String  BOT_VERSION           = "2.1";
+	public static final String  BOT_VERSION           = "2.2";
 }
