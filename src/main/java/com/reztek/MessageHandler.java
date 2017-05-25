@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.reflections.Reflections;
+
+import com.reztek.Base.CommandModule;
 import com.reztek.Base.ICommandModule;
 import com.reztek.Utils.BotUtils;
 
@@ -36,7 +39,7 @@ public class MessageHandler {
 				}
 			}
 			p_commandModules.put(cpm.getModuleID(), cpm);
-			System.out.println("Added Command Module: " + cpm.getModuleName() + " - " + cpm.getAuthorName());
+			System.out.println("Added Command Module: " + cpm.getModuleName() + " V." + cpm.getVersion() + " - " + cpm.getAuthorName());
 		}
 	}
 	
@@ -57,11 +60,14 @@ public class MessageHandler {
 			ArrayList<Class<?>> pluginList = new ArrayList<Class<?>>();
 			for (File f : pluginDir.listFiles(jarFilter)) {
 				try {
-					URLClassLoader pluginModule = new URLClassLoader( new URL[] {f.toURI().toURL()}, getClass().getClassLoader());
-					Class<?> plugin = Class.forName(f.getName().substring(0, f.getName().length() - 4), true, pluginModule);
-					plugin.getMethod("SetupPlugin", null).invoke(null, null); // Run SetupPlugin
-					pluginList.add(plugin);
-				} catch (MalformedURLException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					Reflections r = new Reflections(f.toURI().toURL());
+					for (String v : r.getStore().get("SubTypesScanner").get(CommandModule.class.getName())) {
+						URLClassLoader pluginModule = new URLClassLoader( new URL[] {f.toURI().toURL()}, getClass().getClassLoader());
+						Class<?> plugin = Class.forName(v, true, pluginModule);
+						plugin.getMethod("SetupPlugin", null).invoke(null, null); // Run SetupPlugin
+						pluginList.add(plugin);
+					}
+				} catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | MalformedURLException | ClassNotFoundException e) {
 					System.out.println("Failed Loading Plugin: " + f.getName() + " [" + e.toString() + "]");
 				}
 			}
@@ -89,7 +95,7 @@ public class MessageHandler {
 					}
 				}
 			}
-			// At this point whatever plugin didn't load will be left int he pluginList
+			// At this point whatever plugin didn't load will be left in the pluginList
 			for (Class<?> c : pluginList) {
 				System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "]");
 			}

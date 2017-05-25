@@ -12,6 +12,7 @@ public abstract class CommandModule implements ICommandModule {
 	private String p_author;
 	private String p_uniqueModuleID;
 	private ArrayList<String> p_commandList = new ArrayList<String>();
+	private String p_Version = "N/A";
 	
 	public CommandModule(String uniqueModuleID) {
 		p_moduleName = "Unknown-Module";
@@ -44,6 +45,14 @@ public abstract class CommandModule implements ICommandModule {
 		for(String cmd : commands) {
 			addCommand(cmd);
 		}
+	}
+	
+	protected void setVersion(String version) {
+		p_Version = version;
+	}
+	
+	public String getVersion() {
+		return p_Version;
 	}
 	
 	public boolean respondsToCommand(String command) {

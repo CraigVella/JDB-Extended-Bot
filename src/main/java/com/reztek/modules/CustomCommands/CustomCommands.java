@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import com.reztek.SGAExtendedBot;
 import com.reztek.Base.CommandModule;
+import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.MySQLConnector;
 
@@ -46,6 +47,7 @@ public class CustomCommands extends CommandModule {
 	public CustomCommands() {
 		super(PLUGIN_ID);
 		setModuleNameAndAuthor("Custom Commands", "ChaseHQ85");
+		setVersion(GlobalDefs.BOT_VERSION);
 		addCommand(new String[] {"custom-add", "custom-remove", "custom-list"});
 		try {
 			ResultSet rs = MySQLConnector.getInstance().runQueryWithResult("SELECT * FROM customCommands");
