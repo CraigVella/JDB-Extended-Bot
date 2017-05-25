@@ -1,5 +1,9 @@
 package com.reztek;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,11 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.security.auth.login.LoginException;
 
+
 import com.reztek.Badges.BadgeCacheTask;
 import com.reztek.Base.Taskable;
 import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.ConfigReader;
+import com.reztek.Utils.URLClassLoaderUtil;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.CustomCommands.CustomCommands;
 
@@ -40,6 +46,38 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		return ps_bot;
 	}
 	
+	public void dynaLoadLibs() {
+		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/lib");
+		if (libDir.exists() && libDir.isDirectory()) {
+			FilenameFilter jarFilter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String lowercaseName = name.toLowerCase();
+					if (lowercaseName.endsWith(".jar")) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			};
+			URLClassLoaderUtil u = new URLClassLoaderUtil(new URL[] {});
+			for (File f : libDir.listFiles(jarFilter)) {
+				try {
+					u.addJarURL(f.toURI().toURL());
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("[ERROR] Error Dynamically loading lib - " + f.getName());
+				}
+			}
+			try {
+				u.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			libDir.mkdir();
+		}
+	}
+	
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
 		if (!ConfigReader.GetConfigReader().isConfigLoaded()) { 
 			System.out.println("Configuration Error - Cannot Continue"); 
@@ -47,6 +85,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		}
 		
 		SGAExtendedBot bot = SGAExtendedBot.GetBot();
+		bot.dynaLoadLibs();
 		try {
 			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addListener(bot).buildBlocking();
 			bot.run(jda);
