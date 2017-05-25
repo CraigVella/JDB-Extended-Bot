@@ -1,6 +1,6 @@
 # SGAExtendedBot
 
-**Current Bot Commands as of Version 2.0**
+**Current Bot Commands as of Version 2.1**
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
