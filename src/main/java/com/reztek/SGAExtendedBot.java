@@ -16,10 +16,6 @@ import com.reztek.Utils.BotUtils;
 import com.reztek.Utils.ConfigReader;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.CustomCommands.CustomCommands;
-import com.reztek.modules.GuardianControl.GuardianControlCommands;
-import com.reztek.modules.RumbleCommands.RumbleCommands;
-import com.reztek.modules.SGAAutoPromoter.SGAAutoPromoterCommands;
-import com.reztek.modules.TrialsCommands.TrialsCommands;
 
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.events.Event;
@@ -67,10 +63,6 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		p_mh = new MessageHandler();
 		
 		p_mh.addCommandModule(new BaseCommands());
-		p_mh.addCommandModule(new RumbleCommands());
-		p_mh.addCommandModule(new GuardianControlCommands());
-		p_mh.addCommandModule(new TrialsCommands());
-		p_mh.addCommandModule(new SGAAutoPromoterCommands());
 		
 		p_mh.loadAllPlugins();
 		

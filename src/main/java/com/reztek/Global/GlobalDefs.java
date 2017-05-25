@@ -10,13 +10,10 @@ public abstract class GlobalDefs {
 	public static final String DB_DBASE               = ConfigReader.GetConfigReader().getConfigString("DB_DBASE");
 	public static final String DB_DBASE_DEV           = ConfigReader.GetConfigReader().getConfigString("DB_DBASE_DEV");
 	
-	public static final String BUNGIE_API_KEY         = ConfigReader.GetConfigReader().getConfigString("BUNGIE_API_KEY");
 	public static final String BOT_TOKEN              = ConfigReader.GetConfigReader().getConfigString("BOT_TOKEN");
 	public static final String BOT_TOKEN_DEV          = ConfigReader.GetConfigReader().getConfigString("BOT_TOKEN_DEV");
-	public static final String GOOGLE_API_KEY         = ConfigReader.GetConfigReader().getConfigString("GOOGLE_API_KEY");
-	public static final String GOOGLE_API_CX          = ConfigReader.GetConfigReader().getConfigString("GOOGLE_API_CX");
 	
-	public static final long   TIMER_TICK             = ConfigReader.GetConfigReader().getConfigLong("TIMER_TICK");
+	public static final long   TIMER_TICK             = ConfigReader.GetConfigReader().getConfigLong  ("TIMER_TICK");
 	public static final String TMP_LOCATION           = ConfigReader.GetConfigReader().getConfigString("TMP_LOCATION");
 	public static final String DEV_TMP_LOCATION       = ConfigReader.GetConfigReader().getConfigString("DEV_TMP_LOCATION");
 	
@@ -26,8 +23,6 @@ public abstract class GlobalDefs {
 	public static final String LOCAL_BADGE_CACHE      = ConfigReader.GetConfigReader().getConfigString("LOCAL_BADGE_CACHE");
 	public static final String LOCAL_DEV_BADGE_CACHE  = ConfigReader.GetConfigReader().getConfigString("LOCAL_DEV_BADGE_CACHE");
 	
-	public static final String BUNGIE_APP_AUTH        = ConfigReader.GetConfigReader().getConfigString("BUNGIE_APP_AUTH");
-	
 	public static final boolean BOT_DEV               = true;
-	public static final String  BOT_VERSION           = "2.0";
+	public static final String  BOT_VERSION           = "2.1";
 }

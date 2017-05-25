@@ -12,4 +12,5 @@ public interface ICommandModule {
 	public String getAuthorName();
 	public String getModuleID();
 	public CommandModule getModule();
+	public String getVersion();
 }
