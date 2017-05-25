@@ -2,15 +2,20 @@ package com.reztek;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.reflections.Reflections;
+
+import com.reztek.Base.CommandModule;
 import com.reztek.Base.ICommandModule;
 import com.reztek.Utils.BotUtils;
 
@@ -34,10 +39,11 @@ public class MessageHandler {
 				}
 			}
 			p_commandModules.put(cpm.getModuleID(), cpm);
-			System.out.println("Added Command Module: " + cpm.getModuleName() + " - " + cpm.getAuthorName());
+			System.out.println("Added Command Module: " + cpm.getModuleName() + " V." + cpm.getVersion() + " - " + cpm.getAuthorName());
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadAllPlugins() {
 		File pluginDir = new File(BotUtils.GetExecutionPath(getClass()) + "/plugins");
 		if (pluginDir.exists() && pluginDir.isDirectory()) {
@@ -51,18 +57,51 @@ public class MessageHandler {
 					}
 				}
 			};
+			ArrayList<Class<?>> pluginList = new ArrayList<Class<?>>();
 			for (File f : pluginDir.listFiles(jarFilter)) {
 				try {
-					URLClassLoader pluginModule = new URLClassLoader( new URL[] {f.toURI().toURL()}, getClass().getClassLoader());
-					Class<?> plugin = Class.forName(f.getName().substring(0, f.getName().length() - 4), true, pluginModule);
-					addCommandModule((ICommandModule) plugin.newInstance());
-				} catch (MalformedURLException | IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+					Reflections r = new Reflections(f.toURI().toURL());
+					for (String v : r.getStore().get("SubTypesScanner").get(CommandModule.class.getName())) {
+						URLClassLoader pluginModule = new URLClassLoader( new URL[] {f.toURI().toURL()}, getClass().getClassLoader());
+						Class<?> plugin = Class.forName(v, true, pluginModule);
+						plugin.getMethod("SetupPlugin", null).invoke(null, null); // Run SetupPlugin
+						pluginList.add(plugin);
+					}
+				} catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | MalformedURLException | ClassNotFoundException e) {
 					System.out.println("Failed Loading Plugin: " + f.getName() + " [" + e.toString() + "]");
 				}
 			}
+			// All Plugins are now Setup - and Ready to be loaded - Just need to check dependencies before instantiating
+			// We need to make sure that each plugin passes dependency checks - if it does take them off the pluginToLoad list
+			ArrayList<Class<?>> pluginToLoad;
+			int maxPluginTries = pluginList.size();
+			for (int x = 0; ((x < maxPluginTries) && (pluginList.size() != 0)); ++x) {
+				pluginToLoad = (ArrayList<Class<?>>) pluginList.clone();
+				for (Class<?> c : pluginToLoad) {
+					// Check each plugin to see if all depencies work - if it does load it and remove from list
+					try {
+						Collection<String> deps = (Collection<String>) c.getMethod("GetDependencies", null).invoke(null,null);
+						boolean canLoadPlugin = true;
+						for (String s : deps) {
+							if (getCommandModuleByID(s) == null) canLoadPlugin = false;
+						}
+						if (canLoadPlugin) {
+							pluginList.remove(c);
+							addCommandModule((ICommandModule) c.newInstance());
+						}
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+							| NoSuchMethodException | SecurityException | InstantiationException e) {
+						System.out.println("Failed Loading Plugin: [" + e.toString() + "]");
+					}
+				}
+			}
+			// At this point whatever plugin didn't load will be left in the pluginList
+			for (Class<?> c : pluginList) {
+				System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "]");
+			}
 		} else {
 			pluginDir.mkdirs();
-			System.out.println("[WARNING] Plugin Directory did not exits - creating one");
+			System.out.println("[WARNING] Plugin Directory did not exist - creating one");
 		}
 	}
 	
