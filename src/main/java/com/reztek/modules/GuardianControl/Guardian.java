@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.ConfigReader;
 import com.reztek.modules.GuardianControl.BungieHashDefines.HashReturnDescription;
 
 public class Guardian {
@@ -22,7 +23,7 @@ public class Guardian {
 	public static final String PLATFORM_PS = "2";
 	public static final String PLATFORM_ALL = "All";
 	
-	protected static final String BUNGIE_API_KEY        = GlobalDefs.BUNGIE_API_KEY;
+	protected static final String BUNGIE_API_KEY        = ConfigReader.GetConfigReader().getConfigString("BUNGIE_API_KEY");
 	private static final String   BUNGIE_BASE_URL       = "https://www.bungie.net/Platform/Destiny";
 	private static final String   BUNGIE_SEARCH_URL     = "/SearchDestinyPlayer/";
 	private static final String   BUNGIE_ACCOUNT_URL    = "/Account/";

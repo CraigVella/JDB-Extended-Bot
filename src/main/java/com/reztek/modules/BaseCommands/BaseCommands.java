@@ -12,6 +12,7 @@ import com.reztek.Base.ICommandModule;
 import com.reztek.Base.Taskable;
 import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.ConfigReader;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -21,8 +22,11 @@ public class BaseCommands extends CommandModule {
 	
 	public static final String PLUGIN_ID = "BASECOMMANDS";
 	
-	private static final String GOOGLE_CUSTOM_SEARCH = "https://www.googleapis.com/customsearch/v1?key=" + GlobalDefs.GOOGLE_API_KEY +
-			"&cx=" + GlobalDefs.GOOGLE_API_CX + "&filter=1&searchType=image&q=";
+	private static final String GOOGLE_API_KEY         = ConfigReader.GetConfigReader().getConfigString("GOOGLE_API_KEY");
+	private static final String GOOGLE_API_CX          = ConfigReader.GetConfigReader().getConfigString("GOOGLE_API_CX");
+	
+	private static final String GOOGLE_CUSTOM_SEARCH = "https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_API_KEY +
+			"&cx=" + GOOGLE_API_CX + "&filter=1&searchType=image&q=";
 
 	public BaseCommands() {
 		super(PLUGIN_ID);

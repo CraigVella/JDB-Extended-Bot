@@ -8,9 +8,11 @@ import java.util.HashMap;
 import org.json.JSONObject;
 
 import com.reztek.Utils.BotUtils;
+import com.reztek.Utils.ConfigReader;
 import com.reztek.Utils.MySQLConnector;
 
 public class AuthenticatedGuardian extends Guardian {
+	public static final String  BUNGIE_APP_AUTH    = ConfigReader.GetConfigReader().getConfigString("BUNGIE_APP_AUTH");
 	private static final String BUNGIE_API_REFRESH = "https://www.bungie.net/Platform/App/GetAccessTokensFromRefreshToken/";
 	private static final int    EXPIRE_TIME_ADJUST = 300000;
 	

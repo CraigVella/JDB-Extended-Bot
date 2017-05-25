@@ -245,12 +245,12 @@ public class GuardianControlCommands extends CommandModule {
 		try {
 			pc = mre.getAuthor().hasPrivateChannel() ? mre.getAuthor().getPrivateChannel() : mre.getAuthor().openPrivateChannel().submit().get();
 			if (ag == null) {
-				pc.sendMessage("Hey " + mre.getAuthor().getAsMention() + ", You need to allow us permission - Follow this link\n" + GlobalDefs.BUNGIE_APP_AUTH).queue();
+				pc.sendMessage("Hey " + mre.getAuthor().getAsMention() + ", You need to allow us permission - Follow this link\n" + AuthenticatedGuardian.BUNGIE_APP_AUTH).queue();
 			} else {
 				if (ag.areTokensValid()) {
 					pc.sendMessage(mre.getAuthor().getAsMention() + ", I have succesfully validated that we have permission to your authenticated character").queue();
 				} else {
-					pc.sendMessage(mre.getAuthor().getAsMention() + ", It's been a while, I need you to reauthenticate with us here - \n" + GlobalDefs.BUNGIE_APP_AUTH).queue();
+					pc.sendMessage(mre.getAuthor().getAsMention() + ", It's been a while, I need you to reauthenticate with us here - \n" + AuthenticatedGuardian.BUNGIE_APP_AUTH).queue();
 				}
 			}
 		} catch (InterruptedException | ExecutionException e) {
