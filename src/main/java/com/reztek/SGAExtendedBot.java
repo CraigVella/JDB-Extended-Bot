@@ -87,7 +87,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		SGAExtendedBot bot = SGAExtendedBot.GetBot();
 		bot.dynaLoadLibs();
 		try {
-			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addListener(bot).buildBlocking();
+			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
 			bot.run(jda);
 		} catch (LoginException e) {
 			e.printStackTrace();
