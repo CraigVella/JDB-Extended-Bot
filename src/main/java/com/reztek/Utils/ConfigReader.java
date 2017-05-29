@@ -55,7 +55,7 @@ public class ConfigReader {
 		try {
 			return p_config.getString(key);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			System.out.println("ConfigWarning - [" + key + "] does not exist or is not a String");
 			return null;
 		}
 	}
@@ -69,7 +69,7 @@ public class ConfigReader {
 		try {
 			return p_config.getLong(key);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			System.out.println("ConfigWarning - [" + key + "] does not exist or is not a Long");
 			return null;
 		}
 	}
@@ -83,7 +83,7 @@ public class ConfigReader {
 		try {
 			return p_config.getBoolean(key);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			System.out.println("ConfigWarning - [" + key + "] does not exist or is not a Boolean");
 			return null;
 		}
 	}
@@ -95,7 +95,8 @@ public class ConfigReader {
 	 */
 	public void createNewConfigValue(String key, Object value) {
 		if (!isConfigLoaded()) return;
-		p_config.append(key, value);
+		p_config.put(key, value);
+		System.out.println("ConfigWarning - Added  [" + key + "] to the config file, please check it's value!");
 		saveConfig();
 	}
 	
