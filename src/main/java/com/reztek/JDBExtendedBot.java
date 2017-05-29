@@ -32,6 +32,7 @@ import net.dv8tion.jda.core.hooks.EventListener;
 
 /**
  * <h1>JDB-Extended-Bot</h1>
+ * Java Discord Bot - Extended<br />
  * A Bot that uses a modular design along with optional plugins that allows 
  * diverse interaction types.
  * 
@@ -87,6 +88,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 				e.printStackTrace();
 			}
 		} else {
+			System.out.println("[WARNING] Lib Directory did not exist - creating one");
 			libDir.mkdir();
 		}
 	}
@@ -119,7 +121,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		p_mh.loadAllPlugins();
 		
 		// Add custom commands last
-		p_mh.addCommandModule(new CustomCommands());
+		if (ConfigReader.GetConfigReader().getConfigBoolean("ENABLE_CUSTOM_CMDS")) p_mh.addCommandModule(new CustomCommands());
 		
 		addTask(new BadgeCacheTask());
 		

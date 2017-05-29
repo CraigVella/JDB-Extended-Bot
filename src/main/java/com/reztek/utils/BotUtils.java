@@ -19,7 +19,18 @@ import org.json.JSONObject;
 
 import com.reztek.Global.GlobalDefs;
 
+/**
+ * A collection of Bot Utilites and other useful methods
+ * @author Craig Vella
+ *
+ */
 public abstract class BotUtils {
+	/**
+	 * Gets a String of Padding to be used to align Text in a Discord Markdown box
+	 * @param toPad - The String to pad
+	 * @param desiredLen - The Desired Max Length of padding needed
+	 * @return A String containing the correct amount of padding
+	 */
 	public static String GetPaddingForLen(String toPad, int desiredLen) {
 		String padding = "";
 		if (toPad == null) return padding;
@@ -29,6 +40,12 @@ public abstract class BotUtils {
 		return padding;
 	}
 	
+	/**
+	 * Get JSON String from a URL as a GET request
+	 * @param sURL - A String containing the REST endpoint
+	 * @param props - HashMap of properties to include in the Header of the request, or null if none are needed
+	 * @return String containing the result intended to be used in a new JSONObject
+	 */
 	public static String GetJSONStringGet(String sURL, HashMap<String, String> props) {
 		String retObj = null;
 		
@@ -57,6 +74,13 @@ public abstract class BotUtils {
 		return retObj;
 	}
 	
+	/**
+	 * Get JSON String from a URL as a POST request
+	 * @param sURL - A String containing the REST endpoint
+	 * @param props - HashMap of properties to include in the Header of the request, or null if none are needed
+	 * @param content - The Data to be included in the POST request
+	 * @return String containing the result intended to be used in a new JSONObject
+	 */
 	public static String GetJSONStringPost(String sURL, HashMap<String, String> props, String content) {
 		String retObj = null;
 		
@@ -95,10 +119,20 @@ public abstract class BotUtils {
 		return retObj;
 	}
 	
+	/**
+	 * Get the current version of the Bot
+	 * @return String containing the Bot version
+	 */
 	public static String GetVersion() {
 		return GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "");
 	}
 	
+	/**
+	 * A Tuple Helper Object
+	 * @author Craig Vella
+	 *
+	 * @param <T>
+	 */
 	public static class Tuple<T> {
 		public Tuple(T first, T second) {
 			_first = first;
@@ -123,6 +157,12 @@ public abstract class BotUtils {
 		}
 	}
 	
+	/**
+	 * Export the internal JAR resource to file
+	 * @param resourceName - The Resource name to be exported
+	 * @param requestObject - A class containing the resource within that object
+	 * @return {@code true} if it is succesfully exported {@code false} if not
+	 */
     static public boolean ExportResource(String resourceName, Class<?> requestObject) {
         InputStream stream = null;
         OutputStream resStreamOut = null;
@@ -146,6 +186,11 @@ public abstract class BotUtils {
         return true;
     }
     
+    /**
+     * Get the Execution path of the Bot or JAR
+     * @param requestObject - The object whose execution path you are inquring
+     * @return String containing the Execution path
+     */
     public static String GetExecutionPath(Class<?> requestObject){
 	    String absolutePath = requestObject.getProtectionDomain().getCodeSource().getLocation().getPath();
 	    absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
@@ -153,15 +198,29 @@ public abstract class BotUtils {
 	    return absolutePath;
 	}
 	
+    /**
+     * A Class to help convert JSON Resources to JSONObjects
+     * @author Craig Vella
+     *
+     */
 	public static class JsonConverter {
 		Class<?> _requestclass;
 		String jsonFileName;
-
+		
+		/**
+		 * Constructor for JsonConverter class
+		 * @param jsonFileName - Filename of JSON resource
+		 * @param requestObject - the class whose package contains the resource
+		 */
 		public JsonConverter(String jsonFileName, Class<?> requestObject){
 		    this.jsonFileName = jsonFileName;
 		    _requestclass = requestObject;
 		}
-
+		
+		/**
+		 * Get the JSONObject from object
+		 * @return {@link JSONObject} containing data of requested JSON Resource
+		 */
 		public JSONObject getJsonObject(){
 		    //Create input stream
 		    InputStream inputStreamObject = getRequestclass().getResourceAsStream(jsonFileName);
@@ -192,6 +251,12 @@ public abstract class BotUtils {
 		}
 	}
 	
+	/**
+	 * Abbreviate String <br />
+	 * Ex: "Hello World" -> "He. World"
+	 * @param toAbv - String to Abbreviate
+	 * @return String containing abbreviation
+	 */
 	public static String AbvString(String toAbv) {
 		String abvName = null;
 		if (toAbv.contains(" ")) {

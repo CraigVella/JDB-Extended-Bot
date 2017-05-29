@@ -4,6 +4,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * URLClassLoader extension for loading external JAR's as libs
+ * @author Craig Vella
+ *
+ */
 public class URLClassLoaderUtil extends URLClassLoader {
 
 	public URLClassLoaderUtil(URL[] urls) {
