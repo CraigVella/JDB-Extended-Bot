@@ -9,6 +9,13 @@ import java.util.Date;
 import com.reztek.Base.Taskable;
 import com.reztek.Global.GlobalDefs;
 
+/**
+ * Badge Cache Cleaner Task
+ * <p>Called every 20 minutes, where it checks the {@link GlobalDefs.LOCAL_BADGE_CACHE} to see if there is any badges over 24hrs.
+ * After 24hrs the badge image will be deleted. </p>
+ * @author Craig Vella
+ *
+ */
 public class BadgeCacheTask extends Taskable{
 	
 	private final long CACHE_TIMEOUT = 86400000; // 24 hrs
@@ -23,6 +30,9 @@ public class BadgeCacheTask extends Taskable{
 		cleanCache();
 	}
 	
+	/**
+	 * Checks the {@link GlobalDefs.LOCAL_BADGE_CACHE} for images over 24hrs old and deletes them
+	 */
 	public void cleanCache() {
 		System.out.println("Starting Cache Cleaning Check...");
 		File cacheDir = new File((GlobalDefs.BOT_DEV ? GlobalDefs.LOCAL_DEV_BADGE_CACHE : GlobalDefs.LOCAL_BADGE_CACHE));

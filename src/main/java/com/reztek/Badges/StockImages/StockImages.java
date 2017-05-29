@@ -6,9 +6,19 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Stock Image retriever for images that are included in the Bot
+ * @author Craig Vella
+ *
+ */
 public class StockImages {
 	private static HashMap<String, BufferedImage>p_StockImages = new HashMap<String, BufferedImage>();
 	
+	/**
+	 * Retrieves stock images based on name
+	 * @param imageName - the name of the stock image to retrieve
+	 * @return BufferedImage of requested image
+	 */
 	public static BufferedImage ImageFromName(String imageName) {
 		BufferedImage bi = p_StockImages.get(imageName);
 		if (bi == null) {

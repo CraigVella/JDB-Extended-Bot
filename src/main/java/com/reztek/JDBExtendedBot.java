@@ -30,8 +30,17 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
 
-public class SGAExtendedBot extends TimerTask implements EventListener {
-	private static SGAExtendedBot ps_bot = null;
+/**
+ * <h1>JDB-Extended-Bot</h1>
+ * A Bot that uses a modular design along with optional plugins that allows 
+ * diverse interaction types.
+ * 
+ * @author ChaseHQ85
+ *
+ */
+
+public class JDBExtendedBot extends TimerTask implements EventListener {
+	private static JDBExtendedBot ps_bot = null;
 	private boolean p_ready = false;
 	private MessageHandler p_mh;
 	private ArrayList<Taskable> p_taskList = new ArrayList<Taskable>();
@@ -39,14 +48,18 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 	private AtomicBoolean p_tasksrunning = new AtomicBoolean(false);
 	private JDA p_jda = null;
 	
-	public static SGAExtendedBot GetBot() {
+	/**
+	 * Get the main Bot instance
+	 * @return SGAExtendedBot Instance
+	 */
+	public static JDBExtendedBot GetBot() {
 		if (ps_bot == null) {
-			ps_bot = new SGAExtendedBot();
+			ps_bot = new JDBExtendedBot();
 		}
 		return ps_bot;
 	}
 	
-	public void dynaLoadLibs() {
+	private void dynaLoadLibs() {
 		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/lib");
 		if (libDir.exists() && libDir.isDirectory()) {
 			FilenameFilter jarFilter = new FilenameFilter() {
@@ -84,7 +97,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 			return; 
 		}
 		
-		SGAExtendedBot bot = SGAExtendedBot.GetBot();
+		JDBExtendedBot bot = JDBExtendedBot.GetBot();
 		bot.dynaLoadLibs();
 		try {
 			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
@@ -96,7 +109,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		}
 	}
 	
-	public void run(JDA jda) throws InterruptedException {
+	private void run(JDA jda) throws InterruptedException {
 		p_jda = jda;
 		
 		p_mh = new MessageHandler();
@@ -115,26 +128,53 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		jda.setAutoReconnect(true);
 	}
 	
+	/**
+	 * Retreive current registered tasks
+	 * @return A collection of Taskable objects
+	 */
+	
 	public Collection<Taskable> getTasks() {
 		return Collections.unmodifiableCollection(p_taskList);
 	}
 	
+	/**
+	 * Retrieve the Java Discord API Object
+	 * @return Java Discord API Object Instance
+	 */
 	public JDA getJDA() {
 		return p_jda;
 	}
 	
+	/**
+	 * Add a task to the tasking system
+	 * </p> The Tasking system will try and run a task once a minute (unless otherwise configured).
+	 * The task is not guaranteed to run on time, the queue is linear and synchronous. This is purposely
+	 * done to not put too much of a load on the system. </p>
+	 * @param Task Object with Task as a base class
+	 */
 	public void addTask(Taskable task) {
 		p_taskList.add(task);
 	}
 	
+	/**
+	 * Checks to see whether the Bot is in a ready state
+	 * @return boolean of true if Bot is ready, false if not logged in
+	 */
 	public boolean isReady() {
 		return p_ready;
 	}
 	
+	/**
+	 * Retrieve the MessageHandler instance
+	 * @return MessageHandler instance
+	 */
 	public MessageHandler getMessageHandler() {
 		return p_mh;
 	}
 
+	/**
+	 * Overridden on event <b>DO NOT</b> call this method directly.
+	 */
 	@Override
 	public void onEvent(Event e) {
 		
@@ -151,6 +191,9 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		
 	}
 
+	/**
+	 * Overriden run, <b>DO NOT</b> call this method directly.
+	 */
 	@Override
 	public void run() {
 		// Called every 1 minute and passed to all tasks sequentially,
