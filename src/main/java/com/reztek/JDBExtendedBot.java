@@ -44,13 +44,13 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	private boolean p_ready = false;
 	private MessageHandler p_mh;
 	private ArrayList<Taskable> p_taskList = new ArrayList<Taskable>();
-	private Timer p_timer = new Timer("SGAExtendedBotTimer");
+	private Timer p_timer = new Timer("JDBExtendedBotTimer");
 	private AtomicBoolean p_tasksrunning = new AtomicBoolean(false);
 	private JDA p_jda = null;
 	
 	/**
 	 * Get the main Bot instance
-	 * @return SGAExtendedBot Instance
+	 * @return JDBExtendedBot Instance
 	 */
 	public static JDBExtendedBot GetBot() {
 		if (ps_bot == null) {
@@ -180,7 +180,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		
 		if (e instanceof ReadyEvent) {
 			p_ready = true;
-			System.out.println("SGA-Extended-Bot - Version: " + BotUtils.GetVersion());
+			System.out.println("JDB-Extended-Bot - Version: " + BotUtils.GetVersion());
 		}
 		
 		if (e instanceof MessageReceivedEvent) {
