@@ -2,7 +2,7 @@ package com.reztek.modules.BaseCommands;
 
 import java.util.Random;
 
-import com.reztek.SGAExtendedBot;
+import com.reztek.JDBExtendedBot;
 import com.reztek.Base.CommandModule;
 import com.reztek.Base.ICommandModule;
 import com.reztek.Base.Taskable;
@@ -49,7 +49,7 @@ public class BaseCommands extends CommandModule {
 	
 	protected void showTasks(MessageChannel mc) {
 		String tasks = "**All Queued Tasks**\n```";
-		for (Taskable task : SGAExtendedBot.GetBot().getTasks()) {
+		for (Taskable task : JDBExtendedBot.GetBot().getTasks()) {
 			tasks += task.getTaskName() + BotUtils.GetPaddingForLen(task.getTaskName(), 20) + " - runs every " + 
 					BotUtils.GetPaddingForLen(String.valueOf(task.getTaskDelay()), 3) + (task.getTaskDelay() == 0 ? "1" : String.valueOf(task.getTaskDelay())) +
 					" min(s), will run in " + BotUtils.GetPaddingForLen(((task.getTaskDelay() - task.getTaskDelayCount()) < 1 ? "1" : String.valueOf((task.getTaskDelay() - task.getTaskDelayCount()))) , 3) +
@@ -62,7 +62,7 @@ public class BaseCommands extends CommandModule {
 	
 	protected void showModules(MessageChannel mc) {
 		String modules = "**All Loaded Modules**\n```";
-		for (ICommandModule cm : SGAExtendedBot.GetBot().getMessageHandler().getAllLoadedCommandModules()) {
+		for (ICommandModule cm : JDBExtendedBot.GetBot().getMessageHandler().getAllLoadedCommandModules()) {
 			modules += cm.getModuleName() + BotUtils.GetPaddingForLen(cm.getModuleName(), 20) + " (V." + 
 					BotUtils.GetPaddingForLen(cm.getVersion(),4) + cm.getVersion() + ") - by " + cm.getAuthorName() + "\n";
 		}
@@ -80,7 +80,7 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void showVersion(MessageChannel mc) {
-		mc.sendMessage("I am running version: " + GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "")).queue();
+		mc.sendMessage("I am running version: " + GlobalDefs.BOT_VERSION).queue();
 	}
 
 }
