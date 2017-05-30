@@ -131,7 +131,7 @@ public abstract class BotUtils {
 	 * A Tuple Helper Object
 	 * @author Craig Vella
 	 *
-	 * @param <T>
+	 * @param <T> Class type of Tuple
 	 */
 	public static class Tuple<T> {
 		public Tuple(T first, T second) {

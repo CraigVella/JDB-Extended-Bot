@@ -36,8 +36,8 @@ public class Badge {
 	
 	/**
 	 * Constructor of a badge - built on whatever base image is sent to it
-	 * @param BaseImage as InputStream
-	 * @throws IOException
+	 * @param baseImage as InputStream
+	 * @throws IOException if image could not be read
 	 */
 	public Badge(InputStream baseImage) throws IOException {
 		p_baseImage = ImageIO.read(baseImage);
@@ -52,10 +52,10 @@ public class Badge {
 	
 	/**
 	 * Draws Buffered Image at given location on badge
-	 * @param BufferedImage to draw
+	 * @param bi - BufferedImage to draw
 	 * @param x coordinate to draw at
 	 * @param y coordinate to draw at
-	 * @throws IOException
+	 * @throws IOException if image cannot be found
 	 */
 	public void drawImage(BufferedImage bi, int x, int y) throws IOException {
 		drawImage(bi, x, y, bi.getWidth(), bi.getHeight());
@@ -63,10 +63,10 @@ public class Badge {
 	
 	/**
 	 * Draws a URL Image at given location on badge
-	 * @param URL of image to draw on badge
+	 * @param urlImg - URL of image to draw on badge
 	 * @param x coordinate to draw at
 	 * @param y coordinate to draw at
-	 * @throws IOException
+	 * @throws IOException if image cannot be found
 	 */
 	public void drawURLImage(URL urlImg, int x, int y) throws IOException {
 		BufferedImage bi = ImageIO.read(urlImg);
@@ -75,12 +75,12 @@ public class Badge {
 	
 	/**
 	 * Draws a URL Image at given location on badge, with width and height
-	 * @param urlImg URL to draw on badge
+	 * @param urlImg - URL to draw on badge
 	 * @param x coordinate to draw at
 	 * @param y coordinate to draw at
 	 * @param width of image to draw
 	 * @param height of image to draw
-	 * @throws IOException
+	 * @throws IOException if image cannot be found
 	 */
 	public void drawURLImage(URL urlImg, int x, int y, int width, int height) throws IOException {
 		BufferedImage bi = ImageIO.read(urlImg);
@@ -94,7 +94,7 @@ public class Badge {
 	 * @param y coordinate to draw at
 	 * @param width of image to draw
 	 * @param height of image to draw
-	 * @throws IOException
+	 * @throws IOException if image cannot be found
 	 */
 	protected void drawImage(BufferedImage i, int x, int y, int width, int height) throws IOException {
 		p_gx.drawImage(i, x, y, width, height, null);
@@ -239,10 +239,10 @@ public class Badge {
 	}
 	
 	/**
-	 * <p>Finalizes all the draws on the badge, sets a randomized name, saves the badge to the {@link GlobalDefs.LOCAL_BADGE_CACHE} for webserving.
-	 * Please call {@link Badge.cleanup()} when done with image to allow for cleanups.</p>
+	 * <p>Finalizes all the draws on the badge, sets a randomized name, saves the badge to the {@code GlobalDefs.LOCAL_BADGE_CACHE} for webserving.
+	 * Please call {@code Badge.cleanup()} when done with image to allow for cleanups.</p>
 	 * @return the String of the hosted image
-	 * @throws IOException
+	 * @throws IOException if image could not be written
 	 */
 	public String finalizeBadge() throws IOException {
 		SecureRandom random = new SecureRandom();
