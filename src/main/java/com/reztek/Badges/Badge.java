@@ -248,7 +248,7 @@ public class Badge {
 		SecureRandom random = new SecureRandom();
 		int num = random.nextInt(10000000);
 		String formatted = String.format("%07d", num); 
-		File f = new File((GlobalDefs.BOT_DEV ? GlobalDefs.LOCAL_DEV_BADGE_CACHE : GlobalDefs.LOCAL_BADGE_CACHE) + String.valueOf(new Date().getTime()) + "_" + formatted + ".png");
+		File f = new File(GlobalDefs.LOCAL_BADGE_CACHE + String.valueOf(new Date().getTime()) + "_" + formatted + ".png");
 		f.createNewFile();
 		ImageIO.write(p_baseImage,"png", f);
 		return GlobalDefs.WWW_HOST + GlobalDefs.WWW_BADGE_CACHE + f.getName();

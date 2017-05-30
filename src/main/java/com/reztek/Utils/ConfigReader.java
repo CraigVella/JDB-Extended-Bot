@@ -61,6 +61,21 @@ public class ConfigReader {
 	}
 	
 	/**
+	 * Gets or creates the requested String from the configuration file
+	 * @param key for the String to retrieve
+	 * @param defaultValue if key needs to be created
+	 * @return value of key in config file or defaultValue if created
+	 */
+	public String getOrCreateConfigString(String key, String defaultValue) {
+		String val = getConfigString(key);
+		if (val == null) {
+			val = defaultValue;
+			createNewConfigValue(key, defaultValue);
+		}
+		return val;
+	}
+	
+	/**
 	 * Gets the requested Long from the configuration file
 	 * @param key for the Long to retrieve
 	 * @return Long containing the value from the configuration file
@@ -75,6 +90,21 @@ public class ConfigReader {
 	}
 	
 	/**
+	 * Gets or creates the requested Long from the configuration file
+	 * @param key for the Long to retrieve
+	 * @param defaultValue if key needs to be created
+	 * @return value of key in config file or defaultValue if created
+	 */
+	public Long getOrCreateConfigLong(String key, Long defaultValue) {
+		Long val = getConfigLong(key);
+		if (val == null) {
+			val = defaultValue;
+			createNewConfigValue(key, defaultValue);
+		}
+		return val;
+	}
+	
+	/**
 	 * Gets the requested Boolean from the configuration file
 	 * @param key for the Boolean to retrieve
 	 * @return Boolean containing the value from the configuration file
@@ -86,6 +116,21 @@ public class ConfigReader {
 			System.out.println("ConfigWarning - [" + key + "] does not exist or is not a Boolean");
 			return null;
 		}
+	}
+	
+	/**
+	 * Gets or creates the requested Boolean from the configuration file
+	 * @param key for the Boolean to retrieve
+	 * @param defaultValue if key needs to be created
+	 * @return value of key in config file or defaultValue if created
+	 */
+	public Boolean getOrCreateConfigBoolean(String key, Boolean defaultValue) {
+		Boolean val = getConfigBoolean(key);
+		if (val == null) {
+			val = defaultValue;
+			createNewConfigValue(key, defaultValue);
+		}
+		return val;
 	}
 	
 	/**

@@ -35,8 +35,7 @@ public class MySQLConnector {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			p_con = (Connection) DriverManager.getConnection("jdbc:mysql://" + 
-					(GlobalDefs.BOT_DEV ? GlobalDefs.DB_HOST_DEV : GlobalDefs.DB_HOST) + "/" + 
-					(GlobalDefs.BOT_DEV ? GlobalDefs.DB_DBASE_DEV : GlobalDefs.DB_DBASE) + "?autoReconnect=true",GlobalDefs.DB_USER,GlobalDefs.DB_PASS);
+					GlobalDefs.DB_HOST + "/" +  GlobalDefs.DB_DBASE + "?autoReconnect=true",GlobalDefs.DB_USER,GlobalDefs.DB_PASS);
 			p_con.setAutoReconnect(true);
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();

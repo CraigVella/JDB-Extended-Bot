@@ -80,7 +80,7 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void showVersion(MessageChannel mc) {
-		mc.sendMessage("I am running version: " + GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "")).queue();
+		mc.sendMessage("I am running version: " + GlobalDefs.BOT_VERSION).queue();
 	}
 
 }

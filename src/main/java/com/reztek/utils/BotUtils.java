@@ -124,7 +124,7 @@ public abstract class BotUtils {
 	 * @return String containing the Bot version
 	 */
 	public static String GetVersion() {
-		return GlobalDefs.BOT_VERSION + (GlobalDefs.BOT_DEV ? "-devel" : "");
+		return GlobalDefs.BOT_VERSION;
 	}
 	
 	/**
