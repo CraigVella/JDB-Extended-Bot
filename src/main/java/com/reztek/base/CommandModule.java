@@ -193,7 +193,7 @@ public abstract class CommandModule implements ICommandModule {
 	 * {@code processJoinEvent()} please override this method</p>
 	 * @param b - {@code true} to respond to these messages {@code false} to ignore them
 	 */
-	public void respondToJoinEvent(Boolean b) {
+	public void setRespondToJoinEvent(Boolean b) {
 		p_respondJoin = b;
 	}
 	
@@ -203,7 +203,7 @@ public abstract class CommandModule implements ICommandModule {
 	 * {@code processLeaveEvent()} please override this method</p>
 	 * @param b - {@code true} to respond to these messages {@code false} to ignore them
 	 */
-	public void respondToLeaveEvent(Boolean b) {
+	public void setRespondToLeaveEvent(Boolean b) {
 		p_respondLeave = b;
 	}
 	
