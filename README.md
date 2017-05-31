@@ -1,6 +1,9 @@
-# SGAExtendedBot
+# JDB-Extended-Bot
 
-**Current Bot Commands as of Version 2.4**
+**Current Bot Commands as of Version 2.4.1** 
+
+JavaDoc Located @ http://reztek.net/JDB/doc
+
 All commands begin with an '!'
 
         Command                        Argument(s)      - Description
