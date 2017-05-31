@@ -2,8 +2,6 @@
 
 **Current Bot Commands as of Version 2.4.1** 
 
-JavaDoc Located @ http://reztek.net/JDB/doc
-
 **To Enable Custom Commands Built in Plugin - Setup MySQL parameters in Config File and run SQL Script**
 
 All commands begin with an '!'
@@ -22,3 +20,8 @@ All commands begin with an '!'
 
     [] = optional
     <> = Required
+
+#Developers (Help Always Needed)
+
+JavaDoc for JDB - http://reztek.net/JDB/doc
+Current JDA Jar - http://reztek.net/JDB/JDA-3.1.0_204.jar 
