@@ -19,9 +19,11 @@ import com.reztek.Base.CommandModule;
 import com.reztek.Base.ICommandModule;
 import com.reztek.Utils.BotUtils;
 
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class MessageHandler {
+public class ModuleHandler {
 
 	HashMap<String,ICommandModule> p_commandModules = new HashMap<String,ICommandModule>();
 	private ExecutorService p_executor = Executors.newCachedThreadPool();
@@ -181,6 +183,40 @@ public class MessageHandler {
 						}
 					});
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Called by the Bot when a Member Joins a guild <b>DO NOT</b> call this method directly
+	 * @param The MessageRecievedEvent of the incoming message
+	 */
+	public void processGuildMemberJoin(GuildMemberJoinEvent e) {
+		for (ICommandModule proc : getAllLoadedCommandModules()) {
+			if (proc.respondsToJoinEvents()) {
+				p_executor.execute(new Runnable() {
+					@Override
+					public void run() {
+						proc.processMemberJoin(e);
+					}
+				});
+			}
+		}
+	}
+	
+	/**
+	 * Called by the Bot when a Member logs off from a guild <b>DO NOT</b> call this method directly
+	 * @param The MessageRecievedEvent of the incoming message
+	 */
+	public void processGuildMemberLeave(GuildMemberLeaveEvent e) {
+		for (ICommandModule proc : getAllLoadedCommandModules()) {
+			if (proc.respondsToLeaveEvents()) {
+				p_executor.execute(new Runnable() {
+					@Override
+					public void run() {
+						proc.processMemberLeave(e);
+					}
+				});
 			}
 		}
 	}

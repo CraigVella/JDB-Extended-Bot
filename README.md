@@ -1,6 +1,6 @@
 # JDB-Extended-Bot
 
-**Current Bot Commands as of Version 2.4.1** 
+**Current Bot Commands as of Version 2.5** 
 
 **To Enable Custom Commands Built in Plugin - Setup MySQL parameters in Config File and run SQL Script**
 

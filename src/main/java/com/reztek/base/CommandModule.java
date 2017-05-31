@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -35,6 +37,8 @@ public abstract class CommandModule implements ICommandModule {
 	private String p_uniqueModuleID;
 	private ArrayList<String> p_commandList = new ArrayList<String>();
 	private String p_Version = "N/A";
+	private Boolean p_respondJoin = false;
+	private Boolean p_respondLeave = false;
 	
 	/**
 	 * Constructor for CommandModule when extending you <b>must</b> pass a unique ID for plugin
@@ -173,5 +177,43 @@ public abstract class CommandModule implements ICommandModule {
 	
 	public final Collection<String> getCommands() {
 		return Collections.unmodifiableCollection(p_commandList);
+	}
+	
+	public Boolean respondsToJoinEvents() {
+		return p_respondJoin;
+	}
+	
+	public Boolean respondsToLeaveEvents() {
+		return p_respondLeave;
+	}
+	
+	/**
+	 * Sets Whether or not to allow this module to respond to Join events
+	 * <p>If Join events are responded to you will receive the message to
+	 * {@code processJoinEvent()} please override this method</p>
+	 * @param b - {@code true} to respond to these messages {@code false} to ignore them
+	 */
+	public void respondToJoinEvent(Boolean b) {
+		p_respondJoin = b;
+	}
+	
+	/**
+	 * Sets Whether or not to allow this module to respond to Leave events
+	 * <p>If Leave events are responded to you will receive the message to
+	 * {@code processLeaveEvent()} please override this method</p>
+	 * @param b - {@code true} to respond to these messages {@code false} to ignore them
+	 */
+	public void respondToLeaveEvent(Boolean b) {
+		p_respondLeave = b;
+	}
+	
+	@Override
+	public void processMemberJoin(GuildMemberJoinEvent e) {
+		
+	}
+	
+	@Override
+	public void processMemberLeave(GuildMemberLeaveEvent e) {
+		
 	}
 }

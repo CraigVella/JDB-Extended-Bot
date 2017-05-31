@@ -90,7 +90,7 @@ public class CustomCommands extends CommandModule {
 					if (commandTypeFromString(splitArg[1].toUpperCase()) == CMD_ERROR) {
 						mre.getChannel().sendMessage("Incorrect Usage").queue();
 						sendCustomCommandHelp(mre);
-					} else if(JDBExtendedBot.GetBot().getMessageHandler().isCommandTaken(splitArg[0].toLowerCase())) {
+					} else if(JDBExtendedBot.GetBot().getModuleHandler().isCommandTaken(splitArg[0].toLowerCase())) {
 						mre.getChannel().sendMessage("Sorry " + mre.getAuthor().getAsMention() + ", that command is already taken, try another name").queue();
 					} else {
 						// Add Command

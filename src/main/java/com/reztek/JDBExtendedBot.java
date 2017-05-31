@@ -26,6 +26,8 @@ import com.reztek.modules.CustomCommands.CustomCommands;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -43,7 +45,7 @@ import net.dv8tion.jda.core.hooks.EventListener;
 public class JDBExtendedBot extends TimerTask implements EventListener {
 	private static JDBExtendedBot ps_bot = null;
 	private boolean p_ready = false;
-	private MessageHandler p_mh;
+	private ModuleHandler p_mh;
 	private ArrayList<Taskable> p_taskList = new ArrayList<Taskable>();
 	private Timer p_timer = new Timer("JDBExtendedBotTimer");
 	private AtomicBoolean p_tasksrunning = new AtomicBoolean(false);
@@ -114,7 +116,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	private void run(JDA jda) throws InterruptedException {
 		p_jda = jda;
 		
-		p_mh = new MessageHandler();
+		p_mh = new ModuleHandler();
 		
 		p_mh.addCommandModule(new BaseCommands());
 		
@@ -186,7 +188,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	 * Retrieve the MessageHandler instance
 	 * @return MessageHandler instance
 	 */
-	public MessageHandler getMessageHandler() {
+	public ModuleHandler getModuleHandler() {
 		return p_mh;
 	}
 
@@ -201,12 +203,15 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 			System.out.println("JDB-Extended-Bot - Version: " + BotUtils.GetVersion());
 		}
 		
-		if (e instanceof MessageReceivedEvent) {
-			if (isReady()){
-				getMessageHandler().processMessage((MessageReceivedEvent) e);
+		if (isReady()){
+			if (e instanceof MessageReceivedEvent) {
+				getModuleHandler().processMessage((MessageReceivedEvent) e);
+			} else if (e instanceof GuildMemberJoinEvent) {
+				getModuleHandler().processGuildMemberJoin((GuildMemberJoinEvent) e);
+			}  else if (e instanceof GuildMemberLeaveEvent) {
+				getModuleHandler().processGuildMemberLeave((GuildMemberLeaveEvent) e);
 			}
 		}
-		
 	}
 
 	/**
