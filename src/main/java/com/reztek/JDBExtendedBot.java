@@ -26,6 +26,8 @@ import com.reztek.modules.CustomCommands.CustomCommands;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -43,7 +45,7 @@ import net.dv8tion.jda.core.hooks.EventListener;
 public class JDBExtendedBot extends TimerTask implements EventListener {
 	private static JDBExtendedBot ps_bot = null;
 	private boolean p_ready = false;
-	private MessageHandler p_mh;
+	private ModuleHandler p_mh;
 	private ArrayList<Taskable> p_taskList = new ArrayList<Taskable>();
 	private Timer p_timer = new Timer("JDBExtendedBotTimer");
 	private AtomicBoolean p_tasksrunning = new AtomicBoolean(false);
@@ -60,8 +62,8 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		return ps_bot;
 	}
 	
-	private void dynaLoadLibs() {
-		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/lib");
+	private void dynaLoadLibs(String slibDir) {
+		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/" + slibDir);
 		if (libDir.exists() && libDir.isDirectory()) {
 			FilenameFilter jarFilter = new FilenameFilter() {
 				public boolean accept(File dir, String name) {
@@ -88,7 +90,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("[WARNING] Lib Directory did not exist - creating one");
+			System.out.println("[WARNING] " + slibDir + " Directory did not exist - creating one");
 			libDir.mkdir();
 		}
 	}
@@ -100,7 +102,8 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		}
 		
 		JDBExtendedBot bot = JDBExtendedBot.GetBot();
-		bot.dynaLoadLibs();
+		bot.dynaLoadLibs("lib");    // Load all JARs in Lib Folder
+		bot.dynaLoadLibs("plugins"); // Load all JARs in Plugin Folder
 		try {
 			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
 			bot.run(jda);
@@ -114,7 +117,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	private void run(JDA jda) throws InterruptedException {
 		p_jda = jda;
 		
-		p_mh = new MessageHandler();
+		p_mh = new ModuleHandler();
 		
 		p_mh.addCommandModule(new BaseCommands());
 		
@@ -186,7 +189,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	 * Retrieve the MessageHandler instance
 	 * @return MessageHandler instance
 	 */
-	public MessageHandler getMessageHandler() {
+	public ModuleHandler getModuleHandler() {
 		return p_mh;
 	}
 
@@ -201,12 +204,15 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 			System.out.println("JDB-Extended-Bot - Version: " + BotUtils.GetVersion());
 		}
 		
-		if (e instanceof MessageReceivedEvent) {
-			if (isReady()){
-				getMessageHandler().processMessage((MessageReceivedEvent) e);
+		if (isReady()){
+			if (e instanceof MessageReceivedEvent) {
+				getModuleHandler().processMessage((MessageReceivedEvent) e);
+			} else if (e instanceof GuildMemberJoinEvent) {
+				getModuleHandler().processGuildMemberJoin((GuildMemberJoinEvent) e);
+			}  else if (e instanceof GuildMemberLeaveEvent) {
+				getModuleHandler().processGuildMemberLeave((GuildMemberLeaveEvent) e);
 			}
 		}
-		
 	}
 
 	/**

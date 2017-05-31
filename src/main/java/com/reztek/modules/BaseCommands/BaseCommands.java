@@ -62,7 +62,7 @@ public class BaseCommands extends CommandModule {
 	
 	protected void showModules(MessageChannel mc) {
 		String modules = "**All Loaded Modules**\n```";
-		for (ICommandModule cm : JDBExtendedBot.GetBot().getMessageHandler().getAllLoadedCommandModules()) {
+		for (ICommandModule cm : JDBExtendedBot.GetBot().getModuleHandler().getAllLoadedCommandModules()) {
 			modules += cm.getModuleName() + BotUtils.GetPaddingForLen(cm.getModuleName(), 20) + " (V." + 
 					BotUtils.GetPaddingForLen(cm.getVersion(),4) + cm.getVersion() + ") - by " + cm.getAuthorName() + "\n";
 		}

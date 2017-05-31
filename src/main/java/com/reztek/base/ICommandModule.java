@@ -2,8 +2,10 @@ package com.reztek.Base;
 
 import java.util.Collection;
 
-import com.reztek.MessageHandler;
+import com.reztek.ModuleHandler;
 
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 
@@ -15,13 +17,13 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  */
 public interface ICommandModule {
 	/**
-	 * Main Process command
-	 * <p>The processCommand gets called by the {@link MessageHandler} when a registered command is called by a user</p>
+	 * Processes Commands that get massed to module
+	 * <p>The processCommand gets called by the {@link ModuleHandler} when a registered command is called by a user</p>
 	 * @param command - <b>in</b> - The command passed from the MessageHandler which contains the command typed by the user
 	 * @param args - <b>in</b> - The arguments that follow after the command
-	 * @param mre - <b>in</b> - {@link MessageReceivedEvent} object sent by the MessageHandler, which contains all functionality to send back a message
+	 * @param e - <b>in</b> - {@link MessageReceivedEvent} object sent by the ModuleHandler, which contains all functionality to send back a message
 	 */
-	void processCommand(String command, String args, MessageReceivedEvent mre);
+	void processCommand(String command, String args, MessageReceivedEvent e);
 	
 	/**
 	 * The method returns true if this moudule should respond to the following passed command
@@ -65,4 +67,30 @@ public interface ICommandModule {
 	 * @return String containing the plugin Version
 	 */
 	public String getVersion();
+	
+	/**
+	 * Processes Join events that get massed to module
+	 * <p>The processMemberJoin gets called by the {@link ModuleHandler} when a plugin elects to receive these events</p>
+	 * @param e - <b>in</b> - {@link GuildMemberJoinEvent} object sent by the ModuleHandler
+	 */
+	public void processMemberJoin(GuildMemberJoinEvent e);
+	
+	/**
+	 * Processes Leave events that get massed to module
+	 * <p>The processMemberLeave gets called by the {@link ModuleHandler} when a plugin elects to receive these events</p>
+	 * @param e - <b>in</b> - {@link GuildMemberJoinEvent} object sent by the ModuleHandler
+	 */
+	public void processMemberLeave(GuildMemberLeaveEvent e);
+	
+	/**
+	 * Gets whether or not this module will respond to a Join Event
+	 * @return Boolean of {@code true} if it does respond to these events and {@code false} if it does not
+	 */
+	public Boolean respondsToJoinEvents();
+	
+	/**
+	 * Gets whether or not this module will respond to a Leave Event
+	 * @return Boolean of {@code true} if it does respond to these events and {@code false} if it does not
+	 */
+	public Boolean respondsToLeaveEvents();
 }
