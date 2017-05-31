@@ -19,30 +19,43 @@ import com.reztek.Base.CommandModule;
 import com.reztek.Base.ICommandModule;
 import com.reztek.Utils.BotUtils;
 
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class MessageHandler {
+public class ModuleHandler {
 
 	HashMap<String,ICommandModule> p_commandModules = new HashMap<String,ICommandModule>();
 	private ExecutorService p_executor = Executors.newCachedThreadPool();
 
-	public void addCommandModule(ICommandModule cpm) {
+	/**
+	 * Add a CommandModule object to the Bot
+	 * <p>Command Module will be checked that it's ID and commands do not intefere with any other command module</p>
+	 * @param ICommandModule
+	 * @return Returns true if Module Added, false if Module is not added
+	 */
+	public boolean addCommandModule(ICommandModule cpm) {
 		if (p_commandModules.containsKey(cpm.getModuleID())) {
 			System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it's already added or duplicate unique ID!");
+			return false;
 		} else {
 			for (ICommandModule m : p_commandModules.values()) {
 				for (String c : m.getCommands()) {
 					if (cpm.respondsToCommand(c)) {
 						System.out.println("[ERROR] Unable to add module " + cpm.getModuleName() + " {" + cpm.getModuleID() + "} it responds to command '!" + c.toUpperCase() + "' which {" +  m.getModuleID() + "} already responds to!");
-						return;
+						return false;
 					}
 				}
 			}
 			p_commandModules.put(cpm.getModuleID(), cpm);
 			System.out.println("Added Command Module: " + cpm.getModuleName() + " V." + cpm.getVersion() + " - " + cpm.getAuthorName());
+			return true;
 		}
 	}
 	
+	/**
+	 * Loads all plugins in the plugin directly
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadAllPlugins() {
 		File pluginDir = new File(BotUtils.GetExecutionPath(getClass()) + "/plugins");
@@ -97,7 +110,14 @@ public class MessageHandler {
 			}
 			// At this point whatever plugin didn't load will be left in the pluginList
 			for (Class<?> c : pluginList) {
-				System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "]");
+				Collection<String> deps;
+				try {
+					deps = (Collection<String>) c.getMethod("GetDependencies", null).invoke(null,null);
+					System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "] missing one of the following dependencies " + deps.toString());
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+						| NoSuchMethodException | SecurityException e) {
+					System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "]");
+				}
 			}
 		} else {
 			pluginDir.mkdirs();
@@ -105,6 +125,11 @@ public class MessageHandler {
 		}
 	}
 	
+	/**
+	 * Checks to see if the command is taken my a registered plugin
+	 * @param String of a command to check
+	 * @return Returns true if the command is taken, returns false if the command is available
+	 */
 	public boolean isCommandTaken(String command) {
 		for (ICommandModule m : p_commandModules.values()) {
 			if (m.respondsToCommand(command.toLowerCase())) return true;
@@ -112,18 +137,35 @@ public class MessageHandler {
 		return false;
 	}
 	
+	/**
+	 * Remove a command module by command module ID
+	 * @param String of a command module ID to remove
+	 */
 	public void removeCommandModule(String commandModuleID) {
 		p_commandModules.remove(commandModuleID);
 	}
 	
+	/**
+	 * Retrieves a command module from the given module ID
+	 * @param String of a command module ID
+	 * @return The command Module instance of the ID given, or null if none were found
+	 */
 	public final ICommandModule getCommandModuleByID(String moduleID) {
-		return p_commandModules.get(moduleID);
+		return p_commandModules.getOrDefault(moduleID, null);
 	}
 	
+	/**
+	 * Gets a collection of all loaded command module plugins
+	 * @return A collection of loaded command modules
+	 */
 	public Collection<ICommandModule> getAllLoadedCommandModules() {
 		return Collections.unmodifiableCollection(p_commandModules.values());
 	}
 	
+	/**
+	 * Called by the Bot when a new command message arrives <b>DO NOT</b> call this method directly
+	 * @param The MessageRecievedEvent of the incoming message
+	 */
 	public void processMessage(MessageReceivedEvent mre) {
 		if (mre.getMessage().getRawContent().length() > 0 && mre.getMessage().getRawContent().charAt(0) == '!' && !mre.getAuthor().isBot()) {
 			
@@ -148,6 +190,40 @@ public class MessageHandler {
 						}
 					});
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Called by the Bot when a Member Joins a guild <b>DO NOT</b> call this method directly
+	 * @param The MessageRecievedEvent of the incoming message
+	 */
+	public void processGuildMemberJoin(GuildMemberJoinEvent e) {
+		for (ICommandModule proc : getAllLoadedCommandModules()) {
+			if (proc.respondsToJoinEvents()) {
+				p_executor.execute(new Runnable() {
+					@Override
+					public void run() {
+						proc.processMemberJoin(e);
+					}
+				});
+			}
+		}
+	}
+	
+	/**
+	 * Called by the Bot when a Member logs off from a guild <b>DO NOT</b> call this method directly
+	 * @param The MessageRecievedEvent of the incoming message
+	 */
+	public void processGuildMemberLeave(GuildMemberLeaveEvent e) {
+		for (ICommandModule proc : getAllLoadedCommandModules()) {
+			if (proc.respondsToLeaveEvents()) {
+				p_executor.execute(new Runnable() {
+					@Override
+					public void run() {
+						proc.processMemberLeave(e);
+					}
+				});
 			}
 		}
 	}

@@ -26,28 +26,44 @@ import com.reztek.modules.CustomCommands.CustomCommands;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
 
-public class SGAExtendedBot extends TimerTask implements EventListener {
-	private static SGAExtendedBot ps_bot = null;
+/**
+ * <h1>JDB-Extended-Bot</h1>
+ * Java Discord Bot - Extended<br />
+ * A Bot that uses a modular design along with optional plugins that allows 
+ * diverse interaction types.
+ * 
+ * @author ChaseHQ85
+ *
+ */
+
+public class JDBExtendedBot extends TimerTask implements EventListener {
+	private static JDBExtendedBot ps_bot = null;
 	private boolean p_ready = false;
-	private MessageHandler p_mh;
+	private ModuleHandler p_mh;
 	private ArrayList<Taskable> p_taskList = new ArrayList<Taskable>();
-	private Timer p_timer = new Timer("SGAExtendedBotTimer");
+	private Timer p_timer = new Timer("JDBExtendedBotTimer");
 	private AtomicBoolean p_tasksrunning = new AtomicBoolean(false);
 	private JDA p_jda = null;
 	
-	public static SGAExtendedBot GetBot() {
+	/**
+	 * Get the main Bot instance
+	 * @return JDBExtendedBot Instance
+	 */
+	public static JDBExtendedBot GetBot() {
 		if (ps_bot == null) {
-			ps_bot = new SGAExtendedBot();
+			ps_bot = new JDBExtendedBot();
 		}
 		return ps_bot;
 	}
 	
-	public void dynaLoadLibs() {
-		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/lib");
+	private void dynaLoadLibs(String slibDir) {
+		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/" + slibDir);
 		if (libDir.exists() && libDir.isDirectory()) {
 			FilenameFilter jarFilter = new FilenameFilter() {
 				public boolean accept(File dir, String name) {
@@ -74,6 +90,7 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 				e.printStackTrace();
 			}
 		} else {
+			System.out.println("[WARNING] " + slibDir + " Directory did not exist - creating one");
 			libDir.mkdir();
 		}
 	}
@@ -84,10 +101,11 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 			return; 
 		}
 		
-		SGAExtendedBot bot = SGAExtendedBot.GetBot();
-		bot.dynaLoadLibs();
+		JDBExtendedBot bot = JDBExtendedBot.GetBot();
+		bot.dynaLoadLibs("lib");    // Load all JARs in Lib Folder
+		bot.dynaLoadLibs("plugins"); // Load all JARs in Plugin Folder
 		try {
-			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_DEV ? GlobalDefs.BOT_TOKEN_DEV : GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
+			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
 			bot.run(jda);
 		} catch (LoginException e) {
 			e.printStackTrace();
@@ -96,61 +114,110 @@ public class SGAExtendedBot extends TimerTask implements EventListener {
 		}
 	}
 	
-	public void run(JDA jda) throws InterruptedException {
+	private void run(JDA jda) throws InterruptedException {
 		p_jda = jda;
 		
-		p_mh = new MessageHandler();
+		p_mh = new ModuleHandler();
 		
 		p_mh.addCommandModule(new BaseCommands());
 		
 		p_mh.loadAllPlugins();
 		
 		// Add custom commands last
-		p_mh.addCommandModule(new CustomCommands());
+		if (ConfigReader.GetConfigReader().getConfigBoolean("ENABLE_CUSTOM_CMDS")) p_mh.addCommandModule(new CustomCommands());
 		
 		addTask(new BadgeCacheTask());
 		
 		p_timer.schedule(this, GlobalDefs.TIMER_TICK, GlobalDefs.TIMER_TICK);
 		
 		jda.setAutoReconnect(true);
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				shutdownBot();
+			}
+		});
 	}
+	
+	/**
+	 * Properly Shutdown bot and exit
+	 */
+	public void shutdownBot() {
+		System.out.println("Shutting Down Bot...");
+		p_timer.cancel();
+		p_jda.shutdown(true);
+	}
+	
+	/**
+	 * Retreive current registered tasks
+	 * @return A collection of Taskable objects
+	 */
 	
 	public Collection<Taskable> getTasks() {
 		return Collections.unmodifiableCollection(p_taskList);
 	}
 	
+	/**
+	 * Retrieve the Java Discord API Object
+	 * @return Java Discord API Object Instance
+	 */
 	public JDA getJDA() {
 		return p_jda;
 	}
 	
+	/**
+	 * Add a task to the tasking system
+	 * </p> The Tasking system will try and run a task once a minute (unless otherwise configured).
+	 * The task is not guaranteed to run on time, the queue is linear and synchronous. This is purposely
+	 * done to not put too much of a load on the system. </p>
+	 * @param Task Object with Task as a base class
+	 */
 	public void addTask(Taskable task) {
 		p_taskList.add(task);
 	}
 	
+	/**
+	 * Checks to see whether the Bot is in a ready state
+	 * @return boolean of true if Bot is ready, false if not logged in
+	 */
 	public boolean isReady() {
 		return p_ready;
 	}
 	
-	public MessageHandler getMessageHandler() {
+	/**
+	 * Retrieve the MessageHandler instance
+	 * @return MessageHandler instance
+	 */
+	public ModuleHandler getModuleHandler() {
 		return p_mh;
 	}
 
+	/**
+	 * Overridden on event <b>DO NOT</b> call this method directly.
+	 */
 	@Override
 	public void onEvent(Event e) {
 		
 		if (e instanceof ReadyEvent) {
 			p_ready = true;
-			System.out.println("SGA-Extended-Bot - Version: " + BotUtils.GetVersion());
+			System.out.println("JDB-Extended-Bot - Version: " + BotUtils.GetVersion());
 		}
 		
-		if (e instanceof MessageReceivedEvent) {
-			if (isReady()){
-				getMessageHandler().processMessage((MessageReceivedEvent) e);
+		if (isReady()){
+			if (e instanceof MessageReceivedEvent) {
+				getModuleHandler().processMessage((MessageReceivedEvent) e);
+			} else if (e instanceof GuildMemberJoinEvent) {
+				getModuleHandler().processGuildMemberJoin((GuildMemberJoinEvent) e);
+			}  else if (e instanceof GuildMemberLeaveEvent) {
+				getModuleHandler().processGuildMemberLeave((GuildMemberLeaveEvent) e);
 			}
 		}
-		
 	}
 
+	/**
+	 * Overriden run, <b>DO NOT</b> call this method directly.
+	 */
 	@Override
 	public void run() {
 		// Called every 1 minute and passed to all tasks sequentially,
