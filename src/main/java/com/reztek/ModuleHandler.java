@@ -110,7 +110,14 @@ public class ModuleHandler {
 			}
 			// At this point whatever plugin didn't load will be left in the pluginList
 			for (Class<?> c : pluginList) {
-				System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "]");
+				Collection<String> deps;
+				try {
+					deps = (Collection<String>) c.getMethod("GetDependencies", null).invoke(null,null);
+					System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "] missing one of the following dependencies " + deps.toString());
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+						| NoSuchMethodException | SecurityException e) {
+					System.out.println("[ERROR] Plugin dependency failed - Could not load [" + c.getName() + "]");
+				}
 			}
 		} else {
 			pluginDir.mkdirs();

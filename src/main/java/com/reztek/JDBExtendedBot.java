@@ -62,8 +62,8 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		return ps_bot;
 	}
 	
-	private void dynaLoadLibs() {
-		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/lib");
+	private void dynaLoadLibs(String slibDir) {
+		File libDir = new File(BotUtils.GetExecutionPath(getClass()) + "/" + slibDir);
 		if (libDir.exists() && libDir.isDirectory()) {
 			FilenameFilter jarFilter = new FilenameFilter() {
 				public boolean accept(File dir, String name) {
@@ -90,7 +90,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("[WARNING] Lib Directory did not exist - creating one");
+			System.out.println("[WARNING] " + slibDir + " Directory did not exist - creating one");
 			libDir.mkdir();
 		}
 	}
@@ -102,7 +102,8 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		}
 		
 		JDBExtendedBot bot = JDBExtendedBot.GetBot();
-		bot.dynaLoadLibs();
+		bot.dynaLoadLibs("lib");    // Load all JARs in Lib Folder
+		bot.dynaLoadLibs("plugins"); // Load all JARs in Plugin Folder
 		try {
 			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
 			bot.run(jda);
