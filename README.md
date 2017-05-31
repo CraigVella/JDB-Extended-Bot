@@ -24,4 +24,5 @@ All commands begin with an '!'
 #Developers (Help Always Needed)
 
 JavaDoc for JDB - http://reztek.net/JDB/doc
+
 Current JDA Jar - http://reztek.net/JDB/JDA-3.1.0_204.jar 
