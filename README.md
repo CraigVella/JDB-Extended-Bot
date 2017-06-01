@@ -28,7 +28,7 @@ All commands begin with an '!'
     [] = optional
     <> = Required
 
-#Developers (Help Always Needed)
+# Developers (Help Always Needed)
 
 JavaDoc for JDB - http://reztek.net/JDB/doc
 
