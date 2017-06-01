@@ -2,6 +2,7 @@
 
 ## A plugin based Bot for Discord
 JDB - Extended Bot allows users to host their own bot using community created plugins
+
 JDB offers Developers the ability to use Badges, Tasking, SQL, and an easy to use Even Messaging system
 
 Check out the Wiki For more information (https://github.com/ChaseHQ/JDB-Extended-Bot/wiki)
