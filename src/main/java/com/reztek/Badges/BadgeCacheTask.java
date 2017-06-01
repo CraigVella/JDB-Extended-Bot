@@ -31,7 +31,7 @@ public class BadgeCacheTask extends Taskable{
 	}
 	
 	/**
-	 * Checks the {@link GlobalDefs.LOCAL_BADGE_CACHE} for images over 24hrs old and deletes them
+	 * Checks the {@code GlobalDefs.LOCAL_BADGE_CACHE} for images over 24hrs old and deletes them
 	 */
 	public void cleanCache() {
 		System.out.println("Starting Cache Cleaning Check...");
