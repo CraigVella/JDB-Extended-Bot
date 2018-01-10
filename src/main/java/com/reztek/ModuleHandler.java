@@ -105,6 +105,7 @@ public class ModuleHandler {
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 							| NoSuchMethodException | SecurityException | InstantiationException e) {
 						System.out.println("Failed Loading Plugin: [" + e.toString() + "]");
+						e.printStackTrace();
 					}
 				}
 			}
