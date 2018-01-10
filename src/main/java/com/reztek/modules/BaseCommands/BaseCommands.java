@@ -71,8 +71,9 @@ public class BaseCommands extends CommandModule {
 	}
 	
 	protected void decision(MessageReceivedEvent mre, String question) {
-		String[] decArray = {"I would say yes to that.", "Most definitely yes.", "Absolutely not.", "Sometime next year probably.", 
-				"I'd say maybe...", "Never seen a bigger NO to a question ever."};
+		String[] decArray = {"I would say yes to that.", "Most definitely yes.", "Absolutely not.", "It is certain", 
+				"I wouldn't ask that question again", "Never seen a bigger NO to a question ever.", "As I see it, yes", "Dont count on it", "My reply is no", 
+				"You know the answer to that", "Very Doubtful", "My sources (which is google) says yes", "My sources (which is google) says no"};
 		
 		Random random = new Random();
 		
