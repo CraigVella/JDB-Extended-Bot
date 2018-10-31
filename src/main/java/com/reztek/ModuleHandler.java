@@ -105,6 +105,7 @@ public class ModuleHandler {
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 							| NoSuchMethodException | SecurityException | InstantiationException e) {
 						System.out.println("Failed Loading Plugin: [" + e.toString() + "]");
+						e.printStackTrace();
 					}
 				}
 			}
@@ -167,9 +168,9 @@ public class ModuleHandler {
 	 * @param The MessageRecievedEvent of the incoming message
 	 */
 	public void processMessage(MessageReceivedEvent mre) {
-		if (mre.getMessage().getRawContent().length() > 0 && mre.getMessage().getRawContent().charAt(0) == '!' && !mre.getAuthor().isBot()) {
+		if (mre.getMessage().getContentRaw().length() > 0 && mre.getMessage().getContentRaw().charAt(0) == '!' && !mre.getAuthor().isBot()) {
 			
-			String command = mre.getMessage().getRawContent().substring(1);
+			String command = mre.getMessage().getContentRaw().substring(1);
 			String[] cmdSplit = command.split(" ");
 			
 			String args = "";
