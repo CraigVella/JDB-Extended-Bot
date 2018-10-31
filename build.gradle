@@ -21,7 +21,7 @@ repositories {
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
-    compile 'net.dv8tion:JDA:3.1.0_204'
+    compile 'net.dv8tion:JDA:3.8.1_437'
     compile 'mysql:mysql-connector-java:5.1.41'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-csv

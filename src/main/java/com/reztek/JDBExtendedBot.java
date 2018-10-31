@@ -105,7 +105,8 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		bot.dynaLoadLibs("lib");    // Load all JARs in Lib Folder
 		bot.dynaLoadLibs("plugins"); // Load all JARs in Plugin Folder
 		try {
-			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListener(bot).buildBlocking();
+			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListener(bot).build();
+			jda.awaitReady();
 			bot.run(jda);
 		} catch (LoginException e) {
 			e.printStackTrace();
@@ -146,7 +147,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	public void shutdownBot() {
 		System.out.println("Shutting Down Bot...");
 		p_timer.cancel();
-		p_jda.shutdown(true);
+		p_jda.shutdownNow();
 	}
 	
 	/**

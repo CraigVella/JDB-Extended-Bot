@@ -25,4 +25,4 @@ All commands begin with an '!'
 
 JavaDoc for JDB - http://reztek.net/JDB/doc
 
-Current JDA Jar - http://reztek.net/JDB/JDA-3.1.0_204.jar 
+Current JDA Jar - https://bintray.com/dv8fromtheworld/maven/download_file?file_path=net%2Fdv8tion%2FJDA%2F3.8.1_437%2FJDA-3.8.1_437.jar 
