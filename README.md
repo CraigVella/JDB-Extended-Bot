@@ -1,5 +1,12 @@
 # JDB-Extended-Bot
 
+## A plugin based Bot for Discord
+JDB - Extended Bot allows users to host their own bot using community created plugins
+
+JDB offers Developers the ability to use Badges, Tasking, SQL, and an easy to use Even Messaging system
+
+Check out the Wiki For more information (https://github.com/ChaseHQ/JDB-Extended-Bot/wiki)
+
 **Current Bot Commands as of Version 2.5** 
 
 **To Enable Custom Commands Built in Plugin - Setup MySQL parameters in Config File and run SQL Script**
@@ -21,7 +28,7 @@ All commands begin with an '!'
     [] = optional
     <> = Required
 
-#Developers (Help Always Needed)
+# Developers (Help Always Needed)
 
 JavaDoc for JDB - http://reztek.net/JDB/doc
 

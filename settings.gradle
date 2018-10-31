@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'SGAExtendedBot'
+rootProject.name = 'JDB-Extended-Bot'
