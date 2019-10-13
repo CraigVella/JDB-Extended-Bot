@@ -23,5 +23,5 @@ public abstract class GlobalDefs {
 	public static final String WWW_ASSETS             = ConfigReader.GetConfigReader().getConfigString("WWW_ASSETS");
 	public static final String LOCAL_BADGE_CACHE      = ConfigReader.GetConfigReader().getConfigString("LOCAL_BADGE_CACHE");
 	
-	public static final String  BOT_VERSION           = "2.6";
+	public static final String  BOT_VERSION           = "3.0";
 }

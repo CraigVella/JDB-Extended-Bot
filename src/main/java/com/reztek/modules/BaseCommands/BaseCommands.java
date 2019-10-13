@@ -9,8 +9,8 @@ import com.reztek.Base.Taskable;
 import com.reztek.Global.GlobalDefs;
 import com.reztek.Utils.BotUtils;
 
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class BaseCommands extends CommandModule {
 	

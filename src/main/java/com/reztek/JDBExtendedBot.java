@@ -23,14 +23,14 @@ import com.reztek.Utils.URLClassLoaderUtil;
 import com.reztek.modules.BaseCommands.BaseCommands;
 import com.reztek.modules.CustomCommands.CustomCommands;
 
-import net.dv8tion.jda.core.*;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.hooks.EventListener;
 
 /**
  * <h1>JDB-Extended-Bot</h1>
@@ -105,7 +105,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 		bot.dynaLoadLibs("lib");    // Load all JARs in Lib Folder
 		bot.dynaLoadLibs("plugins"); // Load all JARs in Plugin Folder
 		try {
-			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListener(bot).build();
+			JDA jda = new JDABuilder(AccountType.BOT).setToken(GlobalDefs.BOT_TOKEN).addEventListeners(bot).build();
 			jda.awaitReady();
 			bot.run(jda);
 		} catch (LoginException e) {
@@ -198,7 +198,7 @@ public class JDBExtendedBot extends TimerTask implements EventListener {
 	 * Overridden on event <b>DO NOT</b> call this method directly.
 	 */
 	@Override
-	public void onEvent(Event e) {
+	public void onEvent(GenericEvent e) {
 		
 		if (e instanceof ReadyEvent) {
 			p_ready = true;
